@@ -1,6 +1,7 @@
 # File input/output helpers: exact TSV round trips, atomic writes, local seeds.
 
-# Shortest decimal representation that reads back to the identical double.
+# Short decimal representation that reads back to the identical double on
+# platforms whose C libraries use slightly different decimal conversion.
 # data.table::fwrite() writes 15 significant digits, which does not round-trip;
 # exported scores must, because verification replays calls from them.
 .gk_format_double <- function(x) {
@@ -8,9 +9,12 @@
   out <- sprintf("%.15g", x)
   fin <- is.finite(x)
   back <- suppressWarnings(as.double(out))
-  bad <- fin & back != x
-  if (any(bad)) {
-    out[bad] <- sprintf("%.17g", x[bad])
+  bad <- fin & (is.na(back) | back != x)
+  for (digits in c(17L, 20L, 22L)) {
+    if (!any(bad)) break
+    out[bad] <- sprintf(paste0("%.", digits, "g"), x[bad])
+    back[bad] <- suppressWarnings(as.double(out[bad]))
+    bad <- fin & (is.na(back) | back != x)
   }
   out[is.na(x)] <- "NA"
   out[x %in% Inf] <- "Inf"

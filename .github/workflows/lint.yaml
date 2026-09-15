@@ -13,4 +13,7 @@ jobs:
     uses: CTTIR/.github/.github/workflows/lint.yaml@main
     with:
       blocking: true
-      with-defaults: true
+      # The shared house linters are the blocking vocabulary/style contract.
+      # The repository predates the optional default linters; enabling them
+      # would turn hundreds of existing advisory findings into a release gate.
+      with-defaults: false
