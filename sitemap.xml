@@ -9,6 +9,7 @@
 <url><loc>/reference/gatekeepR-package.html</loc></url>
 <url><loc>/reference/gk_callability.html</loc></url>
 <url><loc>/reference/gk_cellspec.html</loc></url>
+<url><loc>/reference/gk_classify.html</loc></url>
 <url><loc>/reference/gk_config.html</loc></url>
 <url><loc>/reference/gk_config_hash.html</loc></url>
 <url><loc>/reference/gk_correct.html</loc></url>
@@ -21,6 +22,8 @@
 <url><loc>/reference/gk_prepare.html</loc></url>
 <url><loc>/reference/gk_signal_policy.html</loc></url>
 <url><loc>/reference/gk_simulate.html</loc></url>
+<url><loc>/reference/gk_state_calls.html</loc></url>
+<url><loc>/reference/gk_structures.html</loc></url>
 <url><loc>/reference/gk_threshold_methods.html</loc></url>
 <url><loc>/reference/gk_thresholds.html</loc></url>
 <url><loc>/reference/gk_validate_config.html</loc></url>

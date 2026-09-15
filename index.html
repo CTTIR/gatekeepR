@@ -193,7 +193,7 @@ phenoscapR / cohort statistics / reports</code></pre>
 <tr>
 <td>Classification</td>
 <td>
-<code>gk_classify()</code>, <code>gk_state_calls()</code>, <code>gk_structures()</code>
+<code><a href="reference/gk_classify.html">gk_classify()</a></code>, <code><a href="reference/gk_state_calls.html">gk_state_calls()</a></code>, <code><a href="reference/gk_structures.html">gk_structures()</a></code>
 </td>
 </tr>
 <tr>
@@ -234,7 +234,7 @@ phenoscapR / cohort statistics / reports</code></pre>
 <span></span>
 <span><span class="va">prep</span>   <span class="op">&lt;-</span> <span class="fu"><a href="reference/gk_prepare.html">gk_prepare</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">config</span><span class="op">)</span>          <span class="co"># signals, transforms, callability</span></span>
 <span><span class="va">thr</span>    <span class="op">&lt;-</span> <span class="fu"><a href="reference/gk_thresholds.html">gk_thresholds</a></span><span class="op">(</span><span class="va">prep</span>, <span class="va">config</span><span class="op">)</span>    <span class="co"># per slide, per marker (and parent)</span></span>
-<span><span class="va">cls</span>    <span class="op">&lt;-</span> <span class="fu">gk_classify</span><span class="op">(</span><span class="va">prep</span>, <span class="va">thr</span>, <span class="va">config</span><span class="op">)</span></span>
+<span><span class="va">cls</span>    <span class="op">&lt;-</span> <span class="fu"><a href="reference/gk_classify.html">gk_classify</a></span><span class="op">(</span><span class="va">prep</span>, <span class="va">thr</span>, <span class="va">config</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">rev</span>    <span class="op">&lt;-</span> <span class="fu">gk_review</span><span class="op">(</span><span class="va">cls</span><span class="op">)</span></span>
 <span><span class="fu">gk_app</span><span class="op">(</span><span class="va">rev</span><span class="op">)</span>                              <span class="co"># interactive review, then lock inside the app</span></span>
