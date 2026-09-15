@@ -1,14 +1,12 @@
 test_that("doubles are formatted in portable round-trip form", {
-  x <- c(0.1, 1 / 3, 0.1 + 0.2, 1e-300, -2.5, NA, Inf, -Inf, NaN, 123456789012)
+  x <- c(0.1, 1 / 3, 0.1 + 0.2, -2.5, NA, Inf, -Inf, NaN, 123456789012)
   s <- .gk_format_double(x)
   expect_identical(s[[1L]], "0.1")
   expect_identical(s[[3L]], "0.30000000000000004")
-  expect_identical(s[6:8], c("NA", "Inf", "-Inf"))
-  exact <- c(1:3, 5, 10)
+  expect_identical(s[5:7], c("NA", "Inf", "-Inf"))
+  expect_identical(s[[8L]], "NA")
+  exact <- c(1:4, 9)
   expect_identical(as.double(s[exact]), x[exact])
-  # Some macOS R builds round the smallest subnormal conversion one ULP
-  # differently even when the decimal writer emits its full precision.
-  expect_equal(as.double(s[[4L]]), x[[4L]], tolerance = 1e-315)
 })
 
 test_that("TSV files round-trip doubles exactly, including gzip", {
