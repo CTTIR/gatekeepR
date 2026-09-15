@@ -1,0 +1,146 @@
+<svg width="500" height="580" viewBox="0 0 500 580" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bggate" x1="0" y1="0" x2="0.15" y2="1">
+      <stop offset="0%"  stop-color="#0a1526"/>
+      <stop offset="100%" stop-color="#050b16"/>
+    </linearGradient>
+    <!-- Negative hump fill (grey-blue) -->
+    <linearGradient id="negFill" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"  stop-color="#4a6a8f" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#4a6a8f" stop-opacity="0.05"/>
+    </linearGradient>
+    <!-- Positive hump fill (bright / orange accent) -->
+    <linearGradient id="posFill" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"  stop-color="#BA7517" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#BA7517" stop-opacity="0.05"/>
+    </linearGradient>
+    <clipPath id="hexgate">
+      <polygon points="250,30 455,145 455,375 250,490 45,375 45,145"/>
+    </clipPath>
+  </defs>
+
+  <polygon points="250,30 455,145 455,375 250,490 45,375 45,145" fill="url(#bggate)"/>
+
+  <g clip-path="url(#hexgate)">
+
+    <!-- faint grid -->
+    <line x1="45" y1="230" x2="455" y2="230" stroke="#123156" stroke-width="0.4" opacity="0.35"/>
+    <line x1="45" y1="290" x2="455" y2="290" stroke="#123156" stroke-width="0.4" opacity="0.35"/>
+    <line x1="45" y1="350" x2="455" y2="350" stroke="#123156" stroke-width="0.4" opacity="0.35"/>
+    <line x1="150" y1="145" x2="150" y2="490" stroke="#123156" stroke-width="0.4" opacity="0.3"/>
+    <line x1="250" y1="145" x2="250" y2="490" stroke="#123156" stroke-width="0.4" opacity="0.3"/>
+    <line x1="350" y1="145" x2="350" y2="490" stroke="#123156" stroke-width="0.4" opacity="0.3"/>
+
+    <!-- ══════════════════════════════════════════════════════ -->
+    <!-- BASELINE (x-axis of the density plot)                   -->
+    <!-- ══════════════════════════════════════════════════════ -->
+    <line x1="80" y1="352" x2="420" y2="352" stroke="#2a4a6a" stroke-width="1" opacity="0.6"/>
+
+    <!-- ══════════════════════════════════════════════════════ -->
+    <!-- DENSITY CURVE — two humps, valley in the middle         -->
+    <!-- Negative hump (left, grey-blue) + positive (right, bright) -->
+    <!-- ══════════════════════════════════════════════════════ -->
+
+    <!-- Negative hump fill -->
+    <path d="M 80,352
+             C 120,352 130,232 172,232
+             C 210,232 222,318 250,330
+             L 250,352 Z"
+      fill="url(#negFill)"/>
+    <!-- Positive hump fill -->
+    <path d="M 250,352
+             L 250,330
+             C 278,318 292,208 330,208
+             C 374,208 384,352 420,352 Z"
+      fill="url(#posFill)"/>
+
+    <!-- Negative hump stroke -->
+    <path d="M 80,352
+             C 120,352 130,232 172,232
+             C 210,232 222,318 250,330"
+      fill="none" stroke="#378ADD" stroke-width="2.6" stroke-linecap="round" opacity="0.9"/>
+    <!-- Positive hump stroke (brighter) -->
+    <path d="M 250,330
+             C 278,318 292,208 330,208
+             C 374,208 384,352 420,352"
+      fill="none" stroke="#E0913A" stroke-width="2.8" stroke-linecap="round" opacity="0.95"/>
+
+    <!-- ══════════════════════════════════════════════════════ -->
+    <!-- GATE LINE — vertical bar at the valley                  -->
+    <!-- Drawn as a slim gate/turnstile                          -->
+    <!-- ══════════════════════════════════════════════════════ -->
+    <!-- gate post glow -->
+    <line x1="250" y1="188" x2="250" y2="366" stroke="#7FB2F5" stroke-width="6" opacity="0.12"/>
+    <!-- gate post -->
+    <line x1="250" y1="192" x2="250" y2="360" stroke="#378ADD" stroke-width="2.2" opacity="0.9"/>
+    <!-- gate cross-bars (turnstile arms) -->
+    <line x1="234" y1="210" x2="266" y2="210" stroke="#378ADD" stroke-width="2" opacity="0.75" stroke-linecap="round"/>
+    <line x1="238" y1="330" x2="262" y2="330" stroke="#378ADD" stroke-width="2" opacity="0.7" stroke-linecap="round"/>
+    <!-- gate cap -->
+    <circle cx="250" cy="192" r="4" fill="#7FB2F5" opacity="0.9"/>
+    <circle cx="250" cy="192" r="2" fill="#B3D4F5"/>
+    <!-- gate base -->
+    <rect x="242" y="358" width="16" height="5" rx="1.5" fill="#378ADD" opacity="0.8"/>
+
+    <!-- gate threshold value -->
+    <text font-family="monospace" font-size="7" fill="#7FB2F5" opacity="0.7"
+      text-anchor="middle" x="250" y="378">gate</text>
+
+    <!-- ══════════════════════════════════════════════════════ -->
+    <!-- CELL DOTS below the curve — coloured by call             -->
+    <!-- negative (grey-blue) left, positive (orange) right       -->
+    <!-- ══════════════════════════════════════════════════════ -->
+    <!-- negative calls -->
+    <circle cx="120" cy="342" r="2.6" fill="#4a6a8f" opacity="0.85"/>
+    <circle cx="145" cy="345" r="2.4" fill="#4a6a8f" opacity="0.8"/>
+    <circle cx="168" cy="341" r="2.6" fill="#4a6a8f" opacity="0.85"/>
+    <circle cx="192" cy="344" r="2.4" fill="#5a7a9f" opacity="0.8"/>
+    <circle cx="214" cy="343" r="2.4" fill="#4a6a8f" opacity="0.75"/>
+    <circle cx="232" cy="346" r="2.2" fill="#5a7a9f" opacity="0.7"/>
+    <!-- positive calls -->
+    <circle cx="292" cy="343" r="2.6" fill="#BA7517" opacity="0.9"/>
+    <circle cx="316" cy="341" r="2.8" fill="#D48A2A" opacity="0.9"/>
+    <circle cx="340" cy="344" r="2.6" fill="#BA7517" opacity="0.88"/>
+    <circle cx="364" cy="342" r="2.4" fill="#D48A2A" opacity="0.85"/>
+    <circle cx="386" cy="345" r="2.4" fill="#BA7517" opacity="0.8"/>
+    <circle cx="278" cy="346" r="2.2" fill="#D48A2A" opacity="0.8"/>
+
+    <!-- ══════════════════════════════════════════════════════ -->
+    <!-- PADLOCK with check — locked, verified review (top-left)  -->
+    <!-- ══════════════════════════════════════════════════════ -->
+    <g transform="translate(112,190)">
+      <!-- shackle -->
+      <path d="M -8,-2 L -8,-10 A 8 8 0 0 1 8,-10 L 8,-2"
+        fill="none" stroke="#7FB2F5" stroke-width="2.4" opacity="0.9"/>
+      <!-- body -->
+      <rect x="-13" y="-2" width="26" height="21" rx="3.5"
+        fill="#185FA5" stroke="#7FB2F5" stroke-width="1.6" opacity="0.95"/>
+      <!-- check mark -->
+      <path d="M -6,8 L -2,13 L 7,3"
+        fill="none" stroke="#BEE3A0" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+    <text font-family="monospace" font-size="6.5" fill="#7FB2F5" opacity="0.6"
+      text-anchor="middle" x="112" y="228">reviewed</text>
+
+    <!-- ══════════════════════════════════════════════════════ -->
+    <!-- LEDGER STRIP — 3-4 dim monospace lines of review record  -->
+    <!-- ══════════════════════════════════════════════════════ -->
+    <rect x="160" y="388" width="180" height="46" rx="3"
+      fill="#0a1a2e" stroke="#1e4060" stroke-width="0.8" opacity="0.65"/>
+    <text font-family="monospace" font-size="7.5" fill="#5a86b0" opacity="0.8"
+      text-anchor="start" x="168" y="400">CL0001 cut 1.42→1.55</text>
+    <text font-family="monospace" font-size="7.5" fill="#5a86b0" opacity="0.75"
+      text-anchor="start" x="168" y="411">ER0002 Tumor ✓</text>
+    <text font-family="monospace" font-size="7.5" fill="#8a6a3a" opacity="0.75"
+      text-anchor="start" x="168" y="422">CL0003 cut 0.88→0.91</text>
+    <text font-family="monospace" font-size="7.5" fill="#5a86b0" opacity="0.65"
+      text-anchor="start" x="168" y="433">ER0004 Stroma ✓</text>
+
+  </g>
+
+  <!-- Hex border — imaging blue -->
+  <polygon points="250,30 455,145 455,375 250,490 45,375 45,145"
+    fill="none" stroke="#185FA5" stroke-width="11" stroke-linejoin="round"/>
+  <polygon points="250,44 441,153 441,367 250,476 59,367 59,153"
+    fill="none" stroke="#378ADD" stroke-width="1.5" stroke-linejoin="round" opacity="0.55"/>
+</svg>
