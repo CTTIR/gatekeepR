@@ -199,13 +199,13 @@ phenoscapR / cohort statistics / reports</code></pre>
 <tr>
 <td>Review</td>
 <td>
-<code>gk_review()</code>, <code>gk_set_cut()</code>, <code>gk_decide_structure()</code>, <code>gk_dispose()</code>, <code>gk_set_state()</code>, <code>gk_revert_last()</code>, <code>gk_import_cuts()</code>, <code>gk_replace_review()</code>, <code>gk_save_review()</code>, <code>gk_load_review()</code>
+<code><a href="reference/gk_review.html">gk_review()</a></code>, <code><a href="reference/gk_set_cut.html">gk_set_cut()</a></code>, <code><a href="reference/gk_decide_structure.html">gk_decide_structure()</a></code>, <code><a href="reference/gk_dispose.html">gk_dispose()</a></code>, <code><a href="reference/gk_set_state.html">gk_set_state()</a></code>, <code><a href="reference/gk_revert_last.html">gk_revert_last()</a></code>, <code><a href="reference/gk_import_cuts.html">gk_import_cuts()</a></code>, <code><a href="reference/gk_replace_review.html">gk_replace_review()</a></code>, <code><a href="reference/gk_save_review.html">gk_save_review()</a></code>, <code><a href="reference/gk_load_review.html">gk_load_review()</a></code>
 </td>
 </tr>
 <tr>
 <td>Snapshot</td>
 <td>
-<code>gk_lock()</code>, <code>gk_export()</code>, <code>gk_verify_export()</code>, <code>gk_read_export()</code>, <code>gk_replay()</code>
+<code><a href="reference/gk_lock.html">gk_lock()</a></code>, <code><a href="reference/gk_export.html">gk_export()</a></code>, <code><a href="reference/gk_verify_export.html">gk_verify_export()</a></code>, <code><a href="reference/gk_read_export.html">gk_read_export()</a></code>, <code><a href="reference/gk_replay.html">gk_replay()</a></code>
 </td>
 </tr>
 <tr>
@@ -236,12 +236,12 @@ phenoscapR / cohort statistics / reports</code></pre>
 <span><span class="va">thr</span>    <span class="op">&lt;-</span> <span class="fu"><a href="reference/gk_thresholds.html">gk_thresholds</a></span><span class="op">(</span><span class="va">prep</span>, <span class="va">config</span><span class="op">)</span>    <span class="co"># per slide, per marker (and parent)</span></span>
 <span><span class="va">cls</span>    <span class="op">&lt;-</span> <span class="fu"><a href="reference/gk_classify.html">gk_classify</a></span><span class="op">(</span><span class="va">prep</span>, <span class="va">thr</span>, <span class="va">config</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">rev</span>    <span class="op">&lt;-</span> <span class="fu">gk_review</span><span class="op">(</span><span class="va">cls</span><span class="op">)</span></span>
+<span><span class="va">rev</span>    <span class="op">&lt;-</span> <span class="fu"><a href="reference/gk_review.html">gk_review</a></span><span class="op">(</span><span class="va">cls</span><span class="op">)</span></span>
 <span><span class="fu">gk_app</span><span class="op">(</span><span class="va">rev</span><span class="op">)</span>                              <span class="co"># interactive review, then lock inside the app</span></span>
 <span></span>
-<span><span class="va">snap</span>   <span class="op">&lt;-</span> <span class="fu">gk_lock</span><span class="op">(</span><span class="va">rev</span>, reviewer <span class="op">=</span> <span class="st">"reviewer-01"</span><span class="op">)</span></span>
-<span><span class="fu">gk_export</span><span class="op">(</span><span class="va">snap</span>, <span class="st">"reviews/slide01"</span><span class="op">)</span></span>
-<span><span class="fu">gk_verify_export</span><span class="op">(</span><span class="st">"reviews/slide01"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">snap</span>   <span class="op">&lt;-</span> <span class="fu"><a href="reference/gk_lock.html">gk_lock</a></span><span class="op">(</span><span class="va">rev</span>, reviewer <span class="op">=</span> <span class="st">"reviewer-01"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/gk_export.html">gk_export</a></span><span class="op">(</span><span class="va">snap</span>, <span class="st">"reviews/slide01"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/gk_verify_export.html">gk_verify_export</a></span><span class="op">(</span><span class="st">"reviews/slide01"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
