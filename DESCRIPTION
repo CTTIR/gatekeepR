@@ -34,6 +34,7 @@ Imports:
     utils
 Suggests:
     EBImage,
+    dbscan,
     jsonvalidate,
     testthat (>= 3.0.0),
     uwot,
