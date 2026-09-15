@@ -181,13 +181,13 @@ phenoscapR / cohort statistics / reports</code></pre>
 <tr>
 <td>Signals</td>
 <td>
-<code><a href="reference/gk_prepare.html">gk_prepare()</a></code>, <code><a href="reference/gk_callability.html">gk_callability()</a></code>, <code>gk_correct()</code>
+<code><a href="reference/gk_prepare.html">gk_prepare()</a></code>, <code><a href="reference/gk_callability.html">gk_callability()</a></code>, <code><a href="reference/gk_correct.html">gk_correct()</a></code>
 </td>
 </tr>
 <tr>
 <td>Thresholds</td>
 <td>
-<code>gk_thresholds()</code>, <code><a href="reference/gk_threshold_methods.html">gk_threshold_methods()</a></code>, <code>gk_embed()</code>
+<code><a href="reference/gk_thresholds.html">gk_thresholds()</a></code>, <code><a href="reference/gk_threshold_methods.html">gk_threshold_methods()</a></code>, <code><a href="reference/gk_embed.html">gk_embed()</a></code>
 </td>
 </tr>
 <tr>
@@ -233,7 +233,7 @@ phenoscapR / cohort statistics / reports</code></pre>
 <span><span class="va">config</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/gk_write_config.html">gk_read_config</a></span><span class="op">(</span><span class="st">"study/gating-config.json"</span><span class="op">)</span>   <span class="co"># panel, hierarchy, signal policy</span></span>
 <span></span>
 <span><span class="va">prep</span>   <span class="op">&lt;-</span> <span class="fu"><a href="reference/gk_prepare.html">gk_prepare</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">config</span><span class="op">)</span>          <span class="co"># signals, transforms, callability</span></span>
-<span><span class="va">thr</span>    <span class="op">&lt;-</span> <span class="fu">gk_thresholds</span><span class="op">(</span><span class="va">prep</span>, <span class="va">config</span><span class="op">)</span>    <span class="co"># per slide, per marker (and parent)</span></span>
+<span><span class="va">thr</span>    <span class="op">&lt;-</span> <span class="fu"><a href="reference/gk_thresholds.html">gk_thresholds</a></span><span class="op">(</span><span class="va">prep</span>, <span class="va">config</span><span class="op">)</span>    <span class="co"># per slide, per marker (and parent)</span></span>
 <span><span class="va">cls</span>    <span class="op">&lt;-</span> <span class="fu">gk_classify</span><span class="op">(</span><span class="va">prep</span>, <span class="va">thr</span>, <span class="va">config</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">rev</span>    <span class="op">&lt;-</span> <span class="fu">gk_review</span><span class="op">(</span><span class="va">cls</span><span class="op">)</span></span>

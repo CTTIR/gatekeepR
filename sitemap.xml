@@ -11,6 +11,8 @@
 <url><loc>/reference/gk_cellspec.html</loc></url>
 <url><loc>/reference/gk_config.html</loc></url>
 <url><loc>/reference/gk_config_hash.html</loc></url>
+<url><loc>/reference/gk_correct.html</loc></url>
+<url><loc>/reference/gk_embed.html</loc></url>
 <url><loc>/reference/gk_example_config.html</loc></url>
 <url><loc>/reference/gk_example_path.html</loc></url>
 <url><loc>/reference/gk_hierarchy.html</loc></url>
@@ -20,6 +22,7 @@
 <url><loc>/reference/gk_signal_policy.html</loc></url>
 <url><loc>/reference/gk_simulate.html</loc></url>
 <url><loc>/reference/gk_threshold_methods.html</loc></url>
+<url><loc>/reference/gk_thresholds.html</loc></url>
 <url><loc>/reference/gk_validate_config.html</loc></url>
 <url><loc>/reference/gk_write_cellspec.html</loc></url>
 <url><loc>/reference/gk_write_config.html</loc></url>
