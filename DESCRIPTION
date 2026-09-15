@@ -1,0 +1,45 @@
+Package: gatekeepR
+Title: Reviewable Marker Gating and Phenotyping for Multiplexed Imaging
+Version: 0.0.0.9000
+Authors@R:
+    person("R.", "Heller",
+           email = "raban.heller@uni-ulm.de",
+           role = c("aut", "cre", "cph"),
+           comment = c(ORCID = "0000-0001-8006-9742"))
+Description: Turns per-cell marker measurements from multiplexed tissue
+    images into reviewed cell types and state calls. Declares a marker
+    panel and an ordered phenotype hierarchy as data, decides per image
+    whether each marker can be called at all, and estimates thresholds
+    with documented methods (manual, density valley, density tail,
+    two-component Gaussian mixture, population density crossing on an
+    embedding and parent-specific crossing). A single classifier is
+    shared by batch code and the review application. Reviewer decisions
+    are kept in append-only ledgers, and a review is locked into a
+    content-addressed export whose labels, decisions and deletion
+    histories can be replayed and verified.
+License: MIT + file LICENSE
+URL: https://github.com/CTTIR/gatekeepR, https://cttir.github.io/gatekeepR/
+BugReports: https://github.com/CTTIR/gatekeepR/issues
+Depends:
+    R (>= 4.1.0)
+Imports:
+    cli,
+    data.table,
+    digest,
+    jsonlite,
+    lifecycle,
+    MASS,
+    rlang,
+    stats,
+    tools,
+    utils
+Suggests:
+    jsonvalidate,
+    testthat (>= 3.0.0),
+    withr
+Config/testthat/edition: 3
+Encoding: UTF-8
+Language: en-US
+Roxygen: list(markdown = TRUE)
+Config/Needs/website: CTTIR/themakR
+Config/roxygen2/version: 8.0.0

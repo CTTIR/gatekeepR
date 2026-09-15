@@ -1,0 +1,41 @@
+# Implementation instructions stay local
+/instructions/
+
+# R
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+.httr-oauth
+*.Rproj
+_build.R
+
+# build artefacts
+*.tar.gz
+*.Rcheck/
+/doc/
+/Meta/
+docs/
+inst/doc/
+revdep/
+CRAN-SUBMISSION
+_coverage/
+
+# compiled code
+*.o
+*.so
+*.dll
+
+# OS and editors
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# scratch
+.data/
+*.tmp
+*.log
+*~
+*.bak
+*.orig

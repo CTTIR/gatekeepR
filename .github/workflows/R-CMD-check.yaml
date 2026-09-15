@@ -1,0 +1,16 @@
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+name: R-CMD-check
+
+permissions: read-all
+
+jobs:
+  check:
+    uses: CTTIR/.github/.github/workflows/R-CMD-check.yaml@main
+    with:
+      # EBImage (optional parity basin method) is a Bioconductor Suggests.
+      bioc-repository: true

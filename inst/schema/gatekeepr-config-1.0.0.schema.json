@@ -1,0 +1,177 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://cttir.github.io/gatekeepR/schema/gatekeepr-config-1.0.0.schema.json",
+  "title": "gatekeepR gating configuration",
+  "description": "Signal policy, marker panel, parent sets, phenotype hierarchy, overrides and refinements for gatekeepR. Cross-references (markers in rules, parent sets, labels) are checked by gk_validate_config().",
+  "type": "object",
+  "required": ["schema", "schema_version", "signal_policy", "panel", "hierarchy"],
+  "additionalProperties": false,
+  "definitions": {
+    "name": {"type": "string", "minLength": 1},
+    "names": {"type": "array", "items": {"$ref": "#/definitions/name"}, "uniqueItems": true},
+    "compartment": {"enum": ["cell", "nucleus", "cytoplasm", "membrane"]},
+    "args": {"type": "object"}
+  },
+  "properties": {
+    "schema": {"const": "gatekeepr-config"},
+    "schema_version": {"type": "string", "pattern": "^1\\.[0-9]+\\.[0-9]+$"},
+    "signal_policy": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["marker", "compartment", "statistic", "min_value"],
+        "additionalProperties": false,
+        "properties": {
+          "marker": {"type": "string", "minLength": 1, "pattern": "^[^:]+$"},
+          "compartment": {"$ref": "#/definitions/compartment"},
+          "statistic": {"$ref": "#/definitions/name"},
+          "fallback_compartment": {"oneOf": [{"$ref": "#/definitions/compartment"}, {"type": "null"}]},
+          "min_value": {"type": "number"}
+        }
+      }
+    },
+    "panel": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["marker", "role", "transform", "cofactor", "threshold_method", "optional"],
+        "additionalProperties": false,
+        "properties": {
+          "marker": {"$ref": "#/definitions/name"},
+          "role": {"enum": ["identity", "state", "context", "conditional_identity"]},
+          "transform": {"enum": ["asinh", "log1p", "none"]},
+          "cofactor": {"type": "number", "exclusiveMinimum": 0},
+          "threshold_method": {"enum": ["manual", "valley", "tail", "mixture", "population_crossing", "parent_crossing"]},
+          "threshold_args": {"$ref": "#/definitions/args"},
+          "parents": {"$ref": "#/definitions/names"},
+          "localization": {
+            "oneOf": [
+              {"type": "null"},
+              {
+                "type": "object",
+                "required": ["numerator", "denominator", "min_ratio"],
+                "additionalProperties": false,
+                "properties": {
+                  "numerator": {"$ref": "#/definitions/compartment"},
+                  "denominator": {"$ref": "#/definitions/compartment"},
+                  "min_ratio": {"type": "number", "exclusiveMinimum": 0},
+                  "statistic": {"$ref": "#/definitions/name"}
+                }
+              }
+            ]
+          },
+          "optional": {"type": "boolean"},
+          "min_support": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "min_cells": {"type": "integer", "minimum": 1},
+              "max_unavailable": {"type": "number", "minimum": 0, "maximum": 1},
+              "min_auc": {"type": "number", "minimum": 0, "maximum": 1},
+              "near_constant_mode_fraction": {"type": "number", "minimum": 0, "maximum": 1}
+            }
+          }
+        }
+      }
+    },
+    "parent_sets": {
+      "type": "object",
+      "additionalProperties": {"$ref": "#/definitions/names"}
+    },
+    "hierarchy": {
+      "type": "object",
+      "required": ["version", "rules"],
+      "additionalProperties": false,
+      "properties": {
+        "version": {"$ref": "#/definitions/name"},
+        "rationale": {"type": "string"},
+        "undefined_label": {"$ref": "#/definitions/name"},
+        "excluded_label": {"$ref": "#/definitions/name"},
+        "unresolved_label": {"$ref": "#/definitions/name"},
+        "flags": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "all_of": {"$ref": "#/definitions/names"},
+              "any_of": {"$ref": "#/definitions/names"},
+              "none_of": {"$ref": "#/definitions/names"}
+            }
+          }
+        },
+        "flag_policy": {
+          "type": "object",
+          "additionalProperties": {"enum": ["exclude", "flag_only", "unresolved"]}
+        },
+        "rules": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["rule_id", "label"],
+            "additionalProperties": false,
+            "properties": {
+              "rule_id": {"$ref": "#/definitions/name"},
+              "label": {"$ref": "#/definitions/name"},
+              "all_of": {"$ref": "#/definitions/names"},
+              "any_of": {"$ref": "#/definitions/names"},
+              "none_of": {"$ref": "#/definitions/names"},
+              "on_uncallable": {"enum": ["disable_rule", "treat_as_negative"]},
+              "review": {"oneOf": [{"type": "null"}, {"const": "structure"}]},
+              "pending_label": {"oneOf": [{"type": "null"}, {"$ref": "#/definitions/name"}]},
+              "decisions": {
+                "oneOf": [
+                  {"type": "null"},
+                  {
+                    "type": "object",
+                    "required": ["Tumor", "Benign", "Unresolved"],
+                    "additionalProperties": false,
+                    "properties": {
+                      "Tumor": {"$ref": "#/definitions/name"},
+                      "Benign": {"$ref": "#/definitions/name"},
+                      "Unresolved": {"$ref": "#/definitions/name"}
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "overrides": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["image_id", "marker", "reason"],
+        "additionalProperties": false,
+        "properties": {
+          "image_id": {"$ref": "#/definitions/name"},
+          "marker": {"$ref": "#/definitions/name"},
+          "parent": {"oneOf": [{"type": "null"}, {"$ref": "#/definitions/name"}]},
+          "threshold_method": {"oneOf": [{"type": "null"}, {"enum": ["manual", "valley", "tail", "mixture", "population_crossing", "parent_crossing"]}]},
+          "threshold_args": {"oneOf": [{"type": "null"}, {"$ref": "#/definitions/args"}]},
+          "reason": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "refinements": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["rule_id", "marker", "parent", "from_label", "to_label"],
+        "additionalProperties": false,
+        "properties": {
+          "rule_id": {"$ref": "#/definitions/name"},
+          "marker": {"$ref": "#/definitions/name"},
+          "parent": {"$ref": "#/definitions/name"},
+          "from_label": {"$ref": "#/definitions/name"},
+          "to_label": {"$ref": "#/definitions/name"}
+        }
+      }
+    }
+  }
+}

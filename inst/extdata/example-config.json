@@ -1,0 +1,450 @@
+{
+  "hierarchy": {
+    "excluded_label": "Excluded",
+    "flag_policy": {
+      "mixed_contact": "unresolved"
+    },
+    "flags": {
+      "mixed_contact": {
+        "all_of": ["PanCK"],
+        "any_of": ["CD45", "CD3e"],
+        "none_of": []
+      }
+    },
+    "rationale": "Generic example hierarchy. PanCK-positive cells await a structure decision before counting as tumour; epithelial-immune co-positive objects are unresolved rather than silently assigned.",
+    "rules": [
+      {
+        "all_of": ["PanCK"],
+        "any_of": [],
+        "decisions": {
+          "Benign": "Benign epithelial cells",
+          "Tumor": "Tumor cells",
+          "Unresolved": "Unresolved epithelial cells"
+        },
+        "label": "Epithelial cells",
+        "none_of": [],
+        "on_uncallable": "disable_rule",
+        "pending_label": "Unreviewed epithelial cells",
+        "review": "structure",
+        "rule_id": "R010"
+      },
+      {
+        "all_of": ["CD45", "CD3e", "CD8"],
+        "any_of": [],
+        "decisions": null,
+        "label": "CD8 T cells",
+        "none_of": ["CD4"],
+        "on_uncallable": "disable_rule",
+        "pending_label": null,
+        "review": null,
+        "rule_id": "R020"
+      },
+      {
+        "all_of": ["CD45", "CD3e", "CD4"],
+        "any_of": [],
+        "decisions": null,
+        "label": "CD4 T cells",
+        "none_of": ["CD8"],
+        "on_uncallable": "disable_rule",
+        "pending_label": null,
+        "review": null,
+        "rule_id": "R030"
+      },
+      {
+        "all_of": ["CD45", "CD3e"],
+        "any_of": [],
+        "decisions": null,
+        "label": "Other T cells",
+        "none_of": [],
+        "on_uncallable": "disable_rule",
+        "pending_label": null,
+        "review": null,
+        "rule_id": "R040"
+      },
+      {
+        "all_of": ["CD45", "CD20"],
+        "any_of": [],
+        "decisions": null,
+        "label": "B cells",
+        "none_of": ["CD3e"],
+        "on_uncallable": "disable_rule",
+        "pending_label": null,
+        "review": null,
+        "rule_id": "R050"
+      },
+      {
+        "all_of": ["CD45", "CD68"],
+        "any_of": [],
+        "decisions": null,
+        "label": "Macrophages",
+        "none_of": ["CD3e", "CD20"],
+        "on_uncallable": "disable_rule",
+        "pending_label": null,
+        "review": null,
+        "rule_id": "R060"
+      },
+      {
+        "all_of": ["CD45"],
+        "any_of": [],
+        "decisions": null,
+        "label": "Other immune cells",
+        "none_of": [],
+        "on_uncallable": "disable_rule",
+        "pending_label": null,
+        "review": null,
+        "rule_id": "R070"
+      },
+      {
+        "all_of": ["CD31"],
+        "any_of": [],
+        "decisions": null,
+        "label": "Endothelial cells",
+        "none_of": ["CD45", "PanCK"],
+        "on_uncallable": "disable_rule",
+        "pending_label": null,
+        "review": null,
+        "rule_id": "R080"
+      },
+      {
+        "all_of": ["CD21"],
+        "any_of": [],
+        "decisions": null,
+        "label": "FDC-like cells",
+        "none_of": ["CD45", "PanCK", "CD20"],
+        "on_uncallable": "disable_rule",
+        "pending_label": null,
+        "review": null,
+        "rule_id": "R090"
+      }
+    ],
+    "undefined_label": "Undefined",
+    "unresolved_label": "Unresolved epithelial-immune contact",
+    "version": "1.0.0"
+  },
+  "overrides": [],
+  "panel": [
+    {
+      "cofactor": 5,
+      "localization": null,
+      "marker": "PanCK",
+      "min_support": {
+        "max_unavailable": 0.2,
+        "min_auc": 0.65,
+        "min_cells": 20,
+        "near_constant_mode_fraction": 0.99
+      },
+      "optional": false,
+      "parents": [],
+      "role": "identity",
+      "threshold_args": {},
+      "threshold_method": "mixture",
+      "transform": "asinh"
+    },
+    {
+      "cofactor": 5,
+      "localization": null,
+      "marker": "CD45",
+      "min_support": {
+        "max_unavailable": 0.2,
+        "min_auc": 0.65,
+        "min_cells": 20,
+        "near_constant_mode_fraction": 0.99
+      },
+      "optional": false,
+      "parents": [],
+      "role": "identity",
+      "threshold_args": {},
+      "threshold_method": "mixture",
+      "transform": "asinh"
+    },
+    {
+      "cofactor": 5,
+      "localization": null,
+      "marker": "CD3e",
+      "min_support": {
+        "max_unavailable": 0.2,
+        "min_auc": 0.65,
+        "min_cells": 20,
+        "near_constant_mode_fraction": 0.99
+      },
+      "optional": false,
+      "parents": [],
+      "role": "identity",
+      "threshold_args": {},
+      "threshold_method": "mixture",
+      "transform": "asinh"
+    },
+    {
+      "cofactor": 5,
+      "localization": null,
+      "marker": "CD4",
+      "min_support": {
+        "max_unavailable": 0.2,
+        "min_auc": 0.65,
+        "min_cells": 20,
+        "near_constant_mode_fraction": 0.99
+      },
+      "optional": false,
+      "parents": [],
+      "role": "identity",
+      "threshold_args": {},
+      "threshold_method": "mixture",
+      "transform": "asinh"
+    },
+    {
+      "cofactor": 5,
+      "localization": null,
+      "marker": "CD8",
+      "min_support": {
+        "max_unavailable": 0.2,
+        "min_auc": 0.65,
+        "min_cells": 20,
+        "near_constant_mode_fraction": 0.99
+      },
+      "optional": false,
+      "parents": [],
+      "role": "identity",
+      "threshold_args": {},
+      "threshold_method": "mixture",
+      "transform": "asinh"
+    },
+    {
+      "cofactor": 5,
+      "localization": null,
+      "marker": "CD20",
+      "min_support": {
+        "max_unavailable": 0.2,
+        "min_auc": 0.65,
+        "min_cells": 20,
+        "near_constant_mode_fraction": 0.99
+      },
+      "optional": false,
+      "parents": [],
+      "role": "identity",
+      "threshold_args": {},
+      "threshold_method": "mixture",
+      "transform": "asinh"
+    },
+    {
+      "cofactor": 5,
+      "localization": null,
+      "marker": "CD68",
+      "min_support": {
+        "max_unavailable": 0.2,
+        "min_auc": 0.65,
+        "min_cells": 20,
+        "near_constant_mode_fraction": 0.99
+      },
+      "optional": false,
+      "parents": [],
+      "role": "identity",
+      "threshold_args": {},
+      "threshold_method": "mixture",
+      "transform": "asinh"
+    },
+    {
+      "cofactor": 5,
+      "localization": null,
+      "marker": "CD31",
+      "min_support": {
+        "max_unavailable": 0.2,
+        "min_auc": 0.65,
+        "min_cells": 20,
+        "near_constant_mode_fraction": 0.99
+      },
+      "optional": false,
+      "parents": [],
+      "role": "identity",
+      "threshold_args": {},
+      "threshold_method": "mixture",
+      "transform": "asinh"
+    },
+    {
+      "cofactor": 5,
+      "localization": null,
+      "marker": "CD21",
+      "min_support": {
+        "max_unavailable": 0.2,
+        "min_auc": 0.65,
+        "min_cells": 20,
+        "near_constant_mode_fraction": 0.99
+      },
+      "optional": true,
+      "parents": [],
+      "role": "conditional_identity",
+      "threshold_args": {},
+      "threshold_method": "mixture",
+      "transform": "asinh"
+    },
+    {
+      "cofactor": 5,
+      "localization": null,
+      "marker": "SMA",
+      "min_support": {
+        "max_unavailable": 0.2,
+        "min_auc": 0.65,
+        "min_cells": 20,
+        "near_constant_mode_fraction": 0.99
+      },
+      "optional": false,
+      "parents": [],
+      "role": "context",
+      "threshold_args": {},
+      "threshold_method": "mixture",
+      "transform": "asinh"
+    },
+    {
+      "cofactor": 5,
+      "localization": {
+        "denominator": "cytoplasm",
+        "min_ratio": 1.5,
+        "numerator": "nucleus",
+        "statistic": "mean"
+      },
+      "marker": "FOXP3",
+      "min_support": {
+        "max_unavailable": 0.2,
+        "min_auc": 0.6,
+        "min_cells": 20,
+        "near_constant_mode_fraction": 0.99
+      },
+      "optional": false,
+      "parents": ["CD4 T cells", "Tumor"],
+      "role": "state",
+      "threshold_args": {},
+      "threshold_method": "parent_crossing",
+      "transform": "asinh"
+    },
+    {
+      "cofactor": 5,
+      "localization": {
+        "denominator": "cytoplasm",
+        "min_ratio": 1.5,
+        "numerator": "nucleus",
+        "statistic": "mean"
+      },
+      "marker": "Ki67",
+      "min_support": {
+        "max_unavailable": 0.2,
+        "min_auc": 0.65,
+        "min_cells": 20,
+        "near_constant_mode_fraction": 0.99
+      },
+      "optional": false,
+      "parents": ["Tumor", "Immune"],
+      "role": "state",
+      "threshold_args": {},
+      "threshold_method": "tail",
+      "transform": "asinh"
+    }
+  ],
+  "parent_sets": {
+    "CD4 T cells": ["CD4 T cells"],
+    "Immune": ["CD8 T cells", "CD4 T cells", "Treg cells", "Other T cells", "B cells", "Macrophages", "Other immune cells"],
+    "Tumor": ["Tumor cells"]
+  },
+  "refinements": [
+    {
+      "from_label": "CD4 T cells",
+      "marker": "FOXP3",
+      "parent": "CD4 T cells",
+      "rule_id": "RF10",
+      "to_label": "Treg cells"
+    },
+    {
+      "from_label": "Tumor cells",
+      "marker": "FOXP3",
+      "parent": "Tumor",
+      "rule_id": "RF20",
+      "to_label": "FOXP3+ tumor cells"
+    }
+  ],
+  "schema": "gatekeepr-config",
+  "schema_version": "1.0.0",
+  "signal_policy": [
+    {
+      "compartment": "cytoplasm",
+      "fallback_compartment": "cell",
+      "marker": "PanCK",
+      "min_value": 0,
+      "statistic": "mean"
+    },
+    {
+      "compartment": "cell",
+      "fallback_compartment": null,
+      "marker": "CD45",
+      "min_value": 0,
+      "statistic": "mean"
+    },
+    {
+      "compartment": "cell",
+      "fallback_compartment": null,
+      "marker": "CD3e",
+      "min_value": 0,
+      "statistic": "mean"
+    },
+    {
+      "compartment": "cell",
+      "fallback_compartment": null,
+      "marker": "CD4",
+      "min_value": 0,
+      "statistic": "mean"
+    },
+    {
+      "compartment": "cell",
+      "fallback_compartment": null,
+      "marker": "CD8",
+      "min_value": 0,
+      "statistic": "mean"
+    },
+    {
+      "compartment": "cell",
+      "fallback_compartment": null,
+      "marker": "CD20",
+      "min_value": 0,
+      "statistic": "mean"
+    },
+    {
+      "compartment": "cytoplasm",
+      "fallback_compartment": "cell",
+      "marker": "CD68",
+      "min_value": 0,
+      "statistic": "mean"
+    },
+    {
+      "compartment": "cell",
+      "fallback_compartment": null,
+      "marker": "CD31",
+      "min_value": 0,
+      "statistic": "mean"
+    },
+    {
+      "compartment": "cell",
+      "fallback_compartment": null,
+      "marker": "CD21",
+      "min_value": 0,
+      "statistic": "mean"
+    },
+    {
+      "compartment": "cell",
+      "fallback_compartment": null,
+      "marker": "SMA",
+      "min_value": 0,
+      "statistic": "mean"
+    },
+    {
+      "compartment": "nucleus",
+      "fallback_compartment": null,
+      "marker": "FOXP3",
+      "min_value": 0,
+      "statistic": "mean"
+    },
+    {
+      "compartment": "nucleus",
+      "fallback_compartment": null,
+      "marker": "Ki67",
+      "min_value": 0,
+      "statistic": "mean"
+    }
+  ]
+}

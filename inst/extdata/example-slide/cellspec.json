@@ -1,0 +1,284 @@
+{
+  "cell_columns": ["cell_id", "image_id", "sample_id", "x", "y", "area", "sim_population", "sim_structure"],
+  "channels": [
+    {
+      "channel_index": 1,
+      "channel_name": "CD20",
+      "image_id": "example-01",
+      "marker": "CD20"
+    },
+    {
+      "channel_index": 2,
+      "channel_name": "CD21",
+      "image_id": "example-01",
+      "marker": "CD21"
+    },
+    {
+      "channel_index": 3,
+      "channel_name": "CD31",
+      "image_id": "example-01",
+      "marker": "CD31"
+    },
+    {
+      "channel_index": 4,
+      "channel_name": "CD3e",
+      "image_id": "example-01",
+      "marker": "CD3e"
+    },
+    {
+      "channel_index": 5,
+      "channel_name": "CD45",
+      "image_id": "example-01",
+      "marker": "CD45"
+    },
+    {
+      "channel_index": 6,
+      "channel_name": "CD4",
+      "image_id": "example-01",
+      "marker": "CD4"
+    },
+    {
+      "channel_index": 7,
+      "channel_name": "CD68",
+      "image_id": "example-01",
+      "marker": "CD68"
+    },
+    {
+      "channel_index": 8,
+      "channel_name": "CD8",
+      "image_id": "example-01",
+      "marker": "CD8"
+    },
+    {
+      "channel_index": 9,
+      "channel_name": "FOXP3",
+      "image_id": "example-01",
+      "marker": "FOXP3"
+    },
+    {
+      "channel_index": 10,
+      "channel_name": "Ki67",
+      "image_id": "example-01",
+      "marker": "Ki67"
+    },
+    {
+      "channel_index": 11,
+      "channel_name": "PanCK",
+      "image_id": "example-01",
+      "marker": "PanCK"
+    },
+    {
+      "channel_index": 12,
+      "channel_name": "SMA",
+      "image_id": "example-01",
+      "marker": "SMA"
+    }
+  ],
+  "dictionary": [
+    {
+      "compartment": "cell",
+      "feature_id": "cell:CD20:mean",
+      "kind": "intensity",
+      "marker": "CD20",
+      "source_name": "cell:CD20:mean",
+      "statistic": "mean",
+      "unit": "a.u."
+    },
+    {
+      "compartment": "cell",
+      "feature_id": "cell:CD21:mean",
+      "kind": "intensity",
+      "marker": "CD21",
+      "source_name": "cell:CD21:mean",
+      "statistic": "mean",
+      "unit": "a.u."
+    },
+    {
+      "compartment": "cell",
+      "feature_id": "cell:CD31:mean",
+      "kind": "intensity",
+      "marker": "CD31",
+      "source_name": "cell:CD31:mean",
+      "statistic": "mean",
+      "unit": "a.u."
+    },
+    {
+      "compartment": "cell",
+      "feature_id": "cell:CD3e:mean",
+      "kind": "intensity",
+      "marker": "CD3e",
+      "source_name": "cell:CD3e:mean",
+      "statistic": "mean",
+      "unit": "a.u."
+    },
+    {
+      "compartment": "cell",
+      "feature_id": "cell:CD45:mean",
+      "kind": "intensity",
+      "marker": "CD45",
+      "source_name": "cell:CD45:mean",
+      "statistic": "mean",
+      "unit": "a.u."
+    },
+    {
+      "compartment": "cell",
+      "feature_id": "cell:CD4:mean",
+      "kind": "intensity",
+      "marker": "CD4",
+      "source_name": "cell:CD4:mean",
+      "statistic": "mean",
+      "unit": "a.u."
+    },
+    {
+      "compartment": "cell",
+      "feature_id": "cell:CD68:mean",
+      "kind": "intensity",
+      "marker": "CD68",
+      "source_name": "cell:CD68:mean",
+      "statistic": "mean",
+      "unit": "a.u."
+    },
+    {
+      "compartment": "cell",
+      "feature_id": "cell:CD8:mean",
+      "kind": "intensity",
+      "marker": "CD8",
+      "source_name": "cell:CD8:mean",
+      "statistic": "mean",
+      "unit": "a.u."
+    },
+    {
+      "compartment": "cell",
+      "feature_id": "cell:FOXP3:mean",
+      "kind": "intensity",
+      "marker": "FOXP3",
+      "source_name": "cell:FOXP3:mean",
+      "statistic": "mean",
+      "unit": "a.u."
+    },
+    {
+      "compartment": "cell",
+      "feature_id": "cell:Ki67:mean",
+      "kind": "intensity",
+      "marker": "Ki67",
+      "source_name": "cell:Ki67:mean",
+      "statistic": "mean",
+      "unit": "a.u."
+    },
+    {
+      "compartment": "cell",
+      "feature_id": "cell:PanCK:mean",
+      "kind": "intensity",
+      "marker": "PanCK",
+      "source_name": "cell:PanCK:mean",
+      "statistic": "mean",
+      "unit": "a.u."
+    },
+    {
+      "compartment": "cell",
+      "feature_id": "cell:SMA:mean",
+      "kind": "intensity",
+      "marker": "SMA",
+      "source_name": "cell:SMA:mean",
+      "statistic": "mean",
+      "unit": "a.u."
+    },
+    {
+      "compartment": "cytoplasm",
+      "feature_id": "cytoplasm:CD68:mean",
+      "kind": "intensity",
+      "marker": "CD68",
+      "source_name": "cytoplasm:CD68:mean",
+      "statistic": "mean",
+      "unit": "a.u."
+    },
+    {
+      "compartment": "cytoplasm",
+      "feature_id": "cytoplasm:FOXP3:mean",
+      "kind": "intensity",
+      "marker": "FOXP3",
+      "source_name": "cytoplasm:FOXP3:mean",
+      "statistic": "mean",
+      "unit": "a.u."
+    },
+    {
+      "compartment": "cytoplasm",
+      "feature_id": "cytoplasm:Ki67:mean",
+      "kind": "intensity",
+      "marker": "Ki67",
+      "source_name": "cytoplasm:Ki67:mean",
+      "statistic": "mean",
+      "unit": "a.u."
+    },
+    {
+      "compartment": "cytoplasm",
+      "feature_id": "cytoplasm:PanCK:mean",
+      "kind": "intensity",
+      "marker": "PanCK",
+      "source_name": "cytoplasm:PanCK:mean",
+      "statistic": "mean",
+      "unit": "a.u."
+    },
+    {
+      "compartment": "nucleus",
+      "feature_id": "nucleus:CD68:mean",
+      "kind": "intensity",
+      "marker": "CD68",
+      "source_name": "nucleus:CD68:mean",
+      "statistic": "mean",
+      "unit": "a.u."
+    },
+    {
+      "compartment": "nucleus",
+      "feature_id": "nucleus:FOXP3:mean",
+      "kind": "intensity",
+      "marker": "FOXP3",
+      "source_name": "nucleus:FOXP3:mean",
+      "statistic": "mean",
+      "unit": "a.u."
+    },
+    {
+      "compartment": "nucleus",
+      "feature_id": "nucleus:Ki67:mean",
+      "kind": "intensity",
+      "marker": "Ki67",
+      "source_name": "nucleus:Ki67:mean",
+      "statistic": "mean",
+      "unit": "a.u."
+    },
+    {
+      "compartment": "nucleus",
+      "feature_id": "nucleus:PanCK:mean",
+      "kind": "intensity",
+      "marker": "PanCK",
+      "source_name": "nucleus:PanCK:mean",
+      "statistic": "mean",
+      "unit": "a.u."
+    }
+  ],
+  "images": [
+    {
+      "height_px": 3024,
+      "image_id": "example-01",
+      "pixel_size": 0.5,
+      "platform": "simulated",
+      "sample_id": "example-01",
+      "width_px": 3024
+    }
+  ],
+  "provenance": {
+    "created_utc": "1970-01-01T00:00:00Z",
+    "parameters": {
+      "absent": "CD21",
+      "n_cells": 8000,
+      "rare_fraction": 0.003,
+      "separation": 1,
+      "shuffled": "SMA"
+    },
+    "producer": {
+      "tool": "gatekeepR::gk_simulate",
+      "version": "0.0.0.9000"
+    }
+  },
+  "spec_version": "1.0.0"
+}
