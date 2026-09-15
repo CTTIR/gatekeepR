@@ -48,4 +48,17 @@ gk_example_prepared <- function() {
   gk_test_env$prepared
 }
 
+gk_example_review <- function() {
+  if (is.null(gk_test_env$review)) {
+    prep <- gk_example_prepared()
+    cfg <- gk_example_config()
+    th <- gk_thresholds(prep, cfg, seed = 1L)
+    cl <- suppressWarnings(gk_classify(prep, th, cfg))
+    st <- gk_state_calls(prep, th, cl, cfg)
+    ss <- gk_structures(cl, prep, min_cells = 20L)
+    gk_test_env$review <- gk_review(cl, st, ss, th, prep)
+  }
+  gk_test_env$review
+}
+
 `%||%` <- function(x, y) if (is.null(x)) y else x

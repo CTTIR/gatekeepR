@@ -61,6 +61,12 @@
     dt <- do.call(data.table::fread, c(list(input = path), fread_args))
   }
   df <- as.data.frame(dt, stringsAsFactors = FALSE)
+  # data.table preserves doubled quotes in quoted fields when all columns are
+  # requested as character. Decode the RFC 4180 representation used by
+  # fwrite so JSON-valued fields round trip byte-for-byte.
+  for (j in which(vapply(df, is.character, logical(1)))) {
+    df[[j]] <- gsub('""', '"', df[[j]], fixed = TRUE)
+  }
   for (nm in intersect(names(types), names(df))) {
     df[[nm]] <- switch(types[[nm]],
       double = suppressWarnings(as.double(df[[nm]])),
