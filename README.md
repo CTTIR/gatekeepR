@@ -16,8 +16,9 @@ into cell types that a person has reviewed.
 - **Lock:** freezes the result into a single immutable review snapshot, which
   every exported file and every later analysis refers to.
 
-> **Status: design stage.** There is no code yet. The interface below is the
-> plan and may change before the first release.
+> **Status: active development.** The configuration, preparation, correction,
+> threshold, classification, review, export and plotting paths are implemented.
+> The package is being hardened for its first CRAN release.
 
 ## Why
 
@@ -89,7 +90,7 @@ locked snapshot (review_id, hashes, ledgers, calls)
 phenoscapR / cohort statistics / reports
 ```
 
-## Planned interface
+## Interface
 
 | Area | Functions |
 |---|---|
@@ -104,30 +105,32 @@ phenoscapR / cohort statistics / reports
 | App | `gk_app()`, a review application that also runs from shinylaunchR |
 
 ```r
-# planned usage
-x      <- cellspecR::cs_read_cellspec("cells/slide01")
-config <- gk_read_config("study/gating-config.json")   # panel, hierarchy, signal policy
+config <- gk_example_config()
+x      <- gk_read_cellspec(gk_example_path("example-slide"))
+prep   <- gk_prepare(x, config, quiet = TRUE)
+fixed  <- gk_correct(prep, method = "robust_z")
+emb    <- gk_embed(prep, correction = fixed, seed = 42)
+thr    <- gk_thresholds(prep, config, embedding = emb, correction = fixed)
+cls    <- gk_classify(prep, thr, config, correction = fixed)
+states <- gk_state_calls(prep, thr, cls, config)
+shapes <- gk_structures(cls, prep)
 
-prep   <- gk_prepare(x, config)          # signals, transforms, callability
-thr    <- gk_thresholds(prep, config)    # per slide, per marker (and parent)
-cls    <- gk_classify(prep, thr, config)
-
-rev    <- gk_review(cls)
-gk_app(rev)                              # interactive review, then lock inside the app
-
-snap   <- gk_lock(rev, reviewer = "reviewer-01")
-gk_export(snap, "reviews/slide01")
-gk_verify_export("reviews/slide01")
+rev    <- gk_review(cls, states, shapes, thr, prep)
+snap   <- gk_lock(rev, reviewer = "reviewer-01", status = "REVIEWED")
+gk_export(snap, "reviews/example-01")
+gk_verify_export("reviews/example-01")
 ```
 
 ## Installation
-
-Not yet available. Once a first version exists:
 
 ```r
 # install.packages("pak")
 pak::pak("CTTIR/gatekeepR")
 ```
+
+The development version can be installed from GitHub. Optional features use
+packages listed in `Suggests`, including `uwot`, `dbscan`, `ggplot2`, `shiny`
+and `patchwork`.
 
 ## Contributing
 

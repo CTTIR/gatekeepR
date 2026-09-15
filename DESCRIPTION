@@ -35,7 +35,10 @@ Imports:
 Suggests:
     EBImage,
     dbscan,
+    ggplot2,
     jsonvalidate,
+    patchwork,
+    shiny,
     testthat (>= 3.0.0),
     uwot,
     withr

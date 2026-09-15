@@ -222,6 +222,7 @@ gk_classify <- function(prepared, thresholds, config, correction = NULL) {
       thresholds_sha256 = .gk_thresholds_hash(thresholds),
       source_sha256 = prepared$source_sha256,
       source_manifest_sha256 = prepared$source_manifest_sha256,
+      coordinates = cells[, c("image_id", "cell_id", "x", "y"), drop = FALSE],
       thresholds = thresholds, correction = correction,
       created_utc = .gk_utc_now()
     ),
