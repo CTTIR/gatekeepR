@@ -18,7 +18,12 @@ gk_plot_density <- function(thresholds, marker, image_id, parent = NA_character_
   hit <- .gk_threshold_row(thresholds, image_id, marker, parent)
   if (length(hit) != 1L) .gk_abort("No unique threshold result matches the requested marker and image.", class = "input")
   row <- thresholds[hit, , drop = FALSE]
-  evidence <- attr(thresholds, "evidence")[[row$evidence_ref[[1L]]]]
+  evidence_all <- attr(thresholds, "evidence")
+  evidence <- if (!is.null(evidence_all) && !is.na(row$evidence_ref[[1L]])) {
+    evidence_all[[row$evidence_ref[[1L]]]]
+  } else {
+    NULL
+  }
   if (!is.null(evidence$grid)) {
     dat <- data.frame(value = evidence$grid, density = evidence$density)
   } else if (!is.null(evidence$values)) {
@@ -146,4 +151,22 @@ gk_plot_overview <- function(x, image_id) {
   map <- gk_plot_map(x, image_id)
   if (!requireNamespace("patchwork", quietly = TRUE)) return(map)
   patchwork::wrap_plots(map, ncol = 2L)
+}
+
+#' @export
+plot.gk_review <- function(x, y = NULL, ...) {
+  replayed <- gk_replay(x)
+  gk_plot_map(replayed, image_id = unique(replayed$cells$image_id)[[1L]], ...)
+}
+
+#' @export
+plot.gk_snapshot <- function(x, y = NULL, ...) {
+  gk_plot_map(x$replayed, image_id = unique(x$replayed$cells$image_id)[[1L]], ...)
+}
+
+#' @export
+plot.gk_export <- function(x, y = NULL, ...) {
+  cells <- x$cells
+  gk_plot_map(structure(list(cells = cells), class = "gk_replayed"),
+    image_id = unique(cells$image_id)[[1L]], ...)
 }

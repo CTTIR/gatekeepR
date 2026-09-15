@@ -1,0 +1,22 @@
+url: https://github.com/CTTIR/gatekeepR
+development:
+  mode: auto
+template:
+  bootstrap: 5
+reference:
+  - title: Configuration
+    contents:
+      - starts_with("gk_")
+articles:
+  - title: Guides
+    navbar: Guides
+    contents:
+      - gatekeepR
+      - configuration
+      - thresholds
+      - "`review-and-reproducibility`"
+  - title: Background
+    navbar: Background
+    contents:
+      - "`methods-and-limitations`"
+      - "`audit-closure`"

@@ -34,7 +34,6 @@ verifiable export.
 Useful links:
 \itemize{
   \item \url{https://github.com/CTTIR/gatekeepR}
-  \item \url{https://cttir.github.io/gatekeepR/}
   \item Report bugs at \url{https://github.com/CTTIR/gatekeepR/issues}
 }
 

@@ -17,6 +17,7 @@ test_that("no study-specific names occur in package code or bundled files", {
     lines <- readLines(f, warn = FALSE, encoding = "UTF-8")
     which_hit <- grep(pattern, lines, perl = TRUE)
     if (length(which_hit)) paste0(basename(f), ":", which_hit) else character()
-  }))
+  }), use.names = FALSE)
+  if (is.null(hits)) hits <- character()
   expect_identical(hits, character())
 })

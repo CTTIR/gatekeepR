@@ -1,0 +1,40 @@
+---
+title: "Threshold methods and callability"
+author: "R. Heller"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Threshold methods and callability}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+library(gatekeepR)
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+```
+
+Thresholds are estimates with evidence and status, not magic constants. List
+the available methods with:
+
+```{r methods}
+gk_threshold_methods()
+```
+
+The density valley, density tail, Gaussian mixture, embedding crossing, and
+parent-specific crossing methods can be selected in a batch run. A method may
+return an explicit insufficient-support or non-finite status; callers should
+inspect status and callability before treating a marker as usable.
+
+```{r threshold-run, eval=FALSE}
+thresholds <- gk_thresholds(
+  corrected,
+  method = "density_valley",
+  marker = "marker_a"
+)
+gk_callability(thresholds)
+gk_plot_thresholds(thresholds)
+```
+
+Manual corrections can replace an estimate through the review ledger. The
+original estimate remains in the ledger, allowing the final result to explain
+which cut was used and why.

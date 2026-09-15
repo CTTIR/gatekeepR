@@ -1,6 +1,6 @@
 Package: gatekeepR
 Title: Reviewable Marker Gating and Phenotyping for Multiplexed Imaging
-Version: 0.0.0.9000
+Version: 1.0.0
 Authors@R:
     person("R.", "Heller",
            email = "raban.heller@uni-ulm.de",
@@ -18,7 +18,7 @@ Description: Turns per-cell marker measurements from multiplexed tissue
     content-addressed export whose labels, decisions and deletion
     histories can be replayed and verified.
 License: MIT + file LICENSE
-URL: https://github.com/CTTIR/gatekeepR, https://cttir.github.io/gatekeepR/
+URL: https://github.com/CTTIR/gatekeepR
 BugReports: https://github.com/CTTIR/gatekeepR/issues
 Depends:
     R (>= 4.1.0)
@@ -37,12 +37,15 @@ Suggests:
     dbscan,
     ggplot2,
     jsonvalidate,
+    knitr,
     patchwork,
+    rmarkdown,
     shiny,
     testthat (>= 3.0.0),
     uwot,
     withr
 Config/testthat/edition: 3
+VignetteBuilder: knitr
 Encoding: UTF-8
 Language: en-US
 Roxygen: list(markdown = TRUE)

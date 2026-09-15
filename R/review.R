@@ -386,7 +386,7 @@ gk_replay <- function(review) {
   h <- review$config$hierarchy
   pending_rule <- vapply(h$rules, function(r) !is.null(r$review), logical(1))
   for (r in h$rules[pending_rule]) {
-    take <- out$rule_id == r$rule_id & !is.na(out$structure_decision) &
+    take <- !is.na(out$rule_id) & out$rule_id == r$rule_id & !is.na(out$structure_decision) &
       out$structure_decision %in% names(r$decisions)
     out$cell_type[take] <- unname(unlist(r$decisions[out$structure_decision[take]]))
     out$pending_review[take] <- FALSE

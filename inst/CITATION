@@ -1,0 +1,10 @@
+citHeader("To cite gatekeepR in publications use:")
+
+bibentry(
+  bibtype = "Manual",
+  title = "gatekeepR: Reviewable Marker Gating and Phenotyping for Multiplexed Imaging",
+  author = person("R.", "Heller", email = "raban.heller@uni-ulm.de", role = c("aut", "cre")),
+  year = "2026",
+  note = "R package version 1.0.0",
+  url = "https://github.com/CTTIR/gatekeepR"
+)

@@ -1,0 +1,12 @@
+{
+  "title": "gatekeepR: Reviewable Marker Gating and Phenotyping for Multiplexed Imaging",
+  "version": "1.0.0",
+  "creators": [
+    {
+      "name": "Heller, R.",
+      "orcid": "0000-0001-8006-9742"
+    }
+  ],
+  "license": "MIT",
+  "keywords": ["multiplex imaging", "cell phenotyping", "R"]
+}

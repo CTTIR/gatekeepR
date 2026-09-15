@@ -1,0 +1,13 @@
+cff-version: 1.2.0
+title: "gatekeepR: Reviewable Marker Gating and Phenotyping for Multiplexed Imaging"
+version: 1.0.0
+date-released: 2026-09-15
+authors:
+  - family-names: Heller
+    given-names: "R."
+    orcid: "https://orcid.org/0000-0001-8006-9742"
+repository-code: "https://github.com/CTTIR/gatekeepR"
+license: MIT
+abstract: >-
+  Reviewable marker gating and phenotyping for multiplexed imaging with
+  explicit callability, append-only review ledgers and verifiable exports.

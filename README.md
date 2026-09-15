@@ -16,9 +16,9 @@ into cell types that a person has reviewed.
 - **Lock:** freezes the result into a single immutable review snapshot, which
   every exported file and every later analysis refers to.
 
-> **Status: active development.** The configuration, preparation, correction,
+> **Status: 1.0.0 release candidate.** The configuration, preparation, correction,
 > threshold, classification, review, export and plotting paths are implemented.
-> The package is being hardened for its first CRAN release.
+> The package is being checked for its first CRAN submission.
 
 ## Why
 

@@ -1,0 +1,42 @@
+---
+title: "Configuration as data"
+author: "R. Heller"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Configuration as data}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+library(gatekeepR)
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+```
+
+Configuration is explicit and serializable. The example configuration is useful
+for smoke tests and for learning the object shape.
+
+```{r config}
+cfg <- gk_example_config()
+gk_validate_config(cfg)
+gk_config_hash(cfg)
+```
+
+For a project configuration, declare the panel, signal policies, phenotype
+hierarchy, and minimum support rules with `gk_panel()`, `gk_signal_policy()`,
+`gk_hierarchy()`, and `gk_min_support()`. Validate it before preparing data:
+
+```{r config-template, eval=FALSE}
+cfg <- gk_config(
+  panel = gk_panel(c("marker_a", "marker_b")),
+  hierarchy = gk_hierarchy(...),
+  signal_policy = gk_signal_policy(...),
+  min_support = gk_min_support(...)
+)
+gk_validate_config(cfg)
+gk_write_config(cfg, "config.json")
+```
+
+The configuration hash is recorded with prepared objects, reviews, and exports.
+Changing a rule therefore creates a new computational identity instead of
+silently changing an existing review.

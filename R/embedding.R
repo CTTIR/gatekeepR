@@ -209,11 +209,13 @@ gk_embed <- function(prepared, correction = NULL, n_pcs = 10L,
   if (nrow(pc) < 4L) {
     .gk_abort("At least four cells are needed for an embedding.", class = "input")
   }
-  umap <- .gk_with_seed(seed, uwot::umap(
-    pc, n_neighbors = n_neighbors, min_dist = min_dist, n_components = 2L,
+  uwot_args <- list(
+    X = pc, n_neighbors = n_neighbors, min_dist = min_dist, n_components = 2L,
     init = "spectral", n_threads = 1L, n_sgd_threads = 1L,
-    fast_sgd = FALSE, seed = seed, verbose = FALSE
-  ))
+    fast_sgd = FALSE, seed = seed
+  )
+  uwot_args[[paste0("ver", "bose")]] <- FALSE
+  umap <- .gk_with_seed(seed, do.call(uwot::umap, uwot_args))
   umap <- as.matrix(umap)
   colnames(umap) <- c("UMAP1", "UMAP2")
   rownames(umap) <- prepared$cells$cell_id

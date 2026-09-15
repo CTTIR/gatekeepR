@@ -37,9 +37,6 @@ gk_app <- function(review = NULL, cellspec = NULL, config = NULL, workdir = NULL
     structures <- gk_structures(classification, prep)
     review <- gk_review(classification, states, structures, thresholds, prep)
   }
-  if (is.null(review) && is.null(export)) {
-    .gk_abort("Supply review, workdir, export, or cellspec with config.", class = "input")
-  }
   shiny::shinyApp(
     ui = shiny::fluidPage(
       shiny::titlePanel("gatekeepR review"),
@@ -61,10 +58,14 @@ gk_app <- function(review = NULL, cellspec = NULL, config = NULL, workdir = NULL
           dat[seq_len(min(nrow(dat), max_plot_points)), , drop = FALSE]
         })
         output$rules <- shiny::renderTable(.gk_rule_table(review$config$hierarchy))
-      } else {
+      } else if (!is.null(export)) {
         output$overview <- shiny::renderPrint(print(export$snapshot))
         output$cells <- shiny::renderTable(utils::head(export$cells, max_plot_points))
         output$rules <- shiny::renderTable(.gk_rule_table(export$config$hierarchy))
+      } else {
+        output$overview <- shiny::renderPrint(cat("No review loaded. Supply a review, workdir, export, or cellspec.\n"))
+        output$cells <- shiny::renderTable(data.frame())
+        output$rules <- shiny::renderTable(data.frame())
       }
     }
   )
