@@ -15,10 +15,10 @@ gk_cellspec(
 }
 \arguments{
 \item{cells}{Data frame with one row per cell and at least the columns
-\code{cell_id}, \code{image_id}, \code{x} and \code{y} (centroids in µm). \code{sample_id} defaults
+\code{cell_id}, \code{image_id}, \code{x} and \code{y} (centroids in um). \code{sample_id} defaults
 to \code{image_id}. Identifiers are coerced to character.}
 
-\item{measurements}{Numeric matrix, cells × features, rows in the order of
+\item{measurements}{Numeric matrix, cells x features, rows in the order of
 \code{cells}. Column names are feature IDs of the form
 \code{"<compartment>:<marker>:<statistic>"}, e.g. \code{"nucleus:FOXP3:mean"}.}
 

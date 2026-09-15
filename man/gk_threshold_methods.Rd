@@ -26,4 +26,9 @@ for every parent, and the threshold table records this.
 gk_threshold_methods()[, c("method", "role_allowed")]
 
 }
+\seealso{
+Other thresholds:
+\code{\link[=gk_embed]{gk_embed()}},
+\code{\link[=gk_thresholds]{gk_thresholds()}}
+}
 \concept{thresholds}

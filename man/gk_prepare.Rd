@@ -20,7 +20,7 @@ cellspec directory.}
 An object of class \code{gk_prepared}, a list with:
 \itemize{
 \item \code{cells}: data frame \code{image_id}, \code{cell_id}, \code{sample_id}, \code{x}, \code{y};
-\item \code{signal_raw}: cells × panel markers, selected raw signal (\code{NA} where
+\item \code{signal_raw}: cells x panel markers, selected raw signal (\code{NA} where
 unavailable);
 \item \code{score}: transformed signal;
 \item \code{source}: integer matrix, 1 = preferred compartment, 2 = fallback,
