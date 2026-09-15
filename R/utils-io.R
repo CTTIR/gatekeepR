@@ -10,7 +10,7 @@
   fin <- is.finite(x)
   back <- suppressWarnings(as.double(out))
   bad <- fin & (is.na(back) | back != x)
-  for (digits in c(17L, 20L, 22L)) {
+  for (digits in c(17L, 20L, 22L, 25L, 30L)) {
     if (!any(bad)) break
     out[bad] <- sprintf(paste0("%.", digits, "g"), x[bad])
     back[bad] <- suppressWarnings(as.double(out[bad]))
