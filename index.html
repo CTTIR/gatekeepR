@@ -83,7 +83,7 @@
 <strong>Lock:</strong> freezes the result into a single immutable review snapshot, which every exported file and every later analysis refers to.</li>
 </ul>
 <blockquote>
-<p><strong>Status: design stage.</strong> There is no code yet. The interface below is the plan and may change before the first release.</p>
+<p><strong>Status: active development.</strong> The configuration, preparation, correction, threshold, classification, review, export and plotting paths are implemented. The package is being hardened for its first CRAN release.</p>
 </blockquote>
 <div class="section level2">
 <h2 id="why">Why<a class="anchor" aria-label="anchor" href="#why"></a>
@@ -160,7 +160,7 @@ locked snapshot (review_id, hashes, ledgers, calls)
 phenoscapR / cohort statistics / reports</code></pre>
 </div>
 <div class="section level2">
-<h2 id="planned-interface">Planned interface<a class="anchor" aria-label="anchor" href="#planned-interface"></a>
+<h2 id="interface">Interface<a class="anchor" aria-label="anchor" href="#interface"></a>
 </h2>
 <table class="table">
 <colgroup>
@@ -211,7 +211,7 @@ phenoscapR / cohort statistics / reports</code></pre>
 <tr>
 <td>Plots</td>
 <td>
-<code>gk_plot_overview()</code>, <code>gk_plot_density()</code>, <code>gk_plot_map()</code>, <code>gk_plot_embedding()</code>, <code>gk_plot_dotplot()</code>, <code>gk_plot_thresholds()</code>, <code>gk_plot_states()</code>
+<code><a href="reference/gk_plot_overview.html">gk_plot_overview()</a></code>, <code><a href="reference/gk_plot_density.html">gk_plot_density()</a></code>, <code><a href="reference/gk_plot_map.html">gk_plot_map()</a></code>, <code><a href="reference/gk_plot_embedding.html">gk_plot_embedding()</a></code>, <code><a href="reference/gk_plot_dotplot.html">gk_plot_dotplot()</a></code>, <code><a href="reference/gk_plot_thresholds.html">gk_plot_thresholds()</a></code>, <code><a href="reference/gk_plot_states.html">gk_plot_states()</a></code>
 </td>
 </tr>
 <tr>
@@ -223,33 +223,33 @@ phenoscapR / cohort statistics / reports</code></pre>
 <tr>
 <td>App</td>
 <td>
-<code>gk_app()</code>, a review application that also runs from shinylaunchR</td>
+<code><a href="reference/gk_app.html">gk_app()</a></code>, a review application that also runs from shinylaunchR</td>
 </tr>
 </tbody>
 </table>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># planned usage</span></span>
-<span><span class="va">x</span>      <span class="op">&lt;-</span> <span class="fu">cellspecR</span><span class="fu">::</span><span class="fu">cs_read_cellspec</span><span class="op">(</span><span class="st">"cells/slide01"</span><span class="op">)</span></span>
-<span><span class="va">config</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/gk_write_config.html">gk_read_config</a></span><span class="op">(</span><span class="st">"study/gating-config.json"</span><span class="op">)</span>   <span class="co"># panel, hierarchy, signal policy</span></span>
+<code class="sourceCode R"><span><span class="va">config</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/gk_example_config.html">gk_example_config</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">x</span>      <span class="op">&lt;-</span> <span class="fu"><a href="reference/gk_write_cellspec.html">gk_read_cellspec</a></span><span class="op">(</span><span class="fu"><a href="reference/gk_example_path.html">gk_example_path</a></span><span class="op">(</span><span class="st">"example-slide"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">prep</span>   <span class="op">&lt;-</span> <span class="fu"><a href="reference/gk_prepare.html">gk_prepare</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">config</span>, quiet <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">fixed</span>  <span class="op">&lt;-</span> <span class="fu"><a href="reference/gk_correct.html">gk_correct</a></span><span class="op">(</span><span class="va">prep</span>, method <span class="op">=</span> <span class="st">"robust_z"</span><span class="op">)</span></span>
+<span><span class="va">emb</span>    <span class="op">&lt;-</span> <span class="fu"><a href="reference/gk_embed.html">gk_embed</a></span><span class="op">(</span><span class="va">prep</span>, correction <span class="op">=</span> <span class="va">fixed</span>, seed <span class="op">=</span> <span class="fl">42</span><span class="op">)</span></span>
+<span><span class="va">thr</span>    <span class="op">&lt;-</span> <span class="fu"><a href="reference/gk_thresholds.html">gk_thresholds</a></span><span class="op">(</span><span class="va">prep</span>, <span class="va">config</span>, embedding <span class="op">=</span> <span class="va">emb</span>, correction <span class="op">=</span> <span class="va">fixed</span><span class="op">)</span></span>
+<span><span class="va">cls</span>    <span class="op">&lt;-</span> <span class="fu"><a href="reference/gk_classify.html">gk_classify</a></span><span class="op">(</span><span class="va">prep</span>, <span class="va">thr</span>, <span class="va">config</span>, correction <span class="op">=</span> <span class="va">fixed</span><span class="op">)</span></span>
+<span><span class="va">states</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/gk_state_calls.html">gk_state_calls</a></span><span class="op">(</span><span class="va">prep</span>, <span class="va">thr</span>, <span class="va">cls</span>, <span class="va">config</span><span class="op">)</span></span>
+<span><span class="va">shapes</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/gk_structures.html">gk_structures</a></span><span class="op">(</span><span class="va">cls</span>, <span class="va">prep</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">prep</span>   <span class="op">&lt;-</span> <span class="fu"><a href="reference/gk_prepare.html">gk_prepare</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">config</span><span class="op">)</span>          <span class="co"># signals, transforms, callability</span></span>
-<span><span class="va">thr</span>    <span class="op">&lt;-</span> <span class="fu"><a href="reference/gk_thresholds.html">gk_thresholds</a></span><span class="op">(</span><span class="va">prep</span>, <span class="va">config</span><span class="op">)</span>    <span class="co"># per slide, per marker (and parent)</span></span>
-<span><span class="va">cls</span>    <span class="op">&lt;-</span> <span class="fu"><a href="reference/gk_classify.html">gk_classify</a></span><span class="op">(</span><span class="va">prep</span>, <span class="va">thr</span>, <span class="va">config</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">rev</span>    <span class="op">&lt;-</span> <span class="fu"><a href="reference/gk_review.html">gk_review</a></span><span class="op">(</span><span class="va">cls</span><span class="op">)</span></span>
-<span><span class="fu">gk_app</span><span class="op">(</span><span class="va">rev</span><span class="op">)</span>                              <span class="co"># interactive review, then lock inside the app</span></span>
-<span></span>
-<span><span class="va">snap</span>   <span class="op">&lt;-</span> <span class="fu"><a href="reference/gk_lock.html">gk_lock</a></span><span class="op">(</span><span class="va">rev</span>, reviewer <span class="op">=</span> <span class="st">"reviewer-01"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="reference/gk_export.html">gk_export</a></span><span class="op">(</span><span class="va">snap</span>, <span class="st">"reviews/slide01"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="reference/gk_verify_export.html">gk_verify_export</a></span><span class="op">(</span><span class="st">"reviews/slide01"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">rev</span>    <span class="op">&lt;-</span> <span class="fu"><a href="reference/gk_review.html">gk_review</a></span><span class="op">(</span><span class="va">cls</span>, <span class="va">states</span>, <span class="va">shapes</span>, <span class="va">thr</span>, <span class="va">prep</span><span class="op">)</span></span>
+<span><span class="va">snap</span>   <span class="op">&lt;-</span> <span class="fu"><a href="reference/gk_lock.html">gk_lock</a></span><span class="op">(</span><span class="va">rev</span>, reviewer <span class="op">=</span> <span class="st">"reviewer-01"</span>, status <span class="op">=</span> <span class="st">"REVIEWED"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/gk_export.html">gk_export</a></span><span class="op">(</span><span class="va">snap</span>, <span class="st">"reviews/example-01"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/gk_verify_export.html">gk_verify_export</a></span><span class="op">(</span><span class="st">"reviews/example-01"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>Not yet available. Once a first version exists:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># install.packages("pak")</span></span>
 <span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pak.html" class="external-link">pak</a></span><span class="op">(</span><span class="st">"CTTIR/gatekeepR"</span><span class="op">)</span></span></code></pre></div>
+<p>The development version can be installed from GitHub. Optional features use packages listed in <code>Suggests</code>, including <code>uwot</code>, <code>dbscan</code>, <code>ggplot2</code>, <code>shiny</code> and <code>patchwork</code>.</p>
 </div>
 <div class="section level2">
 <h2 id="contributing">Contributing<a class="anchor" aria-label="anchor" href="#contributing"></a>

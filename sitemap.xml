@@ -7,6 +7,7 @@
 <url><loc>/news/index.html</loc></url>
 <url><loc>/reference/gatekeepR-conditions.html</loc></url>
 <url><loc>/reference/gatekeepR-package.html</loc></url>
+<url><loc>/reference/gk_app.html</loc></url>
 <url><loc>/reference/gk_callability.html</loc></url>
 <url><loc>/reference/gk_cellspec.html</loc></url>
 <url><loc>/reference/gk_classify.html</loc></url>
@@ -26,6 +27,13 @@
 <url><loc>/reference/gk_lock.html</loc></url>
 <url><loc>/reference/gk_min_support.html</loc></url>
 <url><loc>/reference/gk_panel.html</loc></url>
+<url><loc>/reference/gk_plot_density.html</loc></url>
+<url><loc>/reference/gk_plot_dotplot.html</loc></url>
+<url><loc>/reference/gk_plot_embedding.html</loc></url>
+<url><loc>/reference/gk_plot_map.html</loc></url>
+<url><loc>/reference/gk_plot_overview.html</loc></url>
+<url><loc>/reference/gk_plot_states.html</loc></url>
+<url><loc>/reference/gk_plot_thresholds.html</loc></url>
 <url><loc>/reference/gk_prepare.html</loc></url>
 <url><loc>/reference/gk_read_export.html</loc></url>
 <url><loc>/reference/gk_replace_review.html</loc></url>
