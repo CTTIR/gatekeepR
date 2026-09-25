@@ -48,6 +48,11 @@ A `gk_corrected` list with `matrix`, `model`, `config_sha256` and
 `source_sha256`. The model has class `gk_correction_model` and stores
 all fitted centres, scales, rotations and coefficients.
 
+## See also
+
+Other corrections:
+[`gk_fit_residual_model()`](https://github.com/CTTIR/gatekeepR/reference/gk_fit_residual_model.md)
+
 ## Examples
 
 ``` r

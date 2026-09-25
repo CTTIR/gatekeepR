@@ -173,6 +173,9 @@ MIT
   **\[experimental\]** : Paths to bundled example data
 - [`gk_export()`](https://github.com/CTTIR/gatekeepR/reference/gk_export.md)
   : Write a locked review export
+- [`gk_fit_residual_model()`](https://github.com/CTTIR/gatekeepR/reference/gk_fit_residual_model.md)
+  [`gk_apply_residual_model()`](https://github.com/CTTIR/gatekeepR/reference/gk_fit_residual_model.md)
+  **\[experimental\]** : Freeze and apply a fitted residual score space
 - [`gk_hierarchy()`](https://github.com/CTTIR/gatekeepR/reference/gk_hierarchy.md)
   **\[experimental\]** : Declare a phenotype hierarchy
 - [`gk_import_cuts()`](https://github.com/CTTIR/gatekeepR/reference/gk_import_cuts.md)
