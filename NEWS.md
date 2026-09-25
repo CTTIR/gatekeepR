@@ -1,5 +1,13 @@
 # gatekeepR (development version)
 
+* Added `gk_fit_residual_model()` and `gk_apply_residual_model()` for freezing
+  common-score identity and first-principal-component panel residual spaces.
+  Application reuses fitted parameters without refitting, requires the exact
+  marker dictionary, and preserves optional missing values. Content hashes
+  bind model parameters, typed metadata and caller-supplied threshold records.
+  Raw-channel support, training-image scope and biological decisions remain
+  explicit caller responsibilities; existing `gk_correct()` behavior is unchanged.
+
 * Cell-table readers recognize canonical cellspecR directories in Parquet and
   typed TSV formats. Explicit canonical writes delegate to cellspecR and
   preserve metadata, adjacency and exact numeric values. They require the

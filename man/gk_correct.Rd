@@ -43,4 +43,8 @@ corrected <- gk_correct(prep, method = "robust_z")
 corrected$model
 
 }
+\seealso{
+Other corrections:
+\code{\link[=gk_fit_residual_model]{gk_fit_residual_model()}}
+}
 \concept{corrections}
