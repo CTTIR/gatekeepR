@@ -5,7 +5,12 @@
 \alias{gk_read_cellspec}
 \title{Read and write cellspec directories}
 \usage{
-gk_write_cellspec(x, dir, overwrite = FALSE)
+gk_write_cellspec(
+  x,
+  dir,
+  overwrite = FALSE,
+  format = c("legacy", "parquet", "tsv.gz")
+)
 
 gk_read_cellspec(dir, verify = TRUE)
 }
@@ -15,6 +20,9 @@ gk_read_cellspec(dir, verify = TRUE)
 \item{dir}{Directory path.}
 
 \item{overwrite}{Replace an existing directory?}
+
+\item{format}{Output layout: \code{"legacy"} for compatibility, or canonical
+\code{"parquet"} or \code{"tsv.gz"} through cellspecR.}
 
 \item{verify}{Check \code{DONE} and every manifest hash before reading?}
 }
@@ -26,15 +34,25 @@ SHA-256 of \code{MANIFEST.sha256}.
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
-\code{gk_write_cellspec()} writes a \code{cellspec} object to the canonical directory
-layout of the cellspec 1.0 specification: \code{cells.tsv.gz} (cell columns then
+\code{gk_write_cellspec()} writes a \code{cellspec} object to a selected directory
+layout. The legacy layout uses \code{cells.tsv.gz} (cell columns then
 measurement columns), \code{cellspec.json} (spec version, images, channels,
 dictionary, provenance), \code{MANIFEST.sha256} and \code{DONE}. The directory is
 staged and renamed atomically. \code{gk_read_cellspec()} reads it back and, with
 \code{verify = TRUE}, refuses a directory whose manifest does not match.
 
-These are interim implementations until cellspecR is released; they write
-and read the same layout.
+The default \code{format = "legacy"} retains the original gatekeepR layout for
+compatibility. It is not the canonical cellspecR disk schema and is planned
+for retirement after migration is qualified. It does not serialize adjacency
+or typed sidecar metadata. Select \code{"parquet"} or
+\code{"tsv.gz"} explicitly for canonical storage owned by cellspecR. These formats
+require cellspecR and a valid canonical object, including declared positive
+pixel calibration; missing calibration is never guessed. Canonical storage
+preserves adjacency, typed metadata and additional columns.
+
+Reading dispatches by the declared sidecar schema. Malformed or unsupported
+canonical data never fall back to the legacy reader. Canonical validation
+failures retain their \code{cellspec_error} condition classes.
 }
 \examples{
 x <- gk_read_cellspec(gk_example_path("example-slide"))

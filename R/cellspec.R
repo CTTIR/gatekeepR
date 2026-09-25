@@ -1,11 +1,9 @@
 # Internal adapter for the cellspec 1.0 cell-table format.
 #
-# The cellspec specification is owned by cellspecR. Until cellspecR is
-# released, gatekeepR carries this minimal implementation of the parts it
-# needs: the in-memory object (spec section 1-5), the signal policy and signal
-# matrix (section 10), feature support, and the canonical directory layout
-# (section 9). Objects follow the specification exactly, so a `cellspec`
-# built by cellspecR is accepted unchanged.
+# The cellspec specification and canonical disk schema are owned by cellspecR.
+# gatekeepR retains its minimal in-memory validation and legacy disk adapter
+# for compatibility. Canonical disk I/O delegates to cellspecR; it must not
+# silently reinterpret uncalibrated legacy objects as canonical objects.
 
 .gk_cellspec_version <- "1.0.0"
 
@@ -430,20 +428,32 @@ print.cellspec <- function(x, ...) {
 #' @description
 #' `r lifecycle::badge("experimental")`
 #'
-#' `gk_write_cellspec()` writes a `cellspec` object to the canonical directory
-#' layout of the cellspec 1.0 specification: `cells.tsv.gz` (cell columns then
+#' `gk_write_cellspec()` writes a `cellspec` object to a selected directory
+#' layout. The legacy layout uses `cells.tsv.gz` (cell columns then
 #' measurement columns), `cellspec.json` (spec version, images, channels,
 #' dictionary, provenance), `MANIFEST.sha256` and `DONE`. The directory is
 #' staged and renamed atomically. `gk_read_cellspec()` reads it back and, with
 #' `verify = TRUE`, refuses a directory whose manifest does not match.
 #'
-#' These are interim implementations until cellspecR is released; they write
-#' and read the same layout.
+#' The default `format = "legacy"` retains the original gatekeepR layout for
+#' compatibility. It is not the canonical cellspecR disk schema and is planned
+#' for retirement after migration is qualified. It does not serialize adjacency
+#' or typed sidecar metadata. Select `"parquet"` or
+#' `"tsv.gz"` explicitly for canonical storage owned by cellspecR. These formats
+#' require cellspecR and a valid canonical object, including declared positive
+#' pixel calibration; missing calibration is never guessed. Canonical storage
+#' preserves adjacency, typed metadata and additional columns.
+#'
+#' Reading dispatches by the declared sidecar schema. Malformed or unsupported
+#' canonical data never fall back to the legacy reader. Canonical validation
+#' failures retain their `cellspec_error` condition classes.
 #'
 #' @param x A `cellspec` object.
 #' @param dir Directory path.
 #' @param overwrite Replace an existing directory?
 #' @param verify Check `DONE` and every manifest hash before reading?
+#' @param format Output layout: `"legacy"` for compatibility, or canonical
+#'   `"parquet"` or `"tsv.gz"` through cellspecR.
 #'
 #' @return `gk_write_cellspec()` returns `x` invisibly. `gk_read_cellspec()`
 #'   returns a `cellspec` object whose `provenance$manifest_sha256` holds the
@@ -458,10 +468,18 @@ print.cellspec <- function(x, ...) {
 #'
 #' @family cell tables
 #' @export
-gk_write_cellspec <- function(x, dir, overwrite = FALSE) {
+gk_write_cellspec <- function(x, dir, overwrite = FALSE,
+                             format = c("legacy", "parquet", "tsv.gz")) {
   .gk_validate_cellspec(x)
   .gk_check_string(dir)
   .gk_check_flag(overwrite)
+  format <- match.arg(format)
+  if (format != "legacy") {
+    .gk_require("cellspecR", "Canonical cellspec writing")
+    cellspecR::cs_assert_valid(x)
+    cellspecR::cs_write(x, dir, format = format, overwrite = overwrite)
+    return(invisible(x))
+  }
   stage <- .gk_stage_dir(dir, overwrite = overwrite)
   on.exit(unlink(stage, recursive = TRUE), add = TRUE)
   table <- cbind(x$cells, as.data.frame(x$measurements, check.names = FALSE))
@@ -495,6 +513,25 @@ gk_read_cellspec <- function(dir, verify = TRUE) {
       "Unsupported cellspec version {.val {meta$spec_version}} in {.path {dir}}.",
       class = "structure"
     )
+  }
+  canonical <- !is.null(meta$files) || !is.null(meta$cells) ||
+    all(c("columns", "rows") %in% names(meta$dictionary))
+  if (canonical) {
+    if (!is.list(meta$files) || !is.character(meta$files$cells) ||
+        length(meta$files$cells) != 1L ||
+        !meta$files$cells %in% c("cells.parquet", "cells.tsv.gz") ||
+        !is.null(meta$cell_columns)) {
+      .gk_abort("Unsupported or ambiguous canonical cellspec sidecar schema.",
+                 class = "structure")
+    }
+    .gk_require("cellspecR", "Canonical cellspec reading")
+    x <- cellspecR::cs_read_cellspec(dir, verify = verify)
+    x$provenance$manifest_sha256 <- .gk_sha256_file(file.path(dir, "MANIFEST.sha256"))
+    return(.gk_validate_cellspec(x))
+  }
+  if (is.null(meta$cell_columns)) {
+    .gk_abort("The legacy cellspec sidecar must declare cell_columns.",
+               class = "structure")
   }
   dictionary <- .gk_rows_to_df(meta$dictionary)
   dictionary <- dictionary[, intersect(

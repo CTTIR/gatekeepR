@@ -17,6 +17,8 @@
 ^README\.Rmd$
 ^_coverage$
 ^instructions$
+^AGENTS\.md$
+^CLAUDE\.md$
 ^data-raw$
 ^vignettes/articles$
 ^CITATION\.cff$

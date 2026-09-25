@@ -33,6 +33,7 @@ Imports:
     stats,
     utils
 Suggests:
+    cellspecR (>= 1.0.0),
     EBImage,
     dbscan,
     ggplot2,
@@ -44,6 +45,7 @@ Suggests:
     testthat (>= 3.0.0),
     uwot,
     withr
+Remotes: CTTIR/cellspecR
 Config/testthat/edition: 3
 VignetteBuilder: knitr
 Encoding: UTF-8
