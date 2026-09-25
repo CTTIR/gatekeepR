@@ -97,9 +97,13 @@ Other example data:
 ``` r
 x <- gk_simulate(n_cells = 2000, seed = 3)
 x
-#> <cellspec> 1.0.0: 2,000 cells, 1 image, 12 markers, 20 features
-#> Markers: "CD20", "CD21", "CD31", "CD3e", "CD45", "CD4", "CD68", "CD8", "FOXP3",
-#> "Ki67", "PanCK", and "SMA"
+#> <cellspec> spec 1.0.0
+#>   cells     2,000 in 1 image (1 sample)
+#>   features  20: 20 intensity
+#>   markers   12: CD20, CD21, CD31, CD3e, CD45, CD4, CD68, CD8, FOXP3, Ki67, Pa...
+#>   pixel     0.5 um/px
+#>   adjacency none
+#>   source    unknown (gatekeepR::gk_simulate 1.0.0)
 table(x$cells$sim_population)
 #> 
 #>       b_cell        cd4_t        cd8_t      contact  endothelial   epithelial 

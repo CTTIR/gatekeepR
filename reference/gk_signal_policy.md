@@ -5,8 +5,9 @@
 A signal policy chooses, per marker, the compartment and statistic whose
 value represents the marker, with an optional fallback compartment used
 per cell when the preferred value is missing or below `min_value`. The
-result has the same structure as `cellspecR::cs_signal_policy()`, so
-either can be used in
+result has the same structure as
+[`cellspecR::cs_signal_policy()`](https://cttir.github.io/cellspecR/reference/cs_signal_policy.html),
+so either can be used in
 [`gk_config()`](https://github.com/CTTIR/gatekeepR/reference/gk_config.md).
 
 ## Usage

@@ -45,6 +45,12 @@
     </div>
 
     <div class="section level2">
+<h2 class="pkg-version" data-toc-text="development version" id="gatekeepr-development-version">gatekeepR (development version)<a class="anchor" aria-label="anchor" href="#gatekeepr-development-version"></a></h2>
+<ul><li>Cell-table readers recognize canonical cellspecR directories in Parquet and typed TSV formats. Explicit canonical writes delegate to cellspecR and preserve metadata, adjacency and exact numeric values. They require the optional cellspecR dependency and valid declared image calibration.</li>
+<li>
+<code><a href="../reference/gk_write_cellspec.html">gk_write_cellspec()</a></code> retains its legacy default for compatibility and adds an explicit <code>format</code> argument. The legacy format is planned for retirement after migration is qualified; new integrations should select canonical <code>"parquet"</code> or <code>"tsv.gz"</code>. Schema errors never trigger a legacy fallback.</li>
+</ul></div>
+    <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.0.0" id="gatekeepr-100">gatekeepR 1.0.0<a class="anchor" aria-label="anchor" href="#gatekeepr-100"></a></h2>
 <p>Initial CRAN release.</p>
 <ul><li>Added the study-neutral configuration model, cellspec 1.0 adapter, preparation and callability checks, simulator, and bundled example data.</li>
@@ -52,7 +58,8 @@
 <li>Added declarative classification, state calls, structure review, append-only review ledgers, persistence, immutable snapshots, and verifiable exports.</li>
 <li>Added plotting helpers, a Shiny review shell, reproducibility vignettes, and benchmark templates.</li>
 </ul></div>
-  </main></div>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
+    </nav></aside></div>
 
 
     <footer><div class="pkgdown-footer-left">

@@ -171,9 +171,13 @@ scale; values below 1 make gating harder.</p></dd>
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">gk_simulate</span><span class="op">(</span>n_cells <span class="op">=</span> <span class="fl">2000</span>, seed <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">x</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">&lt;cellspec&gt;</span> 1.0.0: 2,000 cells, 1 image, 12 markers, 20 features</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Markers: <span style="color: #0000BB;">"CD20"</span>, <span style="color: #0000BB;">"CD21"</span>, <span style="color: #0000BB;">"CD31"</span>, <span style="color: #0000BB;">"CD3e"</span>, <span style="color: #0000BB;">"CD45"</span>, <span style="color: #0000BB;">"CD4"</span>, <span style="color: #0000BB;">"CD68"</span>, <span style="color: #0000BB;">"CD8"</span>, <span style="color: #0000BB;">"FOXP3"</span>,</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">"Ki67"</span>, <span style="color: #0000BB;">"PanCK"</span>, and <span style="color: #0000BB;">"SMA"</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;cellspec&gt; spec 1.0.0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   cells     2,000 in 1 image (1 sample)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   features  20: 20 intensity</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   markers   12: CD20, CD21, CD31, CD3e, CD45, CD4, CD68, CD8, FOXP3, Ki67, Pa...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   pixel     0.5 um/px</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   adjacency none</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   source    unknown (gatekeepR::gk_simulate 1.0.0)</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">cells</span><span class="op">$</span><span class="va">sim_population</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       b_cell        cd4_t        cd8_t      contact  endothelial   epithelial </span>
