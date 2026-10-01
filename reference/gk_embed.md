@@ -101,12 +101,13 @@ Other thresholds:
 
 ``` r
 if (requireNamespace("uwot", quietly = TRUE)) {
-  prep <- gk_prepare(gk_example_path("example-slide"), gk_example_config(), quiet = TRUE)
+  prep <- gk_prepare(gk_simulate(n_cells = 300, seed = 7),
+    gk_example_config(), quiet = TRUE)
   emb <- gk_embed(prep, n_pcs = 3L, grid = 40L, seed = 7L)
   emb
 }
-#> <gk_embedding>: 8000 cells, 8 markers, 4 populations
+#> <gk_embedding>: 300 cells, 8 markers, 4 populations
 #> • Basin method: "hillclimb"; threshold: 30
 #> • Small basin handling: "uncertain"
-#> • Populations: "1=1465, 2=2320, 3=1430, 4=2785"
+#> • Populations: "1=105, 2=87, 3=54, 4=54"
 ```

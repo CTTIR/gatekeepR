@@ -1,6 +1,6 @@
 # Load a review checkpoint and acquire its single-writer lock
 
-Load a review checkpoint and acquire its single-writer lock
+**\[experimental\]**
 
 ## Usage
 
@@ -22,6 +22,14 @@ gk_load_review(dir, takeover = FALSE)
 ## Value
 
 A `gk_review` object.
+
+## Details
+
+Loading is serialized with saving by the sibling operation lock
+described in
+[`gk_save_review()`](https://github.com/CTTIR/gatekeepR/reference/gk_save_review.md).
+Explicit takeover applies to session ownership; it cannot interrupt a
+save or load currently holding the operating-system lock.
 
 ## See also
 

@@ -41,7 +41,8 @@
 - [`gk_ledgers()`](https://github.com/CTTIR/gatekeepR/reference/gk_ledgers.md)
   : Return the four review ledgers
 - [`gk_load_review()`](https://github.com/CTTIR/gatekeepR/reference/gk_load_review.md)
-  : Load a review checkpoint and acquire its single-writer lock
+  **\[experimental\]** : Load a review checkpoint and acquire its
+  single-writer lock
 - [`gk_lock()`](https://github.com/CTTIR/gatekeepR/reference/gk_lock.md)
   : Lock a review into an immutable snapshot
 - [`gk_min_support()`](https://github.com/CTTIR/gatekeepR/reference/gk_min_support.md)
@@ -75,7 +76,7 @@
 - [`gk_review()`](https://github.com/CTTIR/gatekeepR/reference/gk_review.md)
   **\[experimental\]** : Create an editable review state
 - [`gk_save_review()`](https://github.com/CTTIR/gatekeepR/reference/gk_save_review.md)
-  : Save a review checkpoint atomically
+  **\[experimental\]** : Save a review checkpoint atomically
 - [`gk_set_cut()`](https://github.com/CTTIR/gatekeepR/reference/gk_set_cut.md)
   : Set an identity or state threshold in the review ledger
 - [`gk_set_state()`](https://github.com/CTTIR/gatekeepR/reference/gk_set_state.md)

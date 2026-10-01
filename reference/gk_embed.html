@@ -155,14 +155,15 @@ hashes.</p>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"uwot"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span>  <span class="va">prep</span> <span class="op">&lt;-</span> <span class="fu"><a href="gk_prepare.html">gk_prepare</a></span><span class="op">(</span><span class="fu"><a href="gk_example_path.html">gk_example_path</a></span><span class="op">(</span><span class="st">"example-slide"</span><span class="op">)</span>, <span class="fu"><a href="gk_example_config.html">gk_example_config</a></span><span class="op">(</span><span class="op">)</span>, quiet <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="va">prep</span> <span class="op">&lt;-</span> <span class="fu"><a href="gk_prepare.html">gk_prepare</a></span><span class="op">(</span><span class="fu"><a href="gk_simulate.html">gk_simulate</a></span><span class="op">(</span>n_cells <span class="op">=</span> <span class="fl">300</span>, seed <span class="op">=</span> <span class="fl">7</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    <span class="fu"><a href="gk_example_config.html">gk_example_config</a></span><span class="op">(</span><span class="op">)</span>, quiet <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="va">emb</span> <span class="op">&lt;-</span> <span class="fu">gk_embed</span><span class="op">(</span><span class="va">prep</span>, n_pcs <span class="op">=</span> <span class="fl">3L</span>, grid <span class="op">=</span> <span class="fl">40L</span>, seed <span class="op">=</span> <span class="fl">7L</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="va">emb</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">&lt;gk_embedding&gt;</span>: 8000 cells, 8 markers, 4 populations</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">&lt;gk_embedding&gt;</span>: 300 cells, 8 markers, 4 populations</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Basin method: <span style="color: #0000BB;">"hillclimb"</span>; threshold: 30</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Small basin handling: <span style="color: #0000BB;">"uncertain"</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Populations: <span style="color: #0000BB;">"1=1465, 2=2320, 3=1430, 4=2785"</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Populations: <span style="color: #0000BB;">"1=105, 2=87, 3=54, 4=54"</span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
