@@ -1,3 +1,7 @@
+# gatekeepR development
+
+- Preserve review session ownership across checkpoint saves, reject foreign-owner writes, and serialize save/load operations with a separate filesystem lock.
+
 # gatekeepR (development version)
 
 * Added `gk_fit_residual_model()` and `gk_apply_residual_model()` for freezing

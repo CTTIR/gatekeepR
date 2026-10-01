@@ -17,7 +17,15 @@ gk_save_review(review, dir, overwrite = FALSE)
 The saved directory invisibly.
 }
 \description{
-Save a review checkpoint atomically
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+}
+\details{
+Saving over a checkpoint requires ownership of any existing session lock.
+Both save and load use an operating-system lock on a separate hidden sibling
+file named \code{.DIRECTORY.gatekeepR.lock}. This empty file remains after use;
+do not remove it while sessions may be accessing the review. The filesystem
+must support advisory file locks, and its parent directory must be writable.
+Session ownership is preserved when replacing the checkpoint.
 }
 \seealso{
 Other review:

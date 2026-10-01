@@ -15,7 +15,12 @@ gk_load_review(dir, takeover = FALSE)
 A \code{gk_review} object.
 }
 \description{
-Load a review checkpoint and acquire its single-writer lock
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+}
+\details{
+Loading is serialized with saving by the sibling operation lock described in
+\code{\link[=gk_save_review]{gk_save_review()}}. Explicit takeover applies to session ownership; it cannot
+interrupt a save or load currently holding the operating-system lock.
 }
 \seealso{
 Other review:

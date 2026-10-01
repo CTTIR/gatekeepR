@@ -165,7 +165,8 @@
 #'
 #' @examples
 #' if (requireNamespace("uwot", quietly = TRUE)) {
-#'   prep <- gk_prepare(gk_example_path("example-slide"), gk_example_config(), quiet = TRUE)
+#'   prep <- gk_prepare(gk_simulate(n_cells = 300, seed = 7),
+#'     gk_example_config(), quiet = TRUE)
 #'   emb <- gk_embed(prep, n_pcs = 3L, grid = 40L, seed = 7L)
 #'   emb
 #' }

@@ -26,6 +26,7 @@ Imports:
     cli,
     data.table,
     digest,
+    filelock,
     jsonlite,
     lifecycle,
     MASS,
@@ -33,6 +34,7 @@ Imports:
     stats,
     utils
 Suggests:
+    callr,
     cellspecR (>= 1.0.0),
     EBImage,
     dbscan,
@@ -40,6 +42,7 @@ Suggests:
     jsonvalidate,
     knitr,
     patchwork,
+    pkgload,
     rmarkdown,
     shiny,
     testthat (>= 3.0.0),
