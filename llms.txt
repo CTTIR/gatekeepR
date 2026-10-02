@@ -146,6 +146,9 @@ MIT
 
 - [`gk_app()`](https://github.com/CTTIR/gatekeepR/reference/gk_app.md) :
   Launch the gatekeepR review application
+- [`gk_apply_candidate_rules()`](https://github.com/CTTIR/gatekeepR/reference/gk_apply_candidate_rules.md)
+  **\[experimental\]** : Evaluate declarative rules on ternary candidate
+  calls
 - [`gk_callability()`](https://github.com/CTTIR/gatekeepR/reference/gk_callability.md)
   **\[experimental\]** : Callability of markers per image
 - [`gk_cellspec()`](https://github.com/CTTIR/gatekeepR/reference/gk_cellspec.md)
@@ -176,10 +179,16 @@ MIT
 - [`gk_fit_residual_model()`](https://github.com/CTTIR/gatekeepR/reference/gk_fit_residual_model.md)
   [`gk_apply_residual_model()`](https://github.com/CTTIR/gatekeepR/reference/gk_fit_residual_model.md)
   **\[experimental\]** : Freeze and apply a fitted residual score space
+- [`gk_fixed_signal_calls()`](https://github.com/CTTIR/gatekeepR/reference/gk_fixed_signal_calls.md)
+  **\[experimental\]** : Apply fixed cutoffs with explicit raw-support
+  availability
 - [`gk_hierarchy()`](https://github.com/CTTIR/gatekeepR/reference/gk_hierarchy.md)
   **\[experimental\]** : Declare a phenotype hierarchy
 - [`gk_import_cuts()`](https://github.com/CTTIR/gatekeepR/reference/gk_import_cuts.md)
   : Import identity-marker cuts without replacing other ledgers
+- [`gk_import_residual_model()`](https://github.com/CTTIR/gatekeepR/reference/gk_import_residual_model.md)
+  **\[experimental\]** : Import externally frozen residual parameters
+  without fitting
 - [`gk_ledgers()`](https://github.com/CTTIR/gatekeepR/reference/gk_ledgers.md)
   : Return the four review ledgers
 - [`gk_load_review()`](https://github.com/CTTIR/gatekeepR/reference/gk_load_review.md)
