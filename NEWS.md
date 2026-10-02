@@ -1,5 +1,8 @@
 # gatekeepR development
 
+- Add fixed numerical threshold calls and state diagnostics with explicit parent
+  eligibility, localization, missingness and non-authorizing audit outputs.
+
 - Add authenticated external residual-parameter import without fitting, fixed
   raw-support-aware ternary calls, and declarative candidate rules with explicit
   unavailable states. These APIs never authorize scientific review or production.
