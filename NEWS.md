@@ -1,5 +1,9 @@
 # gatekeepR development
 
+- Add authenticated external residual-parameter import without fitting, fixed
+  raw-support-aware ternary calls, and declarative candidate rules with explicit
+  unavailable states. These APIs never authorize scientific review or production.
+
 - Preserve review session ownership across checkpoint saves, reject foreign-owner writes, and serialize save/load operations with a separate filesystem lock.
 
 # gatekeepR (development version)
