@@ -40,6 +40,12 @@
 - [`gk_fixed_signal_calls()`](https://github.com/CTTIR/gatekeepR/reference/gk_fixed_signal_calls.md)
   **\[experimental\]** : Apply fixed cutoffs with explicit raw-support
   availability
+- [`gk_fixed_state_diagnostics()`](https://github.com/CTTIR/gatekeepR/reference/gk_fixed_state_diagnostics.md)
+  **\[experimental\]** : Diagnose fixed state thresholds with explicit
+  parent and localization scope
+- [`gk_fixed_threshold_calls()`](https://github.com/CTTIR/gatekeepR/reference/gk_fixed_threshold_calls.md)
+  **\[experimental\]** : Apply fixed score thresholds without
+  raw-support assessment
 - [`gk_hierarchy()`](https://github.com/CTTIR/gatekeepR/reference/gk_hierarchy.md)
   **\[experimental\]** : Declare a phenotype hierarchy
 - [`gk_import_cuts()`](https://github.com/CTTIR/gatekeepR/reference/gk_import_cuts.md)
