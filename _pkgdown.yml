@@ -1,22 +1,19 @@
-url: https://github.com/CTTIR/gatekeepR
+template:
+  package: themakR
 development:
   mode: auto
-template:
-  bootstrap: 5
+destination: site
 reference:
-  - title: Configuration
+  - title: Gating and review
     contents:
       - starts_with("gk_")
 articles:
   - title: Guides
-    navbar: Guides
+    navbar: ~
     contents:
       - gatekeepR
       - configuration
       - thresholds
-      - "`review-and-reproducibility`"
-  - title: Background
-    navbar: Background
-    contents:
-      - "`methods-and-limitations`"
-      - "`audit-closure`"
+      - review-and-reproducibility
+      - methods-and-limitations
+      - audit-closure

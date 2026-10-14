@@ -25,3 +25,4 @@
 ^\.zenodo\.json$
 ^vignettes/.*\.R$
 ^\.git$
+^site$
