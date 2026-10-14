@@ -12,9 +12,7 @@ gk_export(snapshot, dir, overwrite = FALSE)
 
 - snapshot:
 
-  A
-  [`gk_lock()`](https://github.com/CTTIR/gatekeepR/reference/gk_lock.md)
-  result.
+  A [`gk_lock()`](gk_lock.md) result.
 
 - dir:
 
@@ -30,7 +28,6 @@ The destination directory invisibly.
 
 ## See also
 
-Other export:
-[`gk_lock()`](https://github.com/CTTIR/gatekeepR/reference/gk_lock.md),
-[`gk_read_export()`](https://github.com/CTTIR/gatekeepR/reference/gk_read_export.md),
-[`gk_verify_export()`](https://github.com/CTTIR/gatekeepR/reference/gk_verify_export.md)
+Other export: [`gk_lock()`](gk_lock.md),
+[`gk_read_export()`](gk_read_export.md),
+[`gk_verify_export()`](gk_verify_export.md)

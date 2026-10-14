@@ -3,9 +3,8 @@
 **\[experimental\]**
 
 A study-neutral configuration used by examples, tests, vignettes and the
-app, matching the data produced by
-[`gk_simulate()`](https://github.com/CTTIR/gatekeepR/reference/gk_simulate.md).
-It declares twelve markers:
+app, matching the data produced by [`gk_simulate()`](gk_simulate.md). It
+declares twelve markers:
 
 - identity: `PanCK`, `CD45`, `CD3e`, `CD4`, `CD8`, `CD20`, `CD68`,
   `CD31`;
@@ -32,15 +31,12 @@ gk_example_config()
 
 ## Value
 
-A
-[`gk_config()`](https://github.com/CTTIR/gatekeepR/reference/gk_config.md)
-object.
+A [`gk_config()`](gk_config.md) object.
 
 ## See also
 
-Other example data:
-[`gk_example_path()`](https://github.com/CTTIR/gatekeepR/reference/gk_example_path.md),
-[`gk_simulate()`](https://github.com/CTTIR/gatekeepR/reference/gk_simulate.md)
+Other example data: [`gk_example_path()`](gk_example_path.md),
+[`gk_simulate()`](gk_simulate.md)
 
 ## Examples
 

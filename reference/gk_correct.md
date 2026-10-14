@@ -23,9 +23,7 @@ gk_correct(
 
 - prepared:
 
-  A
-  [`gk_prepare()`](https://github.com/CTTIR/gatekeepR/reference/gk_prepare.md)
-  result.
+  A [`gk_prepare()`](gk_prepare.md) result.
 
 - method:
 
@@ -50,8 +48,7 @@ all fitted centres, scales, rotations and coefficients.
 
 ## See also
 
-Other corrections:
-[`gk_fit_residual_model()`](https://github.com/CTTIR/gatekeepR/reference/gk_fit_residual_model.md)
+Other corrections: [`gk_fit_residual_model()`](gk_fit_residual_model.md)
 
 ## Examples
 

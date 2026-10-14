@@ -62,8 +62,7 @@ An object of class `cellspec`: a list with `spec_version`, `cells`,
 
 ## See also
 
-Other cell tables:
-[`gk_write_cellspec()`](https://github.com/CTTIR/gatekeepR/reference/gk_write_cellspec.md)
+Other cell tables: [`gk_write_cellspec()`](gk_write_cellspec.md)
 
 ## Examples
 

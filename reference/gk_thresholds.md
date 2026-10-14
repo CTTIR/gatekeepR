@@ -6,8 +6,8 @@ Estimates thresholds for identity and conditional identity markers.
 Support is checked before estimation, and every method records a status
 rather than inventing a cut when its input is absent, underpowered or
 not separated. State-marker thresholds are estimated by
-[`gk_state_calls()`](https://github.com/CTTIR/gatekeepR/reference/gk_state_calls.md)
-after parent labels are available.
+[`gk_state_calls()`](gk_state_calls.md) after parent labels are
+available.
 
 ## Usage
 
@@ -25,9 +25,7 @@ gk_thresholds(
 
 - prepared:
 
-  A
-  [`gk_prepare()`](https://github.com/CTTIR/gatekeepR/reference/gk_prepare.md)
-  result.
+  A [`gk_prepare()`](gk_prepare.md) result.
 
 - config:
 
@@ -35,15 +33,12 @@ gk_thresholds(
 
 - embedding:
 
-  An optional
-  [`gk_embed()`](https://github.com/CTTIR/gatekeepR/reference/gk_embed.md)
-  result for `population_crossing`.
+  An optional [`gk_embed()`](gk_embed.md) result for
+  `population_crossing`.
 
 - correction:
 
-  `NULL` or a
-  [`gk_correct()`](https://github.com/CTTIR/gatekeepR/reference/gk_correct.md)
-  result.
+  `NULL` or a [`gk_correct()`](gk_correct.md) result.
 
 - seed:
 
@@ -57,9 +52,8 @@ containing density and pool data for plotting.
 
 ## See also
 
-Other thresholds:
-[`gk_embed()`](https://github.com/CTTIR/gatekeepR/reference/gk_embed.md),
-[`gk_threshold_methods()`](https://github.com/CTTIR/gatekeepR/reference/gk_threshold_methods.md)
+Other thresholds: [`gk_embed()`](gk_embed.md),
+[`gk_threshold_methods()`](gk_threshold_methods.md)
 
 ## Examples
 

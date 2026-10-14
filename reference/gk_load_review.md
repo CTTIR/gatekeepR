@@ -12,8 +12,7 @@ gk_load_review(dir, takeover = FALSE)
 
 - dir:
 
-  Directory written by
-  [`gk_save_review()`](https://github.com/CTTIR/gatekeepR/reference/gk_save_review.md).
+  Directory written by [`gk_save_review()`](gk_save_review.md).
 
 - takeover:
 
@@ -26,22 +25,17 @@ A `gk_review` object.
 ## Details
 
 Loading is serialized with saving by the sibling operation lock
-described in
-[`gk_save_review()`](https://github.com/CTTIR/gatekeepR/reference/gk_save_review.md).
-Explicit takeover applies to session ownership; it cannot interrupt a
-save or load currently holding the operating-system lock.
+described in [`gk_save_review()`](gk_save_review.md). Explicit takeover
+applies to session ownership; it cannot interrupt a save or load
+currently holding the operating-system lock.
 
 ## See also
 
-Other review:
-[`gk_decide_structure()`](https://github.com/CTTIR/gatekeepR/reference/gk_decide_structure.md),
-[`gk_dispose()`](https://github.com/CTTIR/gatekeepR/reference/gk_dispose.md),
-[`gk_import_cuts()`](https://github.com/CTTIR/gatekeepR/reference/gk_import_cuts.md),
-[`gk_ledgers()`](https://github.com/CTTIR/gatekeepR/reference/gk_ledgers.md),
-[`gk_replace_review()`](https://github.com/CTTIR/gatekeepR/reference/gk_replace_review.md),
-[`gk_replay()`](https://github.com/CTTIR/gatekeepR/reference/gk_replay.md),
-[`gk_revert_last()`](https://github.com/CTTIR/gatekeepR/reference/gk_revert_last.md),
-[`gk_review()`](https://github.com/CTTIR/gatekeepR/reference/gk_review.md),
-[`gk_save_review()`](https://github.com/CTTIR/gatekeepR/reference/gk_save_review.md),
-[`gk_set_cut()`](https://github.com/CTTIR/gatekeepR/reference/gk_set_cut.md),
-[`gk_set_state()`](https://github.com/CTTIR/gatekeepR/reference/gk_set_state.md)
+Other review: [`gk_decide_structure()`](gk_decide_structure.md),
+[`gk_dispose()`](gk_dispose.md),
+[`gk_import_cuts()`](gk_import_cuts.md),
+[`gk_ledgers()`](gk_ledgers.md),
+[`gk_replace_review()`](gk_replace_review.md),
+[`gk_replay()`](gk_replay.md), [`gk_revert_last()`](gk_revert_last.md),
+[`gk_review()`](gk_review.md), [`gk_save_review()`](gk_save_review.md),
+[`gk_set_cut()`](gk_set_cut.md), [`gk_set_state()`](gk_set_state.md)

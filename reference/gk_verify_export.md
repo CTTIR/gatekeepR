@@ -12,8 +12,7 @@ gk_verify_export(dir, cellspec_dir = NULL, strict = TRUE)
 
 - dir:
 
-  Export directory written by
-  [`gk_export()`](https://github.com/CTTIR/gatekeepR/reference/gk_export.md).
+  Export directory written by [`gk_export()`](gk_export.md).
 
 - cellspec_dir:
 
@@ -29,7 +28,5 @@ A check data frame with `check`, `ok` and `details`.
 
 ## See also
 
-Other export:
-[`gk_export()`](https://github.com/CTTIR/gatekeepR/reference/gk_export.md),
-[`gk_lock()`](https://github.com/CTTIR/gatekeepR/reference/gk_lock.md),
-[`gk_read_export()`](https://github.com/CTTIR/gatekeepR/reference/gk_read_export.md)
+Other export: [`gk_export()`](gk_export.md), [`gk_lock()`](gk_lock.md),
+[`gk_read_export()`](gk_read_export.md)

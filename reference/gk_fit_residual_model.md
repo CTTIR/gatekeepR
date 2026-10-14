@@ -82,8 +82,7 @@ SHA-256. Apply returns a list with `identity` and `gate` matrices and
 
 ## See also
 
-Other corrections:
-[`gk_correct()`](https://github.com/CTTIR/gatekeepR/reference/gk_correct.md)
+Other corrections: [`gk_correct()`](gk_correct.md)
 
 ## Examples
 

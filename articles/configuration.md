@@ -14,12 +14,11 @@ gk_config_hash(cfg)
 
 For a project configuration, declare the panel, signal policies,
 phenotype hierarchy, and minimum support rules with
-[`gk_panel()`](https://github.com/CTTIR/gatekeepR/reference/gk_panel.md),
-[`gk_signal_policy()`](https://github.com/CTTIR/gatekeepR/reference/gk_signal_policy.md),
-[`gk_hierarchy()`](https://github.com/CTTIR/gatekeepR/reference/gk_hierarchy.md),
-and
-[`gk_min_support()`](https://github.com/CTTIR/gatekeepR/reference/gk_min_support.md).
-Validate it before preparing data:
+[`gk_panel()`](../reference/gk_panel.md),
+[`gk_signal_policy()`](../reference/gk_signal_policy.md),
+[`gk_hierarchy()`](../reference/gk_hierarchy.md), and
+[`gk_min_support()`](../reference/gk_min_support.md). Validate it before
+preparing data:
 
 ``` r
 

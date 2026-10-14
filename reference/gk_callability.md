@@ -4,9 +4,8 @@
 
 Reports, for every image and marker, whether the marker can be called
 and why not. Checks on the raw selected signal run in
-[`gk_prepare()`](https://github.com/CTTIR/gatekeepR/reference/gk_prepare.md)
-before any correction or threshold; threshold estimation adds its own
-outcomes.
+[`gk_prepare()`](gk_prepare.md) before any correction or threshold;
+threshold estimation adds its own outcomes.
 
 |                              |                                            |
 |------------------------------|--------------------------------------------|
@@ -49,8 +48,7 @@ support statistics (`n_cells`, `n_available`, `fraction_unavailable`,
 
 ## See also
 
-Other preparation:
-[`gk_prepare()`](https://github.com/CTTIR/gatekeepR/reference/gk_prepare.md)
+Other preparation: [`gk_prepare()`](gk_prepare.md)
 
 ## Examples
 

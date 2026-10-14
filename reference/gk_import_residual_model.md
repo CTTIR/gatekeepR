@@ -53,9 +53,8 @@ unavailable; the authenticated source-file hash is stored in provenance.
 
 ## See also
 
-Other corrections:
-[`gk_correct()`](https://github.com/CTTIR/gatekeepR/reference/gk_correct.md),
-[`gk_fit_residual_model()`](https://github.com/CTTIR/gatekeepR/reference/gk_fit_residual_model.md)
+Other corrections: [`gk_correct()`](gk_correct.md),
+[`gk_fit_residual_model()`](gk_fit_residual_model.md)
 
 ## Examples
 

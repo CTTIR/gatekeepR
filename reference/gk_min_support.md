@@ -4,7 +4,7 @@
 
 Sets the checks that decide whether a marker can be called on an image
 before and after threshold estimation (see
-[`gk_callability()`](https://github.com/CTTIR/gatekeepR/reference/gk_callability.md)).
+[`gk_callability()`](gk_callability.md)).
 
 ## Usage
 
@@ -48,15 +48,13 @@ A list of class `gk_min_support`.
 
 ## See also
 
-Other configuration:
-[`gk_config()`](https://github.com/CTTIR/gatekeepR/reference/gk_config.md),
-[`gk_config_hash()`](https://github.com/CTTIR/gatekeepR/reference/gk_config_hash.md),
-[`gk_hierarchy()`](https://github.com/CTTIR/gatekeepR/reference/gk_hierarchy.md),
-[`gk_panel()`](https://github.com/CTTIR/gatekeepR/reference/gk_panel.md),
-[`gk_signal_policy()`](https://github.com/CTTIR/gatekeepR/reference/gk_signal_policy.md),
-[`gk_validate_config()`](https://github.com/CTTIR/gatekeepR/reference/gk_validate_config.md),
-[`gk_write_config()`](https://github.com/CTTIR/gatekeepR/reference/gk_write_config.md),
-[`hierarchy-elements`](https://github.com/CTTIR/gatekeepR/reference/hierarchy-elements.md)
+Other configuration: [`gk_config()`](gk_config.md),
+[`gk_config_hash()`](gk_config_hash.md),
+[`gk_hierarchy()`](gk_hierarchy.md), [`gk_panel()`](gk_panel.md),
+[`gk_signal_policy()`](gk_signal_policy.md),
+[`gk_validate_config()`](gk_validate_config.md),
+[`gk_write_config()`](gk_write_config.md),
+[`hierarchy-elements`](hierarchy-elements.md)
 
 ## Examples
 

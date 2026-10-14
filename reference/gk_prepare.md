@@ -5,8 +5,7 @@
 Selects one signal per cell and marker according to the configuration's
 signal policy, applies the per-marker transform, resolves localisation
 measurements, and computes callability checks that run before any
-correction or threshold (see
-[`gk_callability()`](https://github.com/CTTIR/gatekeepR/reference/gk_callability.md)).
+correction or threshold (see [`gk_callability()`](gk_callability.md)).
 
 A panel marker whose measurement is missing from the cell table is a
 structural failure (`gatekeepr_error_structure`). A marker that is
@@ -23,14 +22,12 @@ gk_prepare(x, config, image_id = NULL, quiet = FALSE)
 
 - x:
 
-  A `cellspec` object (see
-  [`gk_cellspec()`](https://github.com/CTTIR/gatekeepR/reference/gk_cellspec.md))
-  or the path of a cellspec directory.
+  A `cellspec` object (see [`gk_cellspec()`](gk_cellspec.md)) or the
+  path of a cellspec directory.
 
 - config:
 
-  A
-  [`gk_config()`](https://github.com/CTTIR/gatekeepR/reference/gk_config.md).
+  A [`gk_config()`](gk_config.md).
 
 - image_id:
 
@@ -57,8 +54,7 @@ An object of class `gk_prepared`, a list with:
 - `localization`: named list of per-marker data frames with `numerator`,
   `denominator`, `ratio` and `evaluable`;
 
-- `callability`: see
-  [`gk_callability()`](https://github.com/CTTIR/gatekeepR/reference/gk_callability.md);
+- `callability`: see [`gk_callability()`](gk_callability.md);
 
 - `transforms`: marker, transform and cofactor;
 
@@ -67,8 +63,7 @@ An object of class `gk_prepared`, a list with:
 
 ## See also
 
-Other preparation:
-[`gk_callability()`](https://github.com/CTTIR/gatekeepR/reference/gk_callability.md)
+Other preparation: [`gk_callability()`](gk_callability.md)
 
 ## Examples
 

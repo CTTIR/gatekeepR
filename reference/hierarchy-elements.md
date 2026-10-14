@@ -11,7 +11,7 @@ Building blocks of a phenotype hierarchy:
 
 - `gk_flag()` is a named Boolean expression evaluated before the rules;
   its policy (`exclude`, `flag_only` or `unresolved`) is set in
-  [`gk_hierarchy()`](https://github.com/CTTIR/gatekeepR/reference/gk_hierarchy.md).
+  [`gk_hierarchy()`](gk_hierarchy.md).
 
 - `gk_refinement()` relabels cells of `from_label` that are positive for
   an enabled state call (`marker` within `parent`), e.g. CD4 T cells
@@ -74,7 +74,7 @@ gk_override(
 
   `NULL`, or `"structure"`: matching cells start as `pending_label`
   until a structure decision exists (see
-  [`gk_decide_structure()`](https://github.com/CTTIR/gatekeepR/reference/gk_decide_structure.md)).
+  [`gk_decide_structure()`](gk_decide_structure.md)).
 
 - pending_label:
 
@@ -111,15 +111,13 @@ Objects of class `gk_rule`, `gk_flag`, `gk_refinement` or `gk_override`.
 
 ## See also
 
-Other configuration:
-[`gk_config()`](https://github.com/CTTIR/gatekeepR/reference/gk_config.md),
-[`gk_config_hash()`](https://github.com/CTTIR/gatekeepR/reference/gk_config_hash.md),
-[`gk_hierarchy()`](https://github.com/CTTIR/gatekeepR/reference/gk_hierarchy.md),
-[`gk_min_support()`](https://github.com/CTTIR/gatekeepR/reference/gk_min_support.md),
-[`gk_panel()`](https://github.com/CTTIR/gatekeepR/reference/gk_panel.md),
-[`gk_signal_policy()`](https://github.com/CTTIR/gatekeepR/reference/gk_signal_policy.md),
-[`gk_validate_config()`](https://github.com/CTTIR/gatekeepR/reference/gk_validate_config.md),
-[`gk_write_config()`](https://github.com/CTTIR/gatekeepR/reference/gk_write_config.md)
+Other configuration: [`gk_config()`](gk_config.md),
+[`gk_config_hash()`](gk_config_hash.md),
+[`gk_hierarchy()`](gk_hierarchy.md),
+[`gk_min_support()`](gk_min_support.md), [`gk_panel()`](gk_panel.md),
+[`gk_signal_policy()`](gk_signal_policy.md),
+[`gk_validate_config()`](gk_validate_config.md),
+[`gk_write_config()`](gk_write_config.md)
 
 ## Examples
 

@@ -6,8 +6,7 @@ Returns the path of a file or directory shipped in `inst/extdata`:
 
 - `"example-slide"`: a cellspec directory from `gk_simulate(seed = 1)`;
 
-- `"example-config.json"`:
-  [`gk_example_config()`](https://github.com/CTTIR/gatekeepR/reference/gk_example_config.md)
+- `"example-config.json"`: [`gk_example_config()`](gk_example_config.md)
   written as JSON;
 
 - `"example-review"`: a saved review working directory;
@@ -34,9 +33,8 @@ A single path.
 
 ## See also
 
-Other example data:
-[`gk_example_config()`](https://github.com/CTTIR/gatekeepR/reference/gk_example_config.md),
-[`gk_simulate()`](https://github.com/CTTIR/gatekeepR/reference/gk_simulate.md)
+Other example data: [`gk_example_config()`](gk_example_config.md),
+[`gk_simulate()`](gk_simulate.md)
 
 ## Examples
 

@@ -14,14 +14,12 @@ review <- gk_dispose(review, cell_id = "cell-001", disposition = "DELETE",
 reviewed <- gk_replay(review)
 ```
 
-[`gk_save_review()`](https://github.com/CTTIR/gatekeepR/reference/gk_save_review.md)
-writes a staged, checksummed review directory and
-[`gk_load_review()`](https://github.com/CTTIR/gatekeepR/reference/gk_load_review.md)
-restores it. Once the review is complete,
-[`gk_lock()`](https://github.com/CTTIR/gatekeepR/reference/gk_lock.md)
-blocks further mutation and
-[`gk_export()`](https://github.com/CTTIR/gatekeepR/reference/gk_export.md)
-writes the reproducible result. Verify it before delivery:
+[`gk_save_review()`](../reference/gk_save_review.md) writes a staged,
+checksummed review directory and
+[`gk_load_review()`](../reference/gk_load_review.md) restores it. Once
+the review is complete, [`gk_lock()`](../reference/gk_lock.md) blocks
+further mutation and [`gk_export()`](../reference/gk_export.md) writes
+the reproducible result. Verify it before delivery:
 
 ``` r
 

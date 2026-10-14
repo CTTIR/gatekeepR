@@ -19,15 +19,11 @@ gk_classify(prepared, thresholds, config, correction = NULL)
 
 - prepared:
 
-  A
-  [`gk_prepare()`](https://github.com/CTTIR/gatekeepR/reference/gk_prepare.md)
-  result.
+  A [`gk_prepare()`](gk_prepare.md) result.
 
 - thresholds:
 
-  A
-  [`gk_thresholds()`](https://github.com/CTTIR/gatekeepR/reference/gk_thresholds.md)
-  result.
+  A [`gk_thresholds()`](gk_thresholds.md) result.
 
 - config:
 
@@ -35,9 +31,7 @@ gk_classify(prepared, thresholds, config, correction = NULL)
 
 - correction:
 
-  `NULL` or a
-  [`gk_correct()`](https://github.com/CTTIR/gatekeepR/reference/gk_correct.md)
-  result.
+  `NULL` or a [`gk_correct()`](gk_correct.md) result.
 
 ## Value
 
@@ -47,9 +41,8 @@ hashes needed for review and export.
 
 ## See also
 
-Other classification:
-[`gk_state_calls()`](https://github.com/CTTIR/gatekeepR/reference/gk_state_calls.md),
-[`gk_structures()`](https://github.com/CTTIR/gatekeepR/reference/gk_structures.md)
+Other classification: [`gk_state_calls()`](gk_state_calls.md),
+[`gk_structures()`](gk_structures.md)
 
 ## Examples
 

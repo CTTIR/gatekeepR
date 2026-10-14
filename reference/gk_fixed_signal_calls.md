@@ -64,10 +64,10 @@ List with ternary `calls`, selected-marker and source-feature support.
 ## See also
 
 Other classification:
-[`gk_apply_candidate_rules()`](https://github.com/CTTIR/gatekeepR/reference/gk_apply_candidate_rules.md),
-[`gk_classify()`](https://github.com/CTTIR/gatekeepR/reference/gk_classify.md),
-[`gk_state_calls()`](https://github.com/CTTIR/gatekeepR/reference/gk_state_calls.md),
-[`gk_structures()`](https://github.com/CTTIR/gatekeepR/reference/gk_structures.md)
+[`gk_apply_candidate_rules()`](gk_apply_candidate_rules.md),
+[`gk_classify()`](gk_classify.md),
+[`gk_state_calls()`](gk_state_calls.md),
+[`gk_structures()`](gk_structures.md)
 
 ## Examples
 

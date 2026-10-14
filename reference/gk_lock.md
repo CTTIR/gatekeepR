@@ -12,9 +12,7 @@ gk_lock(review, reviewer, status = c("PENDING", "REVIEWED"))
 
 - review:
 
-  A
-  [`gk_review()`](https://github.com/CTTIR/gatekeepR/reference/gk_review.md)
-  object.
+  A [`gk_review()`](gk_review.md) object.
 
 - reviewer:
 
@@ -30,7 +28,6 @@ An object of class `gk_snapshot`.
 
 ## See also
 
-Other export:
-[`gk_export()`](https://github.com/CTTIR/gatekeepR/reference/gk_export.md),
-[`gk_read_export()`](https://github.com/CTTIR/gatekeepR/reference/gk_read_export.md),
-[`gk_verify_export()`](https://github.com/CTTIR/gatekeepR/reference/gk_verify_export.md)
+Other export: [`gk_export()`](gk_export.md),
+[`gk_read_export()`](gk_read_export.md),
+[`gk_verify_export()`](gk_verify_export.md)

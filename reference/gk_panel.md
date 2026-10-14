@@ -15,7 +15,7 @@ Roles:
   it is treated as negative where rules exclude it.
 
 - `state`: called within parent cell types (see
-  [`gk_state_calls()`](https://github.com/CTTIR/gatekeepR/reference/gk_state_calls.md)).
+  [`gk_state_calls()`](gk_state_calls.md)).
 
 - `context`: measured and displayed, never used in rules.
 
@@ -58,7 +58,7 @@ gk_panel(
 - threshold_method:
 
   Method per marker, see
-  [`gk_threshold_methods()`](https://github.com/CTTIR/gatekeepR/reference/gk_threshold_methods.md).
+  [`gk_threshold_methods()`](gk_threshold_methods.md).
 
 - threshold_args:
 
@@ -68,9 +68,9 @@ gk_panel(
 - parents:
 
   State markers only: the parent sets (names from `parent_sets` in
-  [`gk_config()`](https://github.com/CTTIR/gatekeepR/reference/gk_config.md))
-  within which the marker is estimated and called. Either a character
-  vector used for every state marker, or a list named by marker.
+  [`gk_config()`](gk_config.md)) within which the marker is estimated
+  and called. Either a character vector used for every state marker, or
+  a list named by marker.
 
 - localization:
 
@@ -87,9 +87,8 @@ gk_panel(
 
 - min_support:
 
-  A
-  [`gk_min_support()`](https://github.com/CTTIR/gatekeepR/reference/gk_min_support.md)
-  object used for every marker, or a list of them named by marker.
+  A [`gk_min_support()`](gk_min_support.md) object used for every
+  marker, or a list of them named by marker.
 
 ## Value
 
@@ -100,15 +99,14 @@ An object of class `gk_panel`: a list with `markers` (a data frame with
 
 ## See also
 
-Other configuration:
-[`gk_config()`](https://github.com/CTTIR/gatekeepR/reference/gk_config.md),
-[`gk_config_hash()`](https://github.com/CTTIR/gatekeepR/reference/gk_config_hash.md),
-[`gk_hierarchy()`](https://github.com/CTTIR/gatekeepR/reference/gk_hierarchy.md),
-[`gk_min_support()`](https://github.com/CTTIR/gatekeepR/reference/gk_min_support.md),
-[`gk_signal_policy()`](https://github.com/CTTIR/gatekeepR/reference/gk_signal_policy.md),
-[`gk_validate_config()`](https://github.com/CTTIR/gatekeepR/reference/gk_validate_config.md),
-[`gk_write_config()`](https://github.com/CTTIR/gatekeepR/reference/gk_write_config.md),
-[`hierarchy-elements`](https://github.com/CTTIR/gatekeepR/reference/hierarchy-elements.md)
+Other configuration: [`gk_config()`](gk_config.md),
+[`gk_config_hash()`](gk_config_hash.md),
+[`gk_hierarchy()`](gk_hierarchy.md),
+[`gk_min_support()`](gk_min_support.md),
+[`gk_signal_policy()`](gk_signal_policy.md),
+[`gk_validate_config()`](gk_validate_config.md),
+[`gk_write_config()`](gk_write_config.md),
+[`hierarchy-elements`](hierarchy-elements.md)
 
 ## Examples
 

@@ -3,9 +3,8 @@
 **\[experimental\]**
 
 Generates a synthetic slide matching
-[`gk_example_config()`](https://github.com/CTTIR/gatekeepR/reference/gk_example_config.md),
-with known ground truth, for examples, tests and method checks. The
-slide contains:
+[`gk_example_config()`](gk_example_config.md), with known ground truth,
+for examples, tests and method checks. The slide contains:
 
 - lineage populations (epithelial nests, CD8 and CD4 T cells including
   FOXP3-positive regulatory cells, B cells, macrophages, other immune
@@ -83,14 +82,12 @@ gk_simulate(
 
 ## Value
 
-A `cellspec` object (see
-[`gk_cellspec()`](https://github.com/CTTIR/gatekeepR/reference/gk_cellspec.md)).
+A `cellspec` object (see [`gk_cellspec()`](gk_cellspec.md)).
 
 ## See also
 
-Other example data:
-[`gk_example_config()`](https://github.com/CTTIR/gatekeepR/reference/gk_example_config.md),
-[`gk_example_path()`](https://github.com/CTTIR/gatekeepR/reference/gk_example_path.md)
+Other example data: [`gk_example_config()`](gk_example_config.md),
+[`gk_example_path()`](gk_example_path.md)
 
 ## Examples
 

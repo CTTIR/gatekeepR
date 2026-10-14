@@ -19,8 +19,7 @@ gk_config_hash(config)
 
 - config:
 
-  A
-  [`gk_config()`](https://github.com/CTTIR/gatekeepR/reference/gk_config.md).
+  A [`gk_config()`](gk_config.md).
 
 ## Value
 
@@ -28,15 +27,13 @@ A 64-character lowercase hexadecimal string.
 
 ## See also
 
-Other configuration:
-[`gk_config()`](https://github.com/CTTIR/gatekeepR/reference/gk_config.md),
-[`gk_hierarchy()`](https://github.com/CTTIR/gatekeepR/reference/gk_hierarchy.md),
-[`gk_min_support()`](https://github.com/CTTIR/gatekeepR/reference/gk_min_support.md),
-[`gk_panel()`](https://github.com/CTTIR/gatekeepR/reference/gk_panel.md),
-[`gk_signal_policy()`](https://github.com/CTTIR/gatekeepR/reference/gk_signal_policy.md),
-[`gk_validate_config()`](https://github.com/CTTIR/gatekeepR/reference/gk_validate_config.md),
-[`gk_write_config()`](https://github.com/CTTIR/gatekeepR/reference/gk_write_config.md),
-[`hierarchy-elements`](https://github.com/CTTIR/gatekeepR/reference/hierarchy-elements.md)
+Other configuration: [`gk_config()`](gk_config.md),
+[`gk_hierarchy()`](gk_hierarchy.md),
+[`gk_min_support()`](gk_min_support.md), [`gk_panel()`](gk_panel.md),
+[`gk_signal_policy()`](gk_signal_policy.md),
+[`gk_validate_config()`](gk_validate_config.md),
+[`gk_write_config()`](gk_write_config.md),
+[`hierarchy-elements`](hierarchy-elements.md)
 
 ## Examples
 

@@ -32,15 +32,11 @@ gk_embed(
 
 - prepared:
 
-  A
-  [`gk_prepare()`](https://github.com/CTTIR/gatekeepR/reference/gk_prepare.md)
-  result.
+  A [`gk_prepare()`](gk_prepare.md) result.
 
 - correction:
 
-  `NULL` or a
-  [`gk_correct()`](https://github.com/CTTIR/gatekeepR/reference/gk_correct.md)
-  result.
+  `NULL` or a [`gk_correct()`](gk_correct.md) result.
 
 - n_pcs:
 
@@ -93,9 +89,8 @@ data, basin information, parameters and provenance hashes.
 
 ## See also
 
-Other thresholds:
-[`gk_threshold_methods()`](https://github.com/CTTIR/gatekeepR/reference/gk_threshold_methods.md),
-[`gk_thresholds()`](https://github.com/CTTIR/gatekeepR/reference/gk_thresholds.md)
+Other thresholds: [`gk_threshold_methods()`](gk_threshold_methods.md),
+[`gk_thresholds()`](gk_thresholds.md)
 
 ## Examples
 

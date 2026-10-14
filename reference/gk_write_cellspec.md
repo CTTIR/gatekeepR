@@ -68,8 +68,7 @@ SHA-256 of `MANIFEST.sha256`.
 
 ## See also
 
-Other cell tables:
-[`gk_cellspec()`](https://github.com/CTTIR/gatekeepR/reference/gk_cellspec.md)
+Other cell tables: [`gk_cellspec()`](gk_cellspec.md)
 
 ## Examples
 

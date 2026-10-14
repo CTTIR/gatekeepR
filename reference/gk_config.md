@@ -6,9 +6,8 @@ A configuration is the single source of truth for gating a study: which
 measurement represents each marker, the marker panel, the named parent
 sets used by state markers, the phenotype hierarchy, per-image threshold
 overrides and state-based refinements. It is validated as a whole and
-hashed canonically (see
-[`gk_config_hash()`](https://github.com/CTTIR/gatekeepR/reference/gk_config_hash.md));
-the hash travels with every result produced from it.
+hashed canonically (see [`gk_config_hash()`](gk_config_hash.md)); the
+hash travels with every result produced from it.
 
 ## Usage
 
@@ -27,14 +26,12 @@ gk_config(
 
 - signal_policy:
 
-  A
-  [`gk_signal_policy()`](https://github.com/CTTIR/gatekeepR/reference/gk_signal_policy.md)
-  (or `cellspecR` signal policy) data frame.
+  A [`gk_signal_policy()`](gk_signal_policy.md) (or `cellspecR` signal
+  policy) data frame.
 
 - panel:
 
-  A
-  [`gk_panel()`](https://github.com/CTTIR/gatekeepR/reference/gk_panel.md).
+  A [`gk_panel()`](gk_panel.md).
 
 - parent_sets:
 
@@ -43,19 +40,15 @@ gk_config(
 
 - hierarchy:
 
-  A
-  [`gk_hierarchy()`](https://github.com/CTTIR/gatekeepR/reference/gk_hierarchy.md).
+  A [`gk_hierarchy()`](gk_hierarchy.md).
 
 - overrides:
 
-  `NULL` or a list of
-  [`gk_override()`](https://github.com/CTTIR/gatekeepR/reference/hierarchy-elements.md)
-  objects.
+  `NULL` or a list of [`gk_override()`](hierarchy-elements.md) objects.
 
 - refinements:
 
-  `NULL` or a list of
-  [`gk_refinement()`](https://github.com/CTTIR/gatekeepR/reference/hierarchy-elements.md)
+  `NULL` or a list of [`gk_refinement()`](hierarchy-elements.md)
   objects.
 
 ## Value
@@ -65,19 +58,17 @@ An object of class `gk_config`. Invalid combinations abort with a
 
 ## See also
 
-[`gk_validate_config()`](https://github.com/CTTIR/gatekeepR/reference/gk_validate_config.md)
-for a check table without aborting;
-[`vignette("configuration", package = "gatekeepR")`](https://github.com/CTTIR/gatekeepR/articles/configuration.md).
+[`gk_validate_config()`](gk_validate_config.md) for a check table
+without aborting;
+[`vignette("configuration", package = "gatekeepR")`](../articles/configuration.md).
 
-Other configuration:
-[`gk_config_hash()`](https://github.com/CTTIR/gatekeepR/reference/gk_config_hash.md),
-[`gk_hierarchy()`](https://github.com/CTTIR/gatekeepR/reference/gk_hierarchy.md),
-[`gk_min_support()`](https://github.com/CTTIR/gatekeepR/reference/gk_min_support.md),
-[`gk_panel()`](https://github.com/CTTIR/gatekeepR/reference/gk_panel.md),
-[`gk_signal_policy()`](https://github.com/CTTIR/gatekeepR/reference/gk_signal_policy.md),
-[`gk_validate_config()`](https://github.com/CTTIR/gatekeepR/reference/gk_validate_config.md),
-[`gk_write_config()`](https://github.com/CTTIR/gatekeepR/reference/gk_write_config.md),
-[`hierarchy-elements`](https://github.com/CTTIR/gatekeepR/reference/hierarchy-elements.md)
+Other configuration: [`gk_config_hash()`](gk_config_hash.md),
+[`gk_hierarchy()`](gk_hierarchy.md),
+[`gk_min_support()`](gk_min_support.md), [`gk_panel()`](gk_panel.md),
+[`gk_signal_policy()`](gk_signal_policy.md),
+[`gk_validate_config()`](gk_validate_config.md),
+[`gk_write_config()`](gk_write_config.md),
+[`hierarchy-elements`](hierarchy-elements.md)
 
 ## Examples
 

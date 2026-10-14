@@ -2,11 +2,10 @@
 
 **\[experimental\]**
 
-An ordered set of
-[`gk_rule()`](https://github.com/CTTIR/gatekeepR/reference/hierarchy-elements.md)s
-(first match wins), flags evaluated before the rules with an explicit
-policy each, and the labels used for cells that match no rule, that are
-excluded by a flag, or that are unresolved.
+An ordered set of [`gk_rule()`](hierarchy-elements.md)s (first match
+wins), flags evaluated before the rules with an explicit policy each,
+and the labels used for cells that match no rule, that are excluded by a
+flag, or that are unresolved.
 
 Flag policies:
 
@@ -39,15 +38,12 @@ gk_hierarchy(
 
 - rules:
 
-  List of
-  [`gk_rule()`](https://github.com/CTTIR/gatekeepR/reference/hierarchy-elements.md)
-  objects, in evaluation order.
+  List of [`gk_rule()`](hierarchy-elements.md) objects, in evaluation
+  order.
 
 - flags:
 
-  Named list of
-  [`gk_flag()`](https://github.com/CTTIR/gatekeepR/reference/hierarchy-elements.md)
-  objects.
+  Named list of [`gk_flag()`](hierarchy-elements.md) objects.
 
 - flag_policy:
 
@@ -72,15 +68,13 @@ An object of class `gk_hierarchy`.
 
 ## See also
 
-Other configuration:
-[`gk_config()`](https://github.com/CTTIR/gatekeepR/reference/gk_config.md),
-[`gk_config_hash()`](https://github.com/CTTIR/gatekeepR/reference/gk_config_hash.md),
-[`gk_min_support()`](https://github.com/CTTIR/gatekeepR/reference/gk_min_support.md),
-[`gk_panel()`](https://github.com/CTTIR/gatekeepR/reference/gk_panel.md),
-[`gk_signal_policy()`](https://github.com/CTTIR/gatekeepR/reference/gk_signal_policy.md),
-[`gk_validate_config()`](https://github.com/CTTIR/gatekeepR/reference/gk_validate_config.md),
-[`gk_write_config()`](https://github.com/CTTIR/gatekeepR/reference/gk_write_config.md),
-[`hierarchy-elements`](https://github.com/CTTIR/gatekeepR/reference/hierarchy-elements.md)
+Other configuration: [`gk_config()`](gk_config.md),
+[`gk_config_hash()`](gk_config_hash.md),
+[`gk_min_support()`](gk_min_support.md), [`gk_panel()`](gk_panel.md),
+[`gk_signal_policy()`](gk_signal_policy.md),
+[`gk_validate_config()`](gk_validate_config.md),
+[`gk_write_config()`](gk_write_config.md),
+[`hierarchy-elements`](hierarchy-elements.md)
 
 ## Examples
 

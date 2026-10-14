@@ -5,8 +5,7 @@
 Lists the threshold estimation methods, the marker roles allowed to use
 them, their arguments with defaults, and a description. Set a marker's
 method with `threshold_method` and its arguments with `threshold_args`
-in
-[`gk_panel()`](https://github.com/CTTIR/gatekeepR/reference/gk_panel.md).
+in [`gk_panel()`](gk_panel.md).
 
 State markers also accept `pooled` (default `FALSE`): with
 `pooled = TRUE` one estimate is made over the union of the marker's
@@ -26,9 +25,8 @@ A data frame with columns `method`, `role_allowed` (roles joined by
 
 ## See also
 
-Other thresholds:
-[`gk_embed()`](https://github.com/CTTIR/gatekeepR/reference/gk_embed.md),
-[`gk_thresholds()`](https://github.com/CTTIR/gatekeepR/reference/gk_thresholds.md)
+Other thresholds: [`gk_embed()`](gk_embed.md),
+[`gk_thresholds()`](gk_thresholds.md)
 
 ## Examples
 

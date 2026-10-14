@@ -25,15 +25,11 @@ gk_structures(
 
 - classification:
 
-  A
-  [`gk_classify()`](https://github.com/CTTIR/gatekeepR/reference/gk_classify.md)
-  result.
+  A [`gk_classify()`](gk_classify.md) result.
 
 - prepared:
 
-  The matching
-  [`gk_prepare()`](https://github.com/CTTIR/gatekeepR/reference/gk_prepare.md)
-  result.
+  The matching [`gk_prepare()`](gk_prepare.md) result.
 
 - eps_min, eps_max:
 
@@ -55,9 +51,8 @@ parameters and provenance hashes.
 
 ## See also
 
-Other classification:
-[`gk_classify()`](https://github.com/CTTIR/gatekeepR/reference/gk_classify.md),
-[`gk_state_calls()`](https://github.com/CTTIR/gatekeepR/reference/gk_state_calls.md)
+Other classification: [`gk_classify()`](gk_classify.md),
+[`gk_state_calls()`](gk_state_calls.md)
 
 ## Examples
 

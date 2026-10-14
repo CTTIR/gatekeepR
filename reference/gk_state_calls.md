@@ -18,21 +18,15 @@ gk_state_calls(prepared, thresholds, classification, config)
 
 - prepared:
 
-  A
-  [`gk_prepare()`](https://github.com/CTTIR/gatekeepR/reference/gk_prepare.md)
-  result.
+  A [`gk_prepare()`](gk_prepare.md) result.
 
 - thresholds:
 
-  A
-  [`gk_thresholds()`](https://github.com/CTTIR/gatekeepR/reference/gk_thresholds.md)
-  result for identity markers.
+  A [`gk_thresholds()`](gk_thresholds.md) result for identity markers.
 
 - classification:
 
-  A
-  [`gk_classify()`](https://github.com/CTTIR/gatekeepR/reference/gk_classify.md)
-  result.
+  A [`gk_classify()`](gk_classify.md) result.
 
 - config:
 
@@ -45,9 +39,8 @@ An object of class `gk_state_calls` with long `calls`, per-parent
 
 ## See also
 
-Other classification:
-[`gk_classify()`](https://github.com/CTTIR/gatekeepR/reference/gk_classify.md),
-[`gk_structures()`](https://github.com/CTTIR/gatekeepR/reference/gk_structures.md)
+Other classification: [`gk_classify()`](gk_classify.md),
+[`gk_structures()`](gk_structures.md)
 
 ## Examples
 

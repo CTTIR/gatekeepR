@@ -37,11 +37,10 @@ production_eligible. Both authorization fields are always FALSE.
 
 ## See also
 
-Other classification:
-[`gk_classify()`](https://github.com/CTTIR/gatekeepR/reference/gk_classify.md),
-[`gk_fixed_signal_calls()`](https://github.com/CTTIR/gatekeepR/reference/gk_fixed_signal_calls.md),
-[`gk_state_calls()`](https://github.com/CTTIR/gatekeepR/reference/gk_state_calls.md),
-[`gk_structures()`](https://github.com/CTTIR/gatekeepR/reference/gk_structures.md)
+Other classification: [`gk_classify()`](gk_classify.md),
+[`gk_fixed_signal_calls()`](gk_fixed_signal_calls.md),
+[`gk_state_calls()`](gk_state_calls.md),
+[`gk_structures()`](gk_structures.md)
 
 ## Examples
 

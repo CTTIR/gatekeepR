@@ -29,14 +29,12 @@ gk_export(snapshot, dir = "export")
 gk_verify_export("export")
 ```
 
-[`gk_replay()`](https://github.com/CTTIR/gatekeepR/reference/gk_replay.md)
-is the review boundary: it applies the append-only ledgers to the
-initial calls and returns the effective reviewed state.
-[`gk_save_review()`](https://github.com/CTTIR/gatekeepR/reference/gk_save_review.md)
-and
-[`gk_load_review()`](https://github.com/CTTIR/gatekeepR/reference/gk_load_review.md)
-persist the review package before export when work must be resumed
-later.
+[`gk_replay()`](../reference/gk_replay.md) is the review boundary: it
+applies the append-only ledgers to the initial calls and returns the
+effective reviewed state.
+[`gk_save_review()`](../reference/gk_save_review.md) and
+[`gk_load_review()`](../reference/gk_load_review.md) persist the review
+package before export when work must be resumed later.
 
 ## Outputs and auditability
 
@@ -44,9 +42,9 @@ The `classification`, `states`, and `structures` objects retain the cell
 and image identifiers needed to join results back to source data. A
 locked export contains the effective calls, review ledgers,
 configuration, provenance, and a manifest.
-[`gk_verify_export()`](https://github.com/CTTIR/gatekeepR/reference/gk_verify_export.md)
-checks the manifest and replays the exported decisions, so downstream
-code can reject incomplete or contradictory exports.
+[`gk_verify_export()`](../reference/gk_verify_export.md) checks the
+manifest and replays the exported decisions, so downstream code can
+reject incomplete or contradictory exports.
 
 ## Optional interfaces
 
