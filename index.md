@@ -1,4 +1,4 @@
-# gatekeepR
+# gatekeepR ![gatekeepR logo](reference/figures/logo-with-name.png)
 
 `gatekeepR` turns per-cell marker measurements from multiplexed tissue
 images into cell types that a person has reviewed.
