@@ -26,6 +26,7 @@
 
     <nav class="navbar navbar-expand-lg fixed-top " aria-label="Site navigation"><div class="container">
 
+    <!-- Standard logo aliases contain the named v5 light and dark hexes. -->
     <a class="navbar-brand me-2" href="../index.html"><img src="../logo.svg" alt="" class="themakr-navbar-logo" data-cttir-dark-src="../reference/figures/logo-dark.svg">gatekeepR</a>
 
     <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.0.0</small>
@@ -84,6 +85,25 @@
 
     
     
+<!-- cttir-vignette-logo: start -->
+<style>
+.cttir-vignette-logo { float: right; width: 120px; max-width: 30%; margin: 0 0 1rem 1.5rem; }
+.cttir-vignette-logo img { width: 100%; height: auto; border: 0; background: transparent; box-shadow: none; }
+.cttir-vignette-logo .cttir-vignette-logo-light { display: block; }
+.cttir-vignette-logo .cttir-vignette-logo-dark { display: none; }
+@media (prefers-color-scheme: dark) {
+  .cttir-vignette-logo .cttir-vignette-logo-light { display: none; }
+  .cttir-vignette-logo .cttir-vignette-logo-dark { display: block; }
+}
+[data-bs-theme="light"] .cttir-vignette-logo .cttir-vignette-logo-light { display: block; }
+[data-bs-theme="light"] .cttir-vignette-logo .cttir-vignette-logo-dark { display: none; }
+[data-bs-theme="dark"] .cttir-vignette-logo .cttir-vignette-logo-light { display: none; }
+[data-bs-theme="dark"] .cttir-vignette-logo .cttir-vignette-logo-dark { display: block; }
+</style>
+<div class="cttir-vignette-logo">
+<p><img class="cttir-vignette-logo-light" src="figures/logo.svg" alt="gatekeepR logo" width="120" height="139"><img class="cttir-vignette-logo-dark" src="figures/logo-dark.svg" alt="gatekeepR logo" width="120" height="139"></p>
+</div>
+<!-- cttir-vignette-logo: end -->
 <p>Configuration is explicit and serializable. The example configuration
 is useful for smoke tests and for learning the object shape.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">

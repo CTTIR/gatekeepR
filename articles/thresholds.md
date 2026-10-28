@@ -1,5 +1,8 @@
 # Threshold methods and callability
 
+![gatekeepR logo](figures/logo.svg)![gatekeepR
+logo](figures/logo-dark.svg)
+
 Thresholds are estimates with evidence and status, not magic constants.
 List the available methods with:
 

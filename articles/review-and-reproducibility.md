@@ -1,5 +1,8 @@
 # Review and reproducibility
 
+![gatekeepR logo](figures/logo.svg)![gatekeepR
+logo](figures/logo-dark.svg)
+
 Review actions are append-only. Each action has an order, reviewer,
 reason, and target identity. The effective result is calculated by
 replaying those actions in order.

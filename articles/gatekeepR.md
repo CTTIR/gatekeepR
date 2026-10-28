@@ -1,5 +1,8 @@
 # gatekeepR: a reviewable marker gating workflow
 
+![gatekeepR logo](figures/logo.svg)![gatekeepR
+logo](figures/logo-dark.svg)
+
 `gatekeepR` turns per-cell marker measurements into reviewable phenotype
 and state calls. The same prepared objects and classifier are used by
 batch code, the review application, and the locked export. This keeps a

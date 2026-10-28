@@ -1,5 +1,8 @@
 # Configuration as data
 
+![gatekeepR logo](figures/logo.svg)![gatekeepR
+logo](figures/logo-dark.svg)
+
 Configuration is explicit and serializable. The example configuration is
 useful for smoke tests and for learning the object shape.
 

@@ -1,5 +1,8 @@
 # Methods and limitations
 
+![gatekeepR logo](figures/logo.svg)![gatekeepR
+logo](figures/logo-dark.svg)
+
 `gatekeepR` separates measurement preparation, correction, threshold
 estimation, classification, review, and export. This separation makes
 each decision inspectable, but it does not replace biological validation

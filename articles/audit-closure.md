@@ -1,5 +1,8 @@
 # Audit closure checklist
 
+![gatekeepR logo](figures/logo.svg)![gatekeepR
+logo](figures/logo-dark.svg)
+
 Before delivery, record the following checks for the project run:
 
 | Check         | Required evidence                                    |
