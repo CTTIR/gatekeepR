@@ -1,5 +1,9 @@
 # gatekeepR development
 
+* Standardize the named v5 package logo across README, documentation pages
+  and available application headers, with matching light and dark artwork.
+
+
 - Add fixed numerical threshold calls and state diagnostics with explicit parent
   eligibility, localization, missingness and non-authorizing audit outputs.
 

@@ -39,7 +39,8 @@ gk_app <- function(review = NULL, cellspec = NULL, config = NULL, workdir = NULL
   }
   shiny::shinyApp(
     ui = shiny::fluidPage(
-      shiny::titlePanel("gatekeepR review"),
+      shiny::titlePanel(shiny::tagList(.cttir_brand_logo(), "gatekeepR review"),
+      windowTitle = "gatekeepR"),
       shiny::tabsetPanel(
         shiny::tabPanel("Overview", shiny::verbatimTextOutput("overview")),
         shiny::tabPanel("Cells", shiny::tableOutput("cells")),
