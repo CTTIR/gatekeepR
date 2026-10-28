@@ -2,7 +2,10 @@
 # Assets are local package files, independent of application data.
 .cttir_brand_text <- function(file) {
   path <- system.file("branding", file, package = "gatekeepR")
-  if (!nzchar(path)) stop("The packaged branding asset is missing: ", file)
+  if (!nzchar(path)) {
+    .gk_abort("The packaged branding asset {.file {file}} is missing.",
+              class = "state")
+  }
   paste(readLines(path, warn = FALSE), collapse = "\n")
 }
 
