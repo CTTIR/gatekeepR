@@ -1,6 +1,18 @@
 # ggplot2 views over the same objects used by the batch and review paths.
 
+#' @importFrom rlang .data
 .gk_plot_require <- function() .gk_require("ggplot2", "gatekeepR plots")
+
+.gk_plot_match_cells <- function(query, reference) {
+  query <- .gk_cell_keys(query)
+  reference <- .gk_cell_keys(reference)
+  if (anyNA(query) || anyNA(reference) || anyDuplicated(query) || anyDuplicated(reference))
+    .gk_abort("Plot inputs need unique image and cell identity pairs.", class = "state")
+  index <- match(.gk_cell_key(query), .gk_cell_key(reference))
+  if (length(index) != nrow(query) || anyNA(index))
+    .gk_abort("Plot inputs contain different image and cell identities.", class = "state")
+  index
+}
 
 #' Plot a threshold density and its evidence pools
 #'
@@ -24,18 +36,29 @@ gk_plot_density <- function(thresholds, marker, image_id, parent = NA_character_
   } else {
     NULL
   }
-  if (!is.null(evidence$grid)) {
-    dat <- data.frame(value = evidence$grid, density = evidence$density)
-  } else if (!is.null(evidence$values)) {
-    d <- stats::density(evidence$values)
-    dat <- data.frame(value = d$x, density = d$y)
-  } else {
-    dat <- data.frame(value = numeric(), density = numeric())
+  density_rows <- function(values, pool) {
+    values <- values[is.finite(values)]
+    if (length(values) < 2L) return(NULL)
+    d <- stats::density(values)
+    data.frame(value = d$x, density = d$y, pool = pool)
   }
-  p <- ggplot2::ggplot(dat, ggplot2::aes(x = rlang::.data[["value"]], y = rlang::.data[["density"]])) +
+  curves <- list()
+  if (length(evidence$grid) && length(evidence$grid) == length(evidence$density)) {
+    curves[["pooled"]] <- data.frame(value = evidence$grid,
+      density = evidence$density, pool = "All observations")
+  } else if (length(evidence$values)) {
+    curves[["pooled"]] <- density_rows(evidence$values, "All observations")
+  }
+  curves[["positive"]] <- density_rows(evidence$positive_values, "Positive pool")
+  curves[["negative"]] <- density_rows(evidence$negative_values, "Negative pool")
+  dat <- if (length(curves)) do.call(rbind, curves) else
+    data.frame(value = numeric(), density = numeric(), pool = character())
+  p <- ggplot2::ggplot(dat, ggplot2::aes(x = .data[["value"]], y = .data[["density"]], colour = .data[["pool"]])) +
     ggplot2::geom_line(na.rm = TRUE) +
     ggplot2::labs(x = marker, y = "Density", title = paste(image_id, marker),
-      subtitle = paste(row$status, row$method), caption = row$details)
+      subtitle = paste(row$status, row$method), caption = row$details, colour = "Evidence")
+  if (!nrow(dat)) p <- p + ggplot2::annotate("text", x = if (is.finite(row$estimate[[1L]])) row$estimate[[1L]] else 0,
+    y = 0, label = "No density evidence retained", vjust = -1)
   if (is.finite(row$estimate[[1L]])) p <- p + ggplot2::geom_vline(xintercept = row$estimate[[1L]], linetype = 2)
   p
 }
@@ -56,12 +79,18 @@ gk_plot_embedding <- function(embedding, classification = NULL, colour_by = "pop
   if (!is.null(classification)) {
     .gk_check_class(classification, "gk_classification")
     if (!colour_by %in% names(classification$cells)) .gk_abort("Unknown colour_by column.", class = "input")
-    dat$colour <- classification$cells[[colour_by]][match(dat$cell_id, classification$cells$cell_id)]
+    if (is.null(embedding$cell_keys) || nrow(embedding$cell_keys) != nrow(dat) ||
+        !identical(embedding$source_sha256, classification$source_sha256) ||
+        !identical(embedding$config_sha256, classification$config_sha256))
+      .gk_abort("Embedding and classification must retain matching source and cell identities.", class = "state")
+    index <- .gk_plot_match_cells(embedding$cell_keys, classification$cells)
+    dat$image_id <- embedding$cell_keys$image_id
+    dat$colour <- classification$cells[[colour_by]][index]
   } else {
     if (!identical(colour_by, "population")) .gk_abort("Without classification, colour_by must be population.", class = "input")
     dat$colour <- dat$population
   }
-  ggplot2::ggplot(dat, ggplot2::aes(x = rlang::.data[["UMAP1"]], y = rlang::.data[["UMAP2"]], colour = rlang::.data[["colour"]])) +
+  ggplot2::ggplot(dat, ggplot2::aes(x = .data[["UMAP1"]], y = .data[["UMAP2"]], colour = .data[["colour"]])) +
     ggplot2::geom_point(size = 0.5, alpha = 0.7) +
     ggplot2::labs(colour = colour_by, title = "Marker embedding")
 }
@@ -79,7 +108,7 @@ gk_plot_map <- function(x, image_id, colour_by = "cell_type", layers = NULL) {
   .gk_plot_require()
   .gk_check_string(image_id)
   cells <- if (inherits(x, "gk_prepared")) x$cells else if (inherits(x, "gk_classification")) {
-    extra <- x$cells[match(x$coordinates$cell_id, x$cells$cell_id),
+    extra <- x$cells[.gk_plot_match_cells(x$coordinates, x$cells),
       setdiff(names(x$cells), c("image_id", "cell_id")), drop = FALSE]
     cbind(x$coordinates, extra)
   } else if (inherits(x, "gk_replayed")) x$cells else
@@ -87,12 +116,17 @@ gk_plot_map <- function(x, image_id, colour_by = "cell_type", layers = NULL) {
   if (!all(c("x", "y") %in% names(cells))) .gk_abort("The selected object has no centroid coordinates.", class = "structure")
   cells <- cells[cells$image_id == image_id, , drop = FALSE]
   if (!colour_by %in% names(cells)) cells[[colour_by]] <- "cells"
-  ggplot2::ggplot(cells, ggplot2::aes(x = rlang::.data[["x"]], y = rlang::.data[["y"]], colour = rlang::.data[[colour_by]])) +
+  ggplot2::ggplot(cells, ggplot2::aes(x = .data[["x"]], y = .data[["y"]], colour = .data[[colour_by]])) +
     ggplot2::geom_point(size = 0.5, alpha = 0.7) + ggplot2::coord_equal() +
     ggplot2::labs(colour = colour_by, title = image_id)
 }
 
 #' Plot marker means by classified cell type
+#'
+#' One point represents the mean of observed finite scores for one image,
+#' marker and cell type. Point size is the number of contributing cells.
+#' Scores use the same correction as the classification. Objects with
+#' mismatched source data, row order or score space are rejected.
 #'
 #' @param prepared A gk_prepare() result.
 #' @param classification A gk_classify() result.
@@ -102,15 +136,30 @@ gk_plot_map <- function(x, image_id, colour_by = "cell_type", layers = NULL) {
 #' @export
 gk_plot_dotplot <- function(prepared, classification, thresholds) {
   .gk_plot_require()
-  .gk_check_class(prepared, "gk_prepared"); .gk_check_class(classification, "gk_classification")
-  .gk_check_class(thresholds, "gk_thresholds")
-  markers <- thresholds$marker
+  .gk_check_class(prepared, "gk_prepared")
+  .gk_validate_classification(prepared, classification, thresholds)
+  score <- .gk_score_matrix(prepared, classification$correction)
+  markers <- unique(thresholds$marker)
   dat <- do.call(rbind, lapply(markers, function(marker) {
-    data.frame(marker = marker, cell_type = classification$cells$cell_type,
-      score = prepared$score[, marker], stringsAsFactors = FALSE)
+    values <- score[, marker]
+    values[prepared$source[, marker] <= 0L | !is.finite(values)] <- NA_real_
+    groups <- unique(classification$cells[, c("image_id", "cell_type"), drop = FALSE])
+    do.call(rbind, lapply(seq_len(nrow(groups)), function(i) {
+      keep <- classification$cells$image_id == groups$image_id[i] &
+        classification$cells$cell_type == groups$cell_type[i]
+      observed <- values[keep & !is.na(values)]
+      data.frame(image_id = groups$image_id[i], marker = marker,
+        cell_type = groups$cell_type[i], score = if (length(observed)) mean(observed) else NA_real_,
+        n_observed = length(observed), stringsAsFactors = FALSE)
+    }))
   }))
-  ggplot2::ggplot(dat, ggplot2::aes(x = rlang::.data[["marker"]], y = rlang::.data[["cell_type"]], size = abs(rlang::.data[["score"]]), colour = rlang::.data[["score"]])) +
-    ggplot2::geom_point(alpha = 0.7, na.rm = TRUE) + ggplot2::labs(title = "Marker dot plot")
+  ggplot2::ggplot(dat, ggplot2::aes(x = .data[["marker"]], y = .data[["cell_type"]], size = .data[["n_observed"]], colour = .data[["score"]])) +
+    ggplot2::geom_point(alpha = 0.8, na.rm = TRUE) +
+    ggplot2::scale_size_area(max_size = 6) +
+    ggplot2::facet_wrap(~image_id) +
+    ggplot2::labs(title = "Mean marker scores by cell type", x = "Marker", y = "Cell type",
+      size = "Observed cells", colour = "Mean score",
+      caption = "Means use the classification's score space; missing measurements do not contribute.")
 }
 
 #' Plot thresholds for one image
@@ -122,7 +171,7 @@ gk_plot_dotplot <- function(prepared, classification, thresholds) {
 gk_plot_thresholds <- function(thresholds, image_id) {
   .gk_plot_require(); .gk_check_class(thresholds, "gk_thresholds"); .gk_check_string(image_id)
   dat <- thresholds[thresholds$image_id == image_id, , drop = FALSE]
-  ggplot2::ggplot(dat, ggplot2::aes(x = rlang::.data[["marker"]], y = rlang::.data[["estimate"]], colour = rlang::.data[["status"]])) +
+  ggplot2::ggplot(dat, ggplot2::aes(x = .data[["marker"]], y = .data[["estimate"]], colour = .data[["status"]])) +
     ggplot2::geom_point(na.rm = TRUE) + ggplot2::coord_flip() + ggplot2::labs(title = image_id)
 }
 
@@ -135,7 +184,7 @@ gk_plot_thresholds <- function(thresholds, image_id) {
 gk_plot_states <- function(state_calls, image_id) {
   .gk_plot_require(); .gk_check_class(state_calls, "gk_state_calls"); .gk_check_string(image_id)
   dat <- state_calls$calls[state_calls$calls$image_id == image_id, , drop = FALSE]
-  ggplot2::ggplot(dat, ggplot2::aes(x = rlang::.data[["score"]], fill = rlang::.data[["positive"]])) +
+  ggplot2::ggplot(dat, ggplot2::aes(x = .data[["score"]], fill = .data[["positive"]])) +
     ggplot2::geom_histogram(bins = 40L, na.rm = TRUE) + ggplot2::facet_grid(marker ~ parent) +
     ggplot2::labs(title = image_id)
 }

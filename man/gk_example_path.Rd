@@ -4,9 +4,7 @@
 \alias{gk_example_path}
 \title{Paths to bundled example data}
 \usage{
-gk_example_path(
-  name = c("example-slide", "example-config.json", "example-review", "example-export")
-)
+gk_example_path(name = c("example-slide", "example-config.json"))
 }
 \arguments{
 \item{name}{Which example to locate.}
@@ -20,10 +18,12 @@ A single path.
 Returns the path of a file or directory shipped in \code{inst/extdata}:
 \itemize{
 \item \code{"example-slide"}: a cellspec directory from \code{gk_simulate(seed = 1)};
-\item \code{"example-config.json"}: \code{\link[=gk_example_config]{gk_example_config()}} written as JSON;
-\item \code{"example-review"}: a saved review working directory;
-\item \code{"example-export"}: a locked, verified export of that review.
+\item \code{"example-config.json"}: \code{\link[=gk_example_config]{gk_example_config()}} written as JSON.
 }
+
+Review checkpoints and exports are created by the reviewer rather than
+bundled as pre-reviewed decisions. Use \code{\link[=gk_review]{gk_review()}} and \code{\link[=gk_save_review]{gk_save_review()}}
+to create a checkpoint, or \code{\link[=gk_lock]{gk_lock()}} and \code{\link[=gk_export]{gk_export()}} for an export.
 }
 \examples{
 gk_example_path("example-config.json")

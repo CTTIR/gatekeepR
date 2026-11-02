@@ -18,23 +18,30 @@ gk_app(
 )
 }
 \arguments{
-\item{review}{An existing gk_review() object.}
+\item{review}{An existing \code{\link[=gk_review]{gk_review()}} object.}
 
 \item{cellspec}{A cellspec object or path used to build a review.}
 
-\item{config}{A gk_config() used with cellspec.}
+\item{config}{A \code{\link[=gk_config]{gk_config()}} used with cellspec.}
 
-\item{workdir}{A saved review directory.}
+\item{workdir}{A saved review directory to resume, or a new checkpoint
+directory when supplying \code{review} or \code{cellspec}. Checkpoints are written
+only when Save checkpoint is clicked. Existing directories must be resumed
+with \code{workdir} alone, preventing replacement with an unrelated review.}
 
-\item{export}{A verified export directory to inspect.}
+\item{export}{A verified export directory to inspect read-only.}
 
-\item{reviewer}{Reviewer identifier shown in the app.}
+\item{reviewer}{Initial reviewer identifier; it can be changed in the app.}
 
-\item{max_upload_mb}{Maximum upload size for a future upload view.}
+\item{max_upload_mb}{Reserved compatibility option. There is no upload view.}
 
-\item{allow_local_paths}{Allow local path inputs.}
+\item{allow_local_paths}{Allow \code{cellspec} to be a local path. Explicit
+\code{workdir} and \code{export} arguments are trusted host configuration; there are
+no browser-supplied local path inputs.}
 
-\item{max_plot_points}{Maximum points shown in map views.}
+\item{max_plot_points}{Maximum cells displayed in the map. The cell table
+shows at most 500 cells, or this limit if it is smaller.
+Display limits never change analysis, ledgers or exported rows.}
 
 \item{...}{Reserved application options.}
 }
@@ -42,6 +49,17 @@ gk_app(
 A shiny.appobj.
 }
 \description{
-Launch the gatekeepR review application
+Review threshold, structure, disposition and state decisions in a local
+Shiny session. Every change requires a reviewer and reason and appends a
+ledger entry. A locked download uses one verified snapshot; subsequent
+edits invalidate that download until a new snapshot is locked. Choosing
+\code{REVIEWED} is an explicit human assessment, not automatic panel validation.
+}
+\details{
+Review state is private to each browser session. When a checkpoint directory
+is configured, only the first active browser session can save it. Separate
+R processes are additionally protected by the checkpoint ownership rules in
+\code{\link[=gk_save_review]{gk_save_review()}}. The download is a gzip-compressed tar archive containing
+a \code{review} directory that can be checked with \code{\link[=gk_verify_export]{gk_verify_export()}}.
 }
 \concept{app}
