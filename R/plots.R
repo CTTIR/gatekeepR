@@ -32,7 +32,7 @@ gk_plot_density <- function(thresholds, marker, image_id, parent = NA_character_
   } else {
     dat <- data.frame(value = numeric(), density = numeric())
   }
-  p <- ggplot2::ggplot(dat, ggplot2::aes(x = rlang::.data[["value"]], y = rlang::.data[["density"]])) +
+  p <- ggplot2::ggplot(dat, ggplot2::aes(x = .data[["value"]], y = .data[["density"]])) +
     ggplot2::geom_line(na.rm = TRUE) +
     ggplot2::labs(x = marker, y = "Density", title = paste(image_id, marker),
       subtitle = paste(row$status, row$method), caption = row$details)
@@ -61,7 +61,7 @@ gk_plot_embedding <- function(embedding, classification = NULL, colour_by = "pop
     if (!identical(colour_by, "population")) .gk_abort("Without classification, colour_by must be population.", class = "input")
     dat$colour <- dat$population
   }
-  ggplot2::ggplot(dat, ggplot2::aes(x = rlang::.data[["UMAP1"]], y = rlang::.data[["UMAP2"]], colour = rlang::.data[["colour"]])) +
+  ggplot2::ggplot(dat, ggplot2::aes(x = .data[["UMAP1"]], y = .data[["UMAP2"]], colour = .data[["colour"]])) +
     ggplot2::geom_point(size = 0.5, alpha = 0.7) +
     ggplot2::labs(colour = colour_by, title = "Marker embedding")
 }
@@ -87,7 +87,7 @@ gk_plot_map <- function(x, image_id, colour_by = "cell_type", layers = NULL) {
   if (!all(c("x", "y") %in% names(cells))) .gk_abort("The selected object has no centroid coordinates.", class = "structure")
   cells <- cells[cells$image_id == image_id, , drop = FALSE]
   if (!colour_by %in% names(cells)) cells[[colour_by]] <- "cells"
-  ggplot2::ggplot(cells, ggplot2::aes(x = rlang::.data[["x"]], y = rlang::.data[["y"]], colour = rlang::.data[[colour_by]])) +
+  ggplot2::ggplot(cells, ggplot2::aes(x = .data[["x"]], y = .data[["y"]], colour = .data[[colour_by]])) +
     ggplot2::geom_point(size = 0.5, alpha = 0.7) + ggplot2::coord_equal() +
     ggplot2::labs(colour = colour_by, title = image_id)
 }
@@ -109,7 +109,7 @@ gk_plot_dotplot <- function(prepared, classification, thresholds) {
     data.frame(marker = marker, cell_type = classification$cells$cell_type,
       score = prepared$score[, marker], stringsAsFactors = FALSE)
   }))
-  ggplot2::ggplot(dat, ggplot2::aes(x = rlang::.data[["marker"]], y = rlang::.data[["cell_type"]], size = abs(rlang::.data[["score"]]), colour = rlang::.data[["score"]])) +
+  ggplot2::ggplot(dat, ggplot2::aes(x = .data[["marker"]], y = .data[["cell_type"]], size = abs(.data[["score"]]), colour = .data[["score"]])) +
     ggplot2::geom_point(alpha = 0.7, na.rm = TRUE) + ggplot2::labs(title = "Marker dot plot")
 }
 
@@ -122,7 +122,7 @@ gk_plot_dotplot <- function(prepared, classification, thresholds) {
 gk_plot_thresholds <- function(thresholds, image_id) {
   .gk_plot_require(); .gk_check_class(thresholds, "gk_thresholds"); .gk_check_string(image_id)
   dat <- thresholds[thresholds$image_id == image_id, , drop = FALSE]
-  ggplot2::ggplot(dat, ggplot2::aes(x = rlang::.data[["marker"]], y = rlang::.data[["estimate"]], colour = rlang::.data[["status"]])) +
+  ggplot2::ggplot(dat, ggplot2::aes(x = .data[["marker"]], y = .data[["estimate"]], colour = .data[["status"]])) +
     ggplot2::geom_point(na.rm = TRUE) + ggplot2::coord_flip() + ggplot2::labs(title = image_id)
 }
 
@@ -135,7 +135,7 @@ gk_plot_thresholds <- function(thresholds, image_id) {
 gk_plot_states <- function(state_calls, image_id) {
   .gk_plot_require(); .gk_check_class(state_calls, "gk_state_calls"); .gk_check_string(image_id)
   dat <- state_calls$calls[state_calls$calls$image_id == image_id, , drop = FALSE]
-  ggplot2::ggplot(dat, ggplot2::aes(x = rlang::.data[["score"]], fill = rlang::.data[["positive"]])) +
+  ggplot2::ggplot(dat, ggplot2::aes(x = .data[["score"]], fill = .data[["positive"]])) +
     ggplot2::geom_histogram(bins = 40L, na.rm = TRUE) + ggplot2::facet_grid(marker ~ parent) +
     ggplot2::labs(title = image_id)
 }

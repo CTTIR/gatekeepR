@@ -14,6 +14,25 @@ test_that("plot helpers return ggplot objects", {
   expect_s3_class(gk_plot_states(st, img), "ggplot")
 })
 
+test_that("plot helpers draw without error", {
+  skip_if_not_installed("ggplot2")
+  prep <- gk_example_prepared()
+  cfg <- gk_example_config()
+  th <- gk_thresholds(prep, cfg, seed = 1L)
+  cl <- suppressWarnings(gk_classify(prep, th, cfg))
+  st <- gk_state_calls(prep, th, cl, cfg)
+  img <- unique(prep$cells$image_id)
+  plots <- list(
+    gk_plot_density(th, "PanCK", img),
+    gk_plot_thresholds(th, img),
+    gk_plot_density(st$state_thresholds, "FOXP3", img, "CD4 T cells"),
+    gk_plot_dotplot(prep, cl, th),
+    gk_plot_map(cl, img),
+    gk_plot_states(st, img)
+  )
+  for (p in plots) expect_s3_class(ggplot2::ggplot_build(p), "ggplot_built")
+})
+
 test_that("embedding plot and app use the public result contracts", {
   skip_if_not_installed("ggplot2")
   skip_if_not_installed("uwot")

@@ -1,5 +1,11 @@
 # gatekeepR development
 
+* Fix every plot helper (`gk_plot_density()`, `gk_plot_thresholds()`,
+  `gk_plot_map()`, `gk_plot_dotplot()`, `gk_plot_states()`,
+  `gk_plot_embedding()` and `gk_plot_overview()`), which failed when drawn
+  with "Can't subset `.data` outside of a data mask context". The tests now
+  build each plot instead of only checking its class.
+
 * Standardize the named v5 package logo across README, documentation pages
   and available application headers, with matching light and dark artwork.
 
