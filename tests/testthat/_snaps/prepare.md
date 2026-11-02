@@ -40,4 +40,3 @@
     Message
       v Prepared 300 cells on 1 image, 12 markers.
       ! 1 image x marker combination not callable: "CD21".
-
