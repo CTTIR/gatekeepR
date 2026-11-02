@@ -2,22 +2,39 @@
 % Please edit documentation in R/export.R
 \name{gk_verify_export}
 \alias{gk_verify_export}
-\title{Verify manifest integrity, replay and reconciliation invariants}
+\title{Verify content identity, replay and reconciliation invariants}
 \usage{
-gk_verify_export(dir, cellspec_dir = NULL, strict = TRUE)
+gk_verify_export(
+  dir,
+  cellspec_dir = NULL,
+  strict = TRUE,
+  expected_review_id = NULL
+)
 }
 \arguments{
 \item{dir}{Export directory written by \code{\link[=gk_export]{gk_export()}}.}
 
-\item{cellspec_dir}{Optional source cellspec directory.}
+\item{cellspec_dir}{Optional source cellspec directory, checked against the
+source and prepared score contents.}
 
-\item{strict}{Abort on the first failed verification group?}
+\item{strict}{Abort on failed verification?}
+
+\item{expected_review_id}{Optional independently retained full SHA-256 review
+ID (the snapshot's \code{review_id_full}).}
 }
 \value{
 A check data frame with \code{check}, \code{ok} and \code{details}.
 }
 \description{
-Verify manifest integrity, replay and reconciliation invariants
+Version 2 checks typed contents, source identity, correction model and every
+ledger, then reconstructs the base review and compares effective cells,
+scores and state calls. Legacy exports can be inspected explicitly with
+\code{gk_read_export(verify = FALSE)}, but require a new review and lock to obtain
+this verification contract. No export files are modified.
+}
+\details{
+Hashes are not signatures. Keep the full review ID independently and supply
+\code{expected_review_id} when verification must detect a replaced whole export.
 }
 \seealso{
 Other export:

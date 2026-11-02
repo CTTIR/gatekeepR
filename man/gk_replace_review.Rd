@@ -30,6 +30,12 @@ A new \code{gk_review} object with \code{backup_path} attribute.
 \description{
 Replace selected review ledgers from a saved checkpoint
 }
+\details{
+Replacement requires the same analytical base. Partial replacement
+must preserve globally unique action orders and valid undo references.
+If histories conflict, use \code{\link[=gk_import_cuts]{gk_import_cuts()}} to append new cuts, or replace
+the complete history with \code{scope = "all"}.
+}
 \seealso{
 Other review:
 \code{\link[=gk_decide_structure]{gk_decide_structure()}},

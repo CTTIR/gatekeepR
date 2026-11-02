@@ -1,37 +1,27 @@
 # Immutable snapshots, content-addressed exports and replay verification.
 
 .gk_export_thresholds <- function(snapshot) {
-  rbind(
-    as.data.frame(snapshot$review$thresholds, stringsAsFactors = FALSE),
-    as.data.frame(snapshot$review$state_calls$state_thresholds, stringsAsFactors = FALSE)
-  )
+  rbind(as.data.frame(snapshot$review$thresholds),
+    as.data.frame(snapshot$review$state_calls$state_thresholds))
 }
 
 .gk_export_correction_hash <- function(review) {
   correction <- review$classification$correction
-  if (is.null(correction)) return(.gk_sha256_object("none"))
-  .gk_sha256_object(correction$model)
+  .gk_sha256_object(if (is.null(correction)) "none" else correction$model)
 }
 
 .gk_export_ledgers_hash <- function(review) .gk_sha256_object(review$ledgers)
 
 .gk_snapshot_payload <- function(snapshot) {
-  list(
-    schema = "gatekeepR-snapshot", review_id = snapshot$review_id,
-    review_id_full = snapshot$review_id_full, status = snapshot$status,
-    production_eligible = snapshot$production_eligible,
-    reviewer = snapshot$reviewer, locked_utc = snapshot$locked_utc,
-    source_sha256 = snapshot$source_sha256,
-    source_manifest_sha256 = snapshot$source_manifest_sha256,
-    config_sha256 = snapshot$config_sha256,
-    thresholds_sha256 = snapshot$thresholds_sha256,
-    correction_model_sha256 = snapshot$correction_model_sha256,
-    ledgers_sha256 = snapshot$ledgers_sha256, session = snapshot$session,
-    disabled_rules = snapshot$review$classification$disabled_rules
-  )
+  snapshot[setdiff(names(snapshot), c("review", "replayed"))]
 }
 
 #' Lock a review into an immutable snapshot
+#'
+#' The version 2 review ID binds source identity, typed replay inputs, effective
+#' outputs, ledgers, correction model, reviewer and status. It is a content hash,
+#' not a signature or proof of a reviewer's identity. REVIEWED records the human
+#' reviewer's assertion; it does not certify scientific or clinical validity.
 #'
 #' @param review A [gk_review()] object.
 #' @param reviewer Reviewer identifier.
@@ -43,35 +33,32 @@ gk_lock <- function(review, reviewer, status = c("PENDING", "REVIEWED")) {
   .gk_review_check(review)
   .gk_check_reviewer(reviewer)
   status <- rlang::arg_match(status)
-  replayed <- gk_replay(review)
-  correction_hash <- .gk_export_correction_hash(review)
-  threshold_hash <- .gk_sha256_object(.gk_export_thresholds(list(review = review)))
-  ledgers_hash <- .gk_export_ledgers_hash(review)
-  id_object <- list(
-    source_cellspec_manifest_sha256 = review$prepared$source_manifest_sha256,
-    config_sha256 = review$config_sha256, thresholds_sha256 = threshold_hash,
-    correction_model_sha256 = correction_hash, ledgers_sha256 = ledgers_hash,
-    gatekeepR_version = .gk_package_version(), cellspecR_version = "1.0.0"
-  )
-  full <- .gk_sha256_object(id_object)
+  # Validate the base objects independently of their append-only ledgers.
+  gk_review(review$classification, review$state_calls, review$structures,
+    review$thresholds, review$prepared)
   soft <- extSoftVersion()
-  blas <- if ("BLAS" %in% names(soft)) unname(soft[["BLAS"]]) else NA_character_
-  lapack <- if ("LAPACK" %in% names(soft)) unname(soft[["LAPACK"]]) else NA_character_
   snapshot <- list(
-    review_id = paste0("gk-", substr(full, 1L, 16L)), review_id_full = full,
+    schema = "gatekeepR-snapshot", format_version = 2L,
     status = status, production_eligible = identical(status, "REVIEWED"),
     reviewer = reviewer, locked_utc = .gk_utc_now(),
     source_sha256 = review$source_sha256,
     source_manifest_sha256 = review$prepared$source_manifest_sha256,
-    config_sha256 = review$config_sha256, thresholds_sha256 = threshold_hash,
-    correction_model_sha256 = correction_hash, ledgers_sha256 = ledgers_hash,
+    config_sha256 = review$config_sha256,
+    thresholds_sha256 = .gk_sha256_object(.gk_export_thresholds(list(review = review))),
+    correction_model_sha256 = .gk_export_correction_hash(review),
+    ledgers_sha256 = .gk_export_ledgers_hash(review),
+    package_version = .gk_package_version(),
     session = list(r_version = R.version$version.string, platform = R.version$platform,
-      blas = blas, lapack = lapack,
+      blas = unname(soft["BLAS"]), lapack = unname(soft["LAPACK"]),
       packages = list(gatekeepR = .gk_package_version(),
-        jsonlite = .gk_package_version("jsonlite")), seed = NA_character_,
-      time_utc = .gk_utc_now()),
-    review = review, replayed = replayed
+        cellspecR = .gk_package_version("cellspecR"),
+        jsonlite = .gk_package_version("jsonlite")), time_utc = .gk_utc_now()),
+    review = review, replayed = gk_replay(review)
   )
+  snapshot$content <- .gk_export_content(snapshot)
+  full <- .gk_sha256_object(.gk_export_identity(snapshot))
+  snapshot$review_id_full <- full
+  snapshot$review_id <- paste0("gk-", substr(full, 1L, 16L))
   class(snapshot) <- "gk_snapshot"
   snapshot
 }
@@ -81,34 +68,10 @@ gk_lock <- function(review, reviewer, status = c("PENDING", "REVIEWED")) {
   cbind(review_id = rep(review_id, nrow(df)), df, row.names = NULL)
 }
 
-.gk_export_scores <- function(snapshot) {
-  review <- snapshot$review
-  prepared <- review$prepared
-  score <- if (!is.null(review$classification$correction)) review$classification$correction$matrix else prepared$score
-  out <- data.frame(review_id = snapshot$review_id, image_id = prepared$cells$image_id,
-    cell_id = prepared$cells$cell_id, stringsAsFactors = FALSE)
-  for (marker in colnames(score)) out[[paste0("score__", marker)]] <- score[, marker]
-  for (marker in names(prepared$localization)) {
-    out[[paste0("localization_ratio__", marker)]] <- prepared$localization[[marker]]$ratio
-  }
-  out
-}
-
-.gk_export_cells <- function(snapshot) {
-  review <- snapshot$review
-  replayed <- snapshot$replayed$cells
-  coords <- review$prepared$cells[match(replayed$cell_id, review$prepared$cells$cell_id), c("x", "y"), drop = FALSE]
-  replayed$x <- coords$x
-  replayed$y <- coords$y
-  replayed <- replayed[, c("image_id", "cell_id", "x", "y", "base_cell_type", "cell_type",
-    "rule_id", "pending_review", setdiff(names(replayed), c("image_id", "cell_id", "x", "y",
-      "base_cell_type", "cell_type", "rule_id", "pending_review", "excluded", "structure_id",
-      "structure_decision", "disposition_effective", "analysed")), "excluded", "structure_id",
-    "structure_decision", "disposition_effective", "analysed"), drop = FALSE]
-  .gk_export_with_id(replayed, snapshot$review_id)
-}
-
 #' Write a locked review export
+#'
+#' Modified snapshots are rejected before writing. Staged files must pass
+#' content and replay verification before they replace the destination.
 #'
 #' @param snapshot A [gk_lock()] result.
 #' @param dir Destination directory.
@@ -120,39 +83,42 @@ gk_export <- function(snapshot, dir, overwrite = FALSE) {
   .gk_check_class(snapshot, "gk_snapshot")
   .gk_check_string(dir)
   .gk_check_flag(overwrite)
+  tables <- .gk_export_tables(snapshot)
+  current <- snapshot
+  current$content <- .gk_export_content(snapshot, tables)
+  current$source_sha256 <- snapshot$review$prepared$source_sha256
+  current$source_manifest_sha256 <- snapshot$review$prepared$source_manifest_sha256
+  current$config_sha256 <- gk_config_hash(snapshot$review$config)
+  current$correction_model_sha256 <- .gk_export_correction_hash(snapshot$review)
+  current$ledgers_sha256 <- .gk_export_ledgers_hash(snapshot$review)
+  current$thresholds_sha256 <- .gk_sha256_object(.gk_export_thresholds(snapshot))
+  full <- .gk_sha256_object(.gk_export_identity(current))
+  if (!identical(snapshot$format_version, 2L) ||
+    !identical(full, snapshot$review_id_full) ||
+    !identical(snapshot$review_id, paste0("gk-", substr(full, 1L, 16L)))) {
+    .gk_abort("Snapshot content changed after locking; review and lock again.", class = "verify")
+  }
   stage <- .gk_stage_dir(dir, overwrite = overwrite)
   on.exit(unlink(stage, recursive = TRUE), add = TRUE)
-  dir.create(file.path(stage, "ledgers"), recursive = TRUE, showWarnings = FALSE)
-  review <- snapshot$review
+  for (subdir in c("ledgers", "replay")) dir.create(file.path(stage, subdir))
   .gk_write_json(.gk_snapshot_payload(snapshot), file.path(stage, "snapshot.json"))
-  .gk_write_json(list(review_id = snapshot$review_id, config = .gk_config_to_list(review$config)),
-    file.path(stage, "config.json"))
-  .gk_write_tsv(.gk_export_with_id(.gk_export_thresholds(snapshot), snapshot$review_id),
-    file.path(stage, "thresholds.tsv"))
-  correction <- review$classification$correction
+  .gk_write_json(list(review_id = snapshot$review_id,
+    config = .gk_config_to_list(snapshot$review$config)), file.path(stage, "config.json"))
+  correction <- snapshot$review$classification$correction
   .gk_write_json(list(review_id = snapshot$review_id,
     model = if (is.null(correction)) "none" else correction$model),
     file.path(stage, "correction_model.json"))
-  .gk_write_tsv(.gk_export_cells(snapshot), file.path(stage, "cells.tsv.gz"))
-  .gk_write_tsv(.gk_export_scores(snapshot), file.path(stage, "scores.tsv.gz"))
-  .gk_write_tsv(.gk_export_with_id(snapshot$replayed$state_calls, snapshot$review_id),
-    file.path(stage, "state_calls.tsv.gz"))
-  .gk_write_tsv(.gk_export_with_id(review$structures$structures, snapshot$review_id),
-    file.path(stage, "structures.tsv"))
-  for (name in names(review$ledgers)) {
-    .gk_write_tsv(.gk_export_with_id(review$ledgers[[name]], snapshot$review_id),
-      file.path(stage, "ledgers", paste0(name, ".tsv")))
+  for (path in names(tables)) {
+    .gk_write_tsv(.gk_export_with_id(tables[[path]], snapshot$review_id), file.path(stage, path))
   }
-  files <- .gk_list_files(stage)
-  .gk_write_manifest(stage, files, done = list(review_id = snapshot$review_id))
+  .gk_write_manifest(stage, .gk_list_files(stage), done = list(review_id = snapshot$review_id))
+  gk_verify_export(stage, expected_review_id = snapshot$review_id_full)
   .gk_publish_dir(stage, dir, overwrite = overwrite)
-  on.exit(NULL, add = FALSE)
   invisible(dir)
 }
 
 .gk_verify_add <- function(rows, check, ok, details = "") {
-  row <- data.frame(check = check, ok = isTRUE(ok), details = details,
-    stringsAsFactors = FALSE)
+  row <- data.frame(check = check, ok = isTRUE(ok), details = details, stringsAsFactors = FALSE)
   if (is.data.frame(rows)) rbind(rows, row) else c(rows, list(row))
 }
 
@@ -166,147 +132,134 @@ gk_export <- function(snapshot, dir, overwrite = FALSE) {
   checks
 }
 
-#' Verify manifest integrity, replay and reconciliation invariants
+.gk_verify_export_content <- function(dir, cellspec_dir, expected_review_id) {
+  checks <- data.frame(check = character(), ok = logical(), details = character())
+  add <- function(check, ok, details = "") {
+    checks <<- .gk_verify_add(checks, check, ok, details)
+  }
+  snapshot <- .gk_read_json(file.path(dir, "snapshot.json"))
+  version_ok <- identical(snapshot$schema, "gatekeepR-snapshot") &&
+    identical(as.integer(snapshot$format_version), 2L)
+  add("format_version", version_ok,
+    if (!version_ok) "Legacy or unknown export format: inspect with verify = FALSE; regenerate, review and lock with version 2." else "")
+  if (!version_ok) return(checks)
+  id <- snapshot$review_id
+  full <- .gk_sha256_object(.gk_export_identity(snapshot))
+  add("review_identity", identical(full, snapshot$review_id_full) &&
+    identical(id, paste0("gk-", substr(full, 1L, 16L))))
+  if (!is.null(expected_review_id)) {
+    add("expected_review_identity", identical(expected_review_id, snapshot$review_id_full),
+      "Compare the full ID with an independently retained trusted value.")
+  }
+  add("review_status", is.character(snapshot$status) && length(snapshot$status) == 1L &&
+    snapshot$status %in% c("PENDING", "REVIEWED") &&
+    identical(snapshot$production_eligible, identical(snapshot$status, "REVIEWED")) &&
+    is.character(snapshot$reviewer) && length(snapshot$reviewer) == 1L &&
+    !is.na(snapshot$reviewer) && nzchar(trimws(snapshot$reviewer)))
+  done <- .gk_read_done(dir)
+  add("done_review_id", identical(unname(done$fields[["review_id"]]), id))
+  manifest <- .gk_read_manifest(dir)
+  required <- c("snapshot.json", "config.json", "correction_model.json", .gk_export_paths())
+  add("export_files", setequal(manifest$file, required))
+  if (any(!checks$ok)) return(checks)
+  tables <- .gk_read_export_tables(dir, snapshot)
+  for (path in names(tables)) {
+    add(paste0("content_", path),
+      identical(.gk_table_hash(tables[[path]]), snapshot$content$table_hashes[[path]]))
+  }
+  config_json <- .gk_read_json(file.path(dir, "config.json"))
+  config <- .gk_config_from_list(config_json$config)
+  add("config_hash", identical(config_json$review_id, id) &&
+    identical(gk_config_hash(config), snapshot$config_sha256))
+  correction <- .gk_read_json(file.path(dir, "correction_model.json"))
+  add("correction_model_hash", identical(correction$review_id, id) &&
+    identical(.gk_sha256_object(correction$model), snapshot$correction_model_sha256))
+  add("threshold_hash", identical(.gk_sha256_object(tables[["thresholds.tsv"]]),
+    snapshot$thresholds_sha256))
+  if (any(!checks$ok)) return(checks)
+  review <- .gk_export_restore_review(snapshot, config, tables, correction$model)
+  add("ledgers_hash", identical(.gk_export_ledgers_hash(review), snapshot$ledgers_sha256))
+  replayed <- gk_replay(review)
+  rebuilt <- .gk_export_tables(list(review = review, replayed = replayed))
+  for (path in c("cells.tsv.gz", "scores.tsv.gz", "state_calls.tsv.gz")) {
+    add(paste0("replay_", path), identical(.gk_table_hash(rebuilt[[path]]), .gk_table_hash(tables[[path]])))
+  }
+  add("disabled_rules", identical(.gk_sha256_object(replayed$disabled_rules),
+    .gk_sha256_object(snapshot$content$disabled_rules)))
+  cells <- replayed$cells
+  add("deleted_cells_not_analysed", !any(cells$disposition_effective == "DELETE" & cells$analysed))
+  if (!is.null(cellspec_dir)) {
+    source <- gk_prepare(cellspec_dir, config, quiet = TRUE)
+    add("source_hash", identical(source$source_sha256, snapshot$source_sha256))
+    add("source_prepared_cells", identical(.gk_table_hash(source$cells),
+      .gk_table_hash(tables[["replay/prepared_cells.tsv.gz"]])))
+    add("source_raw_scores", identical(.gk_table_hash(.gk_export_matrix(source, source$score)),
+      .gk_table_hash(tables[["replay/raw_scores.tsv.gz"]])))
+  }
+  checks
+}
+
+#' Verify content identity, replay and reconciliation invariants
+#'
+#' Version 2 checks typed contents, source identity, correction model and every
+#' ledger, then reconstructs the base review and compares effective cells,
+#' scores and state calls. Legacy exports can be inspected explicitly with
+#' `gk_read_export(verify = FALSE)`, but require a new review and lock to obtain
+#' this verification contract. No export files are modified.
+#'
+#' Hashes are not signatures. Keep the full review ID independently and supply
+#' `expected_review_id` when verification must detect a replaced whole export.
 #'
 #' @param dir Export directory written by [gk_export()].
-#' @param cellspec_dir Optional source cellspec directory.
-#' @param strict Abort on the first failed verification group?
+#' @param cellspec_dir Optional source cellspec directory, checked against the
+#'   source and prepared score contents.
+#' @param strict Abort on failed verification?
+#' @param expected_review_id Optional independently retained full SHA-256 review
+#'   ID (the snapshot's `review_id_full`).
 #' @return A check data frame with `check`, `ok` and `details`.
 #' @family export
 #' @export
-gk_verify_export <- function(dir, cellspec_dir = NULL, strict = TRUE) {
+gk_verify_export <- function(dir, cellspec_dir = NULL, strict = TRUE, expected_review_id = NULL) {
   .gk_check_dir_exists(dir)
   .gk_check_flag(strict)
-  checks <- .gk_manifest_checks(dir)
-  checks <- .gk_verify_fail(checks, strict)
-  if (any(!checks$ok)) return(checks)
-  snapshot <- .gk_read_json(file.path(dir, "snapshot.json"))
-  review_id <- snapshot$review_id
-  checks <- .gk_verify_add(checks, "snapshot_review_id", is.character(review_id) && length(review_id) == 1L)
-  done <- .gk_read_done(dir)
-  checks <- .gk_verify_add(checks, "done_review_id", identical(unname(done$fields[["review_id"]]), review_id))
-  tsv_paths <- c("thresholds.tsv", "cells.tsv.gz", "scores.tsv.gz", "state_calls.tsv.gz",
-    "structures.tsv", file.path("ledgers", paste0(names(.gk_empty_ledgers()), ".tsv")))
-  threshold_types <- c(image_id = "character", marker = "character", parent = "character",
-    role = "character", method = "character", status = "character", estimate = "double",
-    crossing = "double", negative_q99 = "double", auc = "double",
-    n_positive_pool = "integer", n_negative_pool = "integer",
-    positive_populations = "character", negative_populations = "character",
-    rule = "character", args_json = "character", details = "character",
-    evidence_ref = "character")
-  cells_types <- c(image_id = "character", cell_id = "character", x = "double", y = "double",
-    base_cell_type = "character", cell_type = "character", rule_id = "character",
-    pending_review = "logical", excluded = "logical", structure_id = "character",
-    structure_decision = "character", disposition_effective = "character", analysed = "logical")
-  raw_scores <- .gk_read_tsv(file.path(dir, "scores.tsv.gz"))
-  score_fields <- grep("^(score|localization_ratio)__", names(raw_scores), value = TRUE)
-  score_types <- c(image_id = "character", cell_id = "character",
-    stats::setNames(rep("double", length(score_fields)), score_fields))
-  structure_types <- c(image_id = "character", structure_id = "character", n_cells = "integer",
-    centroid_x = "double", centroid_y = "double", xmin = "double", xmax = "double",
-    ymin = "double", ymax = "double", decision = "character")
-  state_types <- c(image_id = "character", cell_id = "character", marker = "character",
-    parent = "character", in_parent = "logical", evaluable = "logical", score = "double",
-    estimate = "double", localization_ratio = "double", positive = "logical", enabled = "logical")
-  types <- list(threshold_types, cells_types, score_types, state_types, structure_types,
-    .gk_ledger_types, .gk_ledger_types, .gk_ledger_types, .gk_ledger_types)
-  tsvs <- lapply(seq_along(tsv_paths), function(i) {
-    .gk_read_tsv(file.path(dir, tsv_paths[[i]]), types = types[[i]])
-  })
-  names(tsvs) <- tsv_paths
-  for (i in seq_along(tsvs)) {
-    x <- tsvs[[i]]
-    ok <- ncol(x) > 0L && identical(names(x)[[1L]], "review_id") &&
-      (nrow(x) == 0L || all(x[[1L]] == review_id))
-    checks <- .gk_verify_add(checks, paste0("review_id_", gsub("/", "_", tsv_paths[[i]], fixed = TRUE)), ok)
+  if (!is.null(expected_review_id)) .gk_check_string(expected_review_id)
+  checks <- tryCatch(.gk_manifest_checks(dir, allow_extra = FALSE),
+    error = function(e) .gk_verify_add(data.frame(), "manifest_readable", FALSE, conditionMessage(e)))
+  if (all(checks$ok)) {
+    content <- tryCatch(.gk_verify_export_content(dir, cellspec_dir, expected_review_id),
+      error = function(e) .gk_verify_add(data.frame(), "content_and_replay", FALSE, conditionMessage(e)))
+    checks <- rbind(checks, content)
   }
-  config_json <- .gk_read_json(file.path(dir, "config.json"))
-  config <- .gk_config_from_list(config_json$config %||% config_json)
-  checks <- .gk_verify_add(checks, "config_hash", identical(gk_config_hash(config), snapshot$config_sha256))
-  if (!is.null(cellspec_dir)) {
-    .gk_check_dir_exists(cellspec_dir)
-    source <- gk_read_cellspec(cellspec_dir)
-    checks <- .gk_verify_add(checks, "source_manifest_hash",
-      identical(source$provenance$manifest_sha256, snapshot$source_manifest_sha256))
-  }
-  cells <- tsvs[["cells.tsv.gz"]]
-  scores <- tsvs[["scores.tsv.gz"]]
-  thresholds <- tsvs[["thresholds.tsv"]]
-  threshold_data <- thresholds[, setdiff(names(thresholds), "review_id"), drop = FALSE]
-  class(threshold_data) <- c("gk_thresholds", "data.frame")
-  attr(threshold_data, "config_sha256") <- snapshot$config_sha256
-  attr(threshold_data, "source_sha256") <- snapshot$source_sha256
-  score_cols <- grep("^score__", names(scores), value = TRUE)
-  score_matrix <- as.matrix(scores[, score_cols, drop = FALSE])
-  colnames(score_matrix) <- sub("^score__", "", score_cols)
-  stub_cells <- cells[, c("image_id", "cell_id", "x", "y"), drop = FALSE]
-  prepared <- structure(list(cells = stub_cells, score = score_matrix,
-    config = config, config_sha256 = snapshot$config_sha256,
-    source_sha256 = snapshot$source_sha256, source_manifest_sha256 = snapshot$source_manifest_sha256),
-    class = "gk_prepared")
-  identity_thresholds <- threshold_data[is.na(threshold_data$parent), , drop = FALSE]
-  class(identity_thresholds) <- c("gk_thresholds", "data.frame")
-  attr(identity_thresholds, "config_sha256") <- snapshot$config_sha256
-  attr(identity_thresholds, "source_sha256") <- snapshot$source_sha256
-  base_classification <- suppressWarnings(gk_classify(prepared, identity_thresholds, config))
-  state_thresholds <- threshold_data[!is.na(threshold_data$parent), , drop = FALSE]
-  class(state_thresholds) <- c("gk_thresholds", "data.frame")
-  attr(state_thresholds, "config_sha256") <- snapshot$config_sha256
-  attr(state_thresholds, "source_sha256") <- snapshot$source_sha256
-  state_data <- tsvs[["state_calls.tsv.gz"]][, setdiff(names(tsvs[["state_calls.tsv.gz"]]), "review_id"), drop = FALSE]
-  state_obj <- structure(list(calls = state_data, state_thresholds = state_thresholds,
-    config_sha256 = snapshot$config_sha256, source_sha256 = snapshot$source_sha256),
-    class = "gk_state_calls")
-  structure_data <- tsvs[["structures.tsv"]][, setdiff(names(tsvs[["structures.tsv"]]), "review_id"), drop = FALSE]
-  cell_structure <- cells[, c("image_id", "cell_id", "structure_id"), drop = FALSE]
-  structure_obj <- structure(list(structures = structure_data, cell_structure = cell_structure,
-    config_sha256 = snapshot$config_sha256, source_sha256 = snapshot$source_sha256),
-    class = "gk_structures")
-  review <- gk_review(base_classification, state_obj, structure_obj, identity_thresholds, prepared)
-  for (name in names(review$ledgers)) {
-    x <- tsvs[[file.path("ledgers", paste0(name, ".tsv"))]]
-    review$ledgers[[name]] <- x[, setdiff(names(x), "review_id"), drop = FALSE]
-  }
-  replayed <- gk_replay(review)$cells
-  compare <- intersect(c("image_id", "cell_id", "base_cell_type", "cell_type", "rule_id",
-    "pending_review", "excluded", "structure_id", "structure_decision",
-    "disposition_effective", "analysed"), names(cells))
-  checks <- .gk_verify_add(checks, "replay_matches_cells",
-    identical(replayed[, compare, drop = FALSE], cells[, compare, drop = FALSE]))
-  benign_tumour <- any(cells$structure_decision == "Benign" & cells$cell_type == "Tumor cells", na.rm = TRUE)
-  checks <- .gk_verify_add(checks, "benign_structure_not_tumour", !benign_tumour)
-  deleted_analysed <- any(cells$disposition_effective == "DELETE" & cells$analysed, na.rm = TRUE)
-  checks <- .gk_verify_add(checks, "deleted_cells_not_analysed", !deleted_analysed)
-  checks <- .gk_verify_add(checks, "threshold_hash",
-    identical(snapshot$thresholds_sha256, .gk_sha256_object(thresholds[, setdiff(names(thresholds), "review_id"), drop = FALSE])))
   .gk_verify_fail(checks, strict)
 }
 
 #' Read a verified export
 #'
 #' @param dir Export directory.
-#' @param verify Verify before reading?
+#' @param verify Verify before reading? `FALSE` permits inspection of legacy or
+#'   untrusted exports and makes no integrity claim.
+#' @param expected_review_id Optional full ID passed to [gk_verify_export()].
 #' @return A `gk_export` list containing snapshot, configuration and tables.
 #' @family export
 #' @export
-gk_read_export <- function(dir, verify = TRUE) {
+gk_read_export <- function(dir, verify = TRUE, expected_review_id = NULL) {
   .gk_check_dir_exists(dir)
   .gk_check_flag(verify)
-  checks <- if (verify) gk_verify_export(dir, strict = TRUE) else NULL
+  checks <- if (verify) gk_verify_export(dir, expected_review_id = expected_review_id) else NULL
   snapshot <- .gk_read_json(file.path(dir, "snapshot.json"))
   config_json <- .gk_read_json(file.path(dir, "config.json"))
-  out <- list(
-    snapshot = snapshot,
+  tables <- if (isTRUE(verify)) .gk_read_export_tables(dir, snapshot) else NULL
+  read <- function(path) {
+    if (is.null(tables)) .gk_read_tsv(file.path(dir, path)) else
+      .gk_export_with_id(tables[[path]], snapshot$review_id)
+  }
+  out <- list(snapshot = snapshot,
     config = .gk_config_from_list(config_json$config %||% config_json),
-    thresholds = .gk_read_tsv(file.path(dir, "thresholds.tsv")),
-    cells = .gk_read_tsv(file.path(dir, "cells.tsv.gz")),
-    scores = .gk_read_tsv(file.path(dir, "scores.tsv.gz")),
-    state_calls = .gk_read_tsv(file.path(dir, "state_calls.tsv.gz")),
-    structures = .gk_read_tsv(file.path(dir, "structures.tsv")),
-    ledgers = stats::setNames(lapply(names(.gk_empty_ledgers()), function(name) {
-      .gk_read_tsv(file.path(dir, "ledgers", paste0(name, ".tsv")))
-    }), names(.gk_empty_ledgers())), checks = checks
-  )
+    thresholds = read("thresholds.tsv"), cells = read("cells.tsv.gz"),
+    scores = read("scores.tsv.gz"), state_calls = read("state_calls.tsv.gz"),
+    structures = read("structures.tsv"),
+    ledgers = stats::setNames(lapply(names(.gk_empty_ledgers()), function(name)
+      read(paste0("ledgers/", name, ".tsv"))), names(.gk_empty_ledgers())), checks = checks)
   class(out) <- "gk_export"
   out
 }

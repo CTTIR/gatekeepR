@@ -34,6 +34,21 @@
   )
 }
 
+# Keep fitted pool counts and evidence when support fails, but never expose an
+# unsupported estimate as a callable cut. Manual cuts are not estimated pools.
+.gk_enforce_pool_support <- function(result, min_cells) {
+  if (identical(result$status, "CALLABLE") &&
+    (result$n_positive_pool < min_cells || result$n_negative_pool < min_cells)) {
+    result$status <- "NOT_CALLABLE_UNDERPOWERED"
+    result$estimate <- NA_real_
+    result$details <- sprintf(
+      "Positive/reference pools contain %d/%d cells (minimum %d per pool).",
+      result$n_positive_pool, result$n_negative_pool, min_cells
+    )
+  }
+  result
+}
+
 .gk_auc_rank <- function(positive, negative) {
   positive <- positive[is.finite(positive)]
   negative <- negative[is.finite(negative)]
@@ -160,9 +175,7 @@
   ll_one <- sum(stats::dnorm(v, mean(v), stats::sd(v), log = TRUE))
   bic_two <- -2 * ll_two + 5 * log(length(v))
   bic_one <- -2 * ll_one + 2 * log(length(v))
-  overlap <- stats::pnorm((mu[[1L]] - mu[[2L]]) / sig[[2L]]) +
-    1 - stats::pnorm((mu[[2L]] - mu[[1L]]) / sig[[1L]])
-  if (!is.finite(overlap) || bic_two >= bic_one || overlap > args$max_overlap) {
+  if (!is.finite(bic_two) || bic_two >= bic_one) {
     return(.gk_no_separation(details = "The two-component mixture does not separate the signal."))
   }
   a <- 1 / (2 * sig[[1L]]^2) - 1 / (2 * sig[[2L]]^2)
@@ -174,7 +187,20 @@
     if (disc < 0) numeric() else c((-b - sqrt(disc)) / (2 * a), (-b + sqrt(disc)) / (2 * a))
   }
   roots <- roots[is.finite(roots) & roots > mu[[1L]] & roots < mu[[2L]]]
-  cut <- if (length(roots)) roots[[1L]] else mean(mu)
+  if (length(roots) == 0L) {
+    return(.gk_no_separation(details = "The mixture has no posterior crossing between its means."))
+  }
+  cut <- roots[[1L]]
+  # Probability of classification error at the actual decision boundary,
+  # conditional on membership in the smaller fitted component.
+  component_error <- c(
+    stats::pnorm(cut, mu[[1L]], sig[[1L]], lower.tail = FALSE),
+    stats::pnorm(cut, mu[[2L]], sig[[2L]])
+  )
+  overlap <- component_error[[which.min(weight)]]
+  if (!is.finite(overlap) || overlap > args$max_overlap) {
+    return(.gk_no_separation(details = "The smaller mixture component exceeds max_overlap at the decision boundary."))
+  }
   negative <- v[v <= cut]
   positive <- v[v > cut]
   list(
@@ -186,12 +212,13 @@
     rule = "mixture", details = "A separated two-component Gaussian mixture.",
     evidence = list(values = v, posterior_positive = 1 - ra,
       means = mu, sds = sig, weights = weight, bic_one = bic_one, bic_two = bic_two,
-      overlap = overlap, positive_values = positive, negative_values = negative)
+      overlap = overlap, component_error = component_error,
+      positive_values = positive, negative_values = negative)
   )
 }
 
 .gk_estimate_population_crossing <- function(x, populations, args, min_auc,
-                                             seed) {
+                                             seed, min_cells = 20L) {
   keep <- is.finite(x) & !is.na(populations)
   x <- x[keep]
   populations <- populations[keep]
@@ -216,10 +243,13 @@
   }
   positive <- take(positive_ids)
   negative <- take(negative_ids)
-  if (length(positive) < 20L || length(negative) < 20L) {
-    return(.gk_no_separation("NOT_CALLABLE_UNDERPOWERED",
+  if (length(positive) < max(2L, min_cells) || length(negative) < max(2L, min_cells)) {
+    result <- .gk_no_separation("NOT_CALLABLE_UNDERPOWERED",
       "The selected embedding populations are underpowered."
-    ))
+    )
+    result$n_positive_pool <- length(positive)
+    result$n_negative_pool <- length(negative)
+    return(result)
   }
   auc <- .gk_auc_rank(positive, negative)
   auc <- max(auc, 1 - auc)
@@ -254,12 +284,10 @@
 }
 
 .gk_threshold_correction <- function(prepared, correction) {
-  if (is.null(correction)) return(prepared$score)
-  if (inherits(correction, "gk_corrected")) return(correction$matrix)
   if (inherits(correction, "gk_correction_model")) {
-    return(gk_correct(prepared, correction)$matrix)
+    correction <- gk_correct(prepared, correction)
   }
-  .gk_abort("{.arg correction} must be the result of {.fn gk_correct}.", class = "input")
+  .gk_score_matrix(prepared, correction)
 }
 
 .gk_override_for <- function(config, image_id, marker) {
@@ -305,9 +333,9 @@ gk_thresholds <- function(prepared, config, embedding = NULL, correction = NULL,
   if (!identical(prepared$config_sha256, gk_config_hash(config))) {
     .gk_abort("{.arg config} does not match the configuration used for preparation.", class = "state")
   }
-  if (!is.null(embedding)) .gk_check_class(embedding, "gk_embedding")
   seed <- .gk_check_count(seed)
   score <- .gk_threshold_correction(prepared, correction)
+  if (!is.null(embedding)) .gk_validate_embedding(prepared, embedding, score)
   pm <- config$panel$markers
   pm <- pm[pm$role %in% .gk_gating_roles, , drop = FALSE]
   images <- unique(prepared$cells$image_id)
@@ -355,7 +383,8 @@ gk_thresholds <- function(prepared, config, embedding = NULL, correction = NULL,
         } else {
           pop <- embedding$population[idx]
           .gk_estimate_population_crossing(
-            score[idx, mk], pop, args, config$panel$min_support[[mk]]$min_auc, seed
+            score[idx, mk], pop, args, config$panel$min_support[[mk]]$min_auc, seed,
+            config$panel$min_support[[mk]]$min_cells
           )
         }
       } else {
@@ -366,6 +395,7 @@ gk_thresholds <- function(prepared, config, embedding = NULL, correction = NULL,
           .gk_no_separation(details = paste("Unknown threshold method", method))
         )
       }
+      result <- .gk_enforce_pool_support(result, config$panel$min_support[[mk]]$min_cells)
       rows[[length(rows) + 1L]] <- data.frame(
         image_id = img, marker = mk, parent = NA_character_, role = pm$role[[j]],
         method = method, status = result$status, estimate = result$estimate,
@@ -384,6 +414,8 @@ gk_thresholds <- function(prepared, config, embedding = NULL, correction = NULL,
   attr(out, "evidence") <- evidence
   attr(out, "config_sha256") <- prepared$config_sha256
   attr(out, "source_sha256") <- prepared$source_sha256
+  attr(out, "cell_keys") <- .gk_cell_keys(prepared$cells)
+  attr(out, "score_sha256") <- .gk_score_hash(prepared, score)
   class(out) <- c("gk_thresholds", "data.frame")
   out
 }

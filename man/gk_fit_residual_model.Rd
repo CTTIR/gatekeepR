@@ -56,6 +56,12 @@ another row cannot refit the scores of an unchanged row. The exact ordered
 marker dictionary is required. Optional marker NA values remain NA.
 The model contains no fitted per-cell matrix and can be saved with \code{\link[base:saveRDS]{base::saveRDS()}}.
 Its content hash binds parameters, dimensions, names, provenance and bindings.
+Schema \code{gk_frozen_residual_2.0.0} uses corrected round-trip numeric formatting
+for content hashes. Legacy schema 1 models must not be applied or relabelled
+as schema 2. Preserve their files and verify the original parameter records;
+\code{\link[=gk_import_residual_model]{gk_import_residual_model()}} can import those records with an authenticated
+source-file hash without refitting. Preserve prior provenance and bindings,
+then requalify the resulting score space before downstream use.
 
 This is a numerical fit/apply contract, not raw-channel callability, gate
 estimation or biological validation. The caller owns raw measurement
@@ -73,6 +79,7 @@ dim(result$gate)
 }
 \seealso{
 Other corrections:
-\code{\link[=gk_correct]{gk_correct()}}
+\code{\link[=gk_correct]{gk_correct()}},
+\code{\link[=gk_import_residual_model]{gk_import_residual_model()}}
 }
 \concept{corrections}

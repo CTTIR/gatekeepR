@@ -172,3 +172,39 @@ test_that("single identity dimensions and invalid metadata remain explicit", {
   class(bad$bindings$ordered) <- NULL
   expect_error(gk_apply_residual_model(x, bad), class = "gatekeepr_error_state")
 })
+
+test_that("legacy frozen models require explicit import without refitting or source changes", {
+  x <- residual_fixture()
+  current <- gk_fit_residual_model(x, c("A", "B", "C"),
+    provenance = list(fit_scope = "original cohort", external_source_sha256 = strrep("a", 64)),
+    bindings = list(cut = data.frame(marker = "A", value = 0.30000000000000004)))
+  expect_identical(current$schema, "gk_frozen_residual_2.0.0")
+  legacy <- current
+  legacy$schema <- "gk_frozen_residual_1.0.0"
+  legacy$model_sha256 <- "legacy-content-hash"
+  original <- legacy
+  expect_error(gk_apply_residual_model(x, legacy), "explicit migration")
+  expect_identical(legacy, original)
+  path <- withr::local_tempfile(fileext = ".rds")
+  saveRDS(legacy, path, version = 2)
+  hash <- digest::digest(file = path, algo = "sha256")
+  fields <- c("panel", "identity_markers", "identity_robust", "identity_regression",
+    "identity_center", "identity_scale", "panel_robust", "pc_center", "pc1_rotation",
+    "panel_regression", "panel_center", "panel_scale", "n_training")
+  imported <- gk_import_residual_model(unclass(legacy)[fields], path, hash,
+    provenance = legacy$provenance, bindings = legacy$bindings)
+  expect_identical(imported$schema, "gk_frozen_residual_2.0.0")
+  expect_identical(unclass(imported)[fields], unclass(legacy)[fields])
+  expect_identical(imported$provenance, legacy$provenance)
+  expect_identical(imported$bindings, legacy$bindings)
+  expect_identical(imported$import_source_sha256, hash)
+  expect_identical(digest::digest(file = path, algo = "sha256"), hash)
+  expect_identical(readRDS(path), original)
+  # Import changes provenance/hash, never the frozen numerical transformation.
+  expect_identical(gk_apply_residual_model(x, imported)$identity,
+    gk_apply_residual_model(x, current)$identity)
+  expect_identical(gk_apply_residual_model(x, imported)$gate,
+    gk_apply_residual_model(x, current)$gate)
+  expect_error(gk_import_residual_model(unclass(legacy)[fields], path, strrep("0", 64)),
+    "source hash differs")
+})

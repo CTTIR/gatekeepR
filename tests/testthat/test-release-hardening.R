@@ -45,8 +45,12 @@ test_that("threshold wrappers cover configured method branches", {
   }
   cfg <- gk_test_config(markers = "A", method = "population_crossing")
   prep <- gk_prepare(gk_test_cellspec(list(A = values)), cfg, quiet = TRUE)
+  population <- stats::setNames(rep(c("negative", "positive"), each = 100), prep$cells$cell_id)
   embedding <- structure(
-    list(population = rep(c("negative", "positive"), each = 100)),
+    list(population = population, source_sha256 = prep$source_sha256,
+      config_sha256 = prep$config_sha256, cell_keys = .gk_cell_keys(prep$cells),
+      score_sha256 = .gk_score_hash(prep, prep$score),
+      population_sha256 = .gk_sha256_object(population)),
     class = "gk_embedding"
   )
   out <- gk_thresholds(prep, cfg, embedding = embedding, seed = 1L)
@@ -70,7 +74,8 @@ test_that("state and embedding helpers cover reference, localization and basin p
   expect_identical(.gk_state_localization(prep, "CD4")$min_ratio, 0)
   embedding_input <- .gk_embedding_matrix(prep, NULL)
   expect_true(length(embedding_input$markers) > 0L)
-  expect_true(is.matrix(.gk_embedding_matrix(prep, list(matrix = prep$score))$matrix))
+  expect_true(is.matrix(.gk_embedding_matrix(prep, gk_correct(prep, "none"))$matrix))
+  expect_error(.gk_embedding_matrix(prep, list(matrix = prep$score)), class = "gatekeepr_error_input")
   expect_error(.gk_embedding_matrix(prep, list()), class = "gatekeepr_error_input")
   expect_true(is.matrix(.gk_embedding_kde(matrix(rnorm(40), ncol = 2), 10L, 0.03)$density))
   expect_length(.gk_grid_neighbours(1L, 3L, 3L), 4L)
@@ -144,6 +149,8 @@ test_that("classification helpers and correction models cover alternate contract
   cfg <- gk_example_config()
   thresholds <- gk_thresholds(prep, cfg, seed = 1L)
   fixed <- gk_correct(prep, method = "robust_z")
+  expect_error(gk_classify(prep, thresholds, cfg, correction = fixed), "score space")
+  thresholds <- gk_thresholds(prep, cfg, correction = fixed, seed = 1L)
   classified <- suppressWarnings(gk_classify(prep, thresholds, cfg, correction = fixed))
   expect_s3_class(classified, "gk_classification")
   expect_identical(gk_callability(classified), thresholds)

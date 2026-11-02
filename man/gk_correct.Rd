@@ -32,10 +32,15 @@ fitted centres, scales, rotations and coefficients.
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
 Applies a deterministic correction to transformed marker scores. Markers
-that fail the raw support checks are excluded from fitting and are \code{NA} in
-the corrected matrix, so correction cannot create signal in an absent
-channel. The fitted parameters are returned in a
+on images that fail the raw support checks are excluded from fitting and
+are \code{NA} in the corrected matrix. Missing measurements remain \code{NA}.
+Fitting uses all supported images together; residual methods use median
+imputation internally without exposing imputed values as measurements.
+The fitted parameters are returned in a
 \code{gk_correction_model} and can be applied again to the same prepared data.
+Stored correction models from older data-hash versions must be regenerated
+from their original source and configuration. For migration of the separate
+frozen residual parameter models, see \code{\link[=gk_apply_residual_model]{gk_apply_residual_model()}}.
 }
 \examples{
 prep <- gk_prepare(gk_example_path("example-slide"), gk_example_config(), quiet = TRUE)
@@ -45,6 +50,7 @@ corrected$model
 }
 \seealso{
 Other corrections:
-\code{\link[=gk_fit_residual_model]{gk_fit_residual_model()}}
+\code{\link[=gk_fit_residual_model]{gk_fit_residual_model()}},
+\code{\link[=gk_import_residual_model]{gk_import_residual_model()}}
 }
 \concept{corrections}

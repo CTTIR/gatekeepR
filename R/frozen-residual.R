@@ -1,6 +1,8 @@
 # Frozen numerical residual spaces. Raw selection and biological decisions are
 # caller policies; applying a model never estimates new parameters.
 
+.gk_frozen_residual_schema <- "gk_frozen_residual_2.0.0"
+
 .gk_residual_scores <- function(scores, identity_markers = NULL) {
   if (!is.matrix(scores) || !is.numeric(scores) || is.null(colnames(scores)) ||
       anyNA(colnames(scores)) || any(!nzchar(colnames(scores))) ||
@@ -98,6 +100,12 @@
 #' marker dictionary is required. Optional marker NA values remain NA.
 #' The model contains no fitted per-cell matrix and can be saved with [base::saveRDS()].
 #' Its content hash binds parameters, dimensions, names, provenance and bindings.
+#' Schema `gk_frozen_residual_2.0.0` uses corrected round-trip numeric formatting
+#' for content hashes. Legacy schema 1 models must not be applied or relabelled
+#' as schema 2. Preserve their files and verify the original parameter records;
+#' [gk_import_residual_model()] can import those records with an authenticated
+#' source-file hash without refitting. Preserve prior provenance and bindings,
+#' then requalify the resulting score space before downstream use.
 #'
 #' This is a numerical fit/apply contract, not raw-channel callability, gate
 #' estimation or biological validation. The caller owns raw measurement
@@ -175,7 +183,7 @@ gk_fit_residual_model <- function(scores, identity_markers,
   scale <- apply(residuals, 2L, stats::sd, na.rm = TRUE)
   scale[!is.finite(scale) | scale <= 0] <- 1
   model <- list(
-    schema = "gk_frozen_residual_1.0.0", panel = colnames(scores),
+    schema = .gk_frozen_residual_schema, panel = colnames(scores),
     identity_markers = identity_markers, identity_robust = id_robust,
     identity_regression = id_fit$coefficients, identity_center = id_center,
     identity_scale = id_scale, panel_robust = robust, pc_center = pca$center,
@@ -192,10 +200,16 @@ gk_fit_residual_model <- function(scores, identity_markers,
 #' @export
 gk_apply_residual_model <- function(scores, model) {
   .gk_check_class(model, "gk_frozen_residual_model")
+  if (identical(model$schema, "gk_frozen_residual_1.0.0")) {
+    .gk_abort(paste("Legacy frozen model hashes require explicit migration.",
+      "Preserve the original file and verify its parameter records, then use",
+      "gk_import_residual_model() with the original file SHA-256, provenance and bindings.",
+      "No parameters are refitted automatically; requalify downstream use."), class = "state")
+  }
   payload <- unclass(model)
   expected <- payload$model_sha256
   payload$model_sha256 <- NULL
-  if (!identical(model$schema, "gk_frozen_residual_1.0.0") ||
+  if (!identical(model$schema, .gk_frozen_residual_schema) ||
       !is.character(expected) || length(expected) != 1L ||
       !identical(expected, .gk_residual_hash(payload))) {
     .gk_abort("Frozen residual model content or schema does not match its hash.", class = "state")

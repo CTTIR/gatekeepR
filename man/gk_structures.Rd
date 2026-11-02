@@ -36,7 +36,9 @@ Runs deterministic centroid-based DBSCAN on cells awaiting a configured
 structure decision. Epsilon is the 95th percentile of the \code{(min_pts - 1)}th
 nearest-neighbour distance, bounded by \code{eps_min} and \code{eps_max}. Retained
 structures are ordered by decreasing size and then centroid coordinates,
-making IDs stable under input row permutation.
+making IDs stable under input row permutation. Cells enter DBSCAN in
+coordinate and composite image/cell-key order so ambiguous border points
+receive the same assignment when input rows are reordered.
 }
 \examples{
 prep <- gk_prepare(gk_example_path("example-slide"), gk_example_config(), quiet = TRUE)
@@ -47,7 +49,9 @@ if (requireNamespace("dbscan", quietly = TRUE)) gk_structures(cl, prep)
 }
 \seealso{
 Other classification:
+\code{\link[=gk_apply_candidate_rules]{gk_apply_candidate_rules()}},
 \code{\link[=gk_classify]{gk_classify()}},
+\code{\link[=gk_fixed_signal_calls]{gk_fixed_signal_calls()}},
 \code{\link[=gk_state_calls]{gk_state_calls()}}
 }
 \concept{classification}

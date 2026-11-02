@@ -1,21 +1,56 @@
 # File input/output helpers: exact TSV round trips, atomic writes, local seeds.
 
-# Short decimal representation that reads back to the identical double on
-# platforms whose C libraries use slightly different decimal conversion.
-# data.table::fwrite() writes 15 significant digits, which does not round-trip;
-# exported scores must, because verification replays calls from them.
+# Parse decimal doubles with jsonlite's correctly rounded parser. R's decimal
+# conversion and fread can differ by ULPs on some platforms; those changes can
+# alter a call at a threshold. Nonfinite TSV spellings are handled explicitly.
+.gk_parse_double <- function(x, allow_overflow = FALSE) {
+  out <- rep(NA_real_, length(x))
+  out[!is.na(x) & x == "Inf"] <- Inf
+  out[!is.na(x) & x == "-Inf"] <- -Inf
+  finite <- !is.na(x) & !x %in% c("NA", "NaN", "Inf", "-Inf")
+  if (any(finite)) {
+    values <- x[finite]
+    valid <- grepl("^-?(0|[1-9][0-9]*)(\\.[0-9]+)?([eE][+-]?[0-9]+)?$", values)
+    if (!all(valid)) .gk_abort("Invalid numeric value in table.", class = "input")
+    parsed <- jsonlite::fromJSON(paste0("[", paste(values, collapse = ","), "]"))
+    if (!allow_overflow && any(!is.finite(parsed)))
+      .gk_abort("Numeric value exceeds double range.", class = "input")
+    out[finite] <- parsed
+  }
+  out
+}
+
+.gk_parse_integer <- function(x) {
+  present <- !is.na(x)
+  if (any(!grepl("^-?(0|[1-9][0-9]*)$", x[present])))
+    .gk_abort("Invalid integer value in table.", class = "input")
+  values <- .gk_parse_double(x)
+  if (any(abs(values[present]) > .Machine$integer.max))
+    .gk_abort("Integer value exceeds supported range.", class = "input")
+  as.integer(values)
+}
+
+.gk_parse_logical <- function(x) {
+  if (any(!is.na(x) & !x %in% c("TRUE", "FALSE")))
+    .gk_abort("Invalid logical value in table.", class = "input")
+  as.logical(x)
+}
+
+# Short decimal representation that reads back to the identical double using
+# the same correctly rounded parser as the TSV reader.
 .gk_format_double <- function(x) {
   x <- as.double(x)
   out <- sprintf("%.15g", x)
   fin <- is.finite(x)
-  back <- suppressWarnings(as.double(out))
+  back <- .gk_parse_double(out, allow_overflow = TRUE)
   bad <- fin & (is.na(back) | back != x)
   for (digits in c(17L, 20L, 22L, 25L, 30L)) {
     if (!any(bad)) break
     out[bad] <- sprintf(paste0("%.", digits, "g"), x[bad])
-    back[bad] <- suppressWarnings(as.double(out[bad]))
+    back[bad] <- .gk_parse_double(out[bad], allow_overflow = TRUE)
     bad <- fin & (is.na(back) | back != x)
   }
+  if (any(bad)) .gk_abort("Could not represent table values without numerical loss.", class = "input")
   out[is.na(x)] <- "NA"
   out[x %in% Inf] <- "Inf"
   out[x %in% -Inf] <- "-Inf"
@@ -48,8 +83,8 @@
 
 # Read a TSV written by .gk_write_tsv(). `types` is a named character vector
 # mapping column names to "character", "double", "integer" or "logical";
-# unnamed columns stay character. Doubles are parsed with R's strtod so the
-# round trip is exact.
+# unnamed columns stay character. Doubles use the correctly rounded JSON
+# number parser, retaining an exact round trip for threshold replay.
 .gk_read_tsv <- function(path, types = character()) {
   fread_args <- list(
     sep = "\t", colClasses = "character", na.strings = "NA",
@@ -73,9 +108,9 @@
   }
   for (nm in intersect(names(types), names(df))) {
     df[[nm]] <- switch(types[[nm]],
-      double = suppressWarnings(as.double(df[[nm]])),
-      integer = suppressWarnings(as.integer(df[[nm]])),
-      logical = as.logical(df[[nm]]),
+      double = .gk_parse_double(df[[nm]]),
+      integer = .gk_parse_integer(df[[nm]]),
+      logical = .gk_parse_logical(df[[nm]]),
       df[[nm]]
     )
   }

@@ -17,7 +17,9 @@
 #' structure decision. Epsilon is the 95th percentile of the `(min_pts - 1)`th
 #' nearest-neighbour distance, bounded by `eps_min` and `eps_max`. Retained
 #' structures are ordered by decreasing size and then centroid coordinates,
-#' making IDs stable under input row permutation.
+#' making IDs stable under input row permutation. Cells enter DBSCAN in
+#' coordinate and composite image/cell-key order so ambiguous border points
+#' receive the same assignment when input rows are reordered.
 #'
 #' @param classification A [gk_classify()] result.
 #' @param prepared The matching [gk_prepare()] result.
@@ -46,9 +48,7 @@ gk_structures <- function(classification, prepared, eps_min = 15, eps_max = 30,
   min_pts <- .gk_check_count(min_pts, min = 2L)
   min_cells <- .gk_check_count(min_cells, min = 1L)
   .gk_require("dbscan", "gk_structures")
-  if (!identical(classification$source_sha256, prepared$source_sha256)) {
-    .gk_abort("{.arg classification} does not match the prepared data.", class = "state")
-  }
+  .gk_validate_classification(prepared, classification)
   pending <- classification$cells$pending_review
   cell_structure <- data.frame(
     image_id = prepared$cells$image_id, cell_id = prepared$cells$cell_id,
@@ -62,6 +62,10 @@ gk_structures <- function(classification, prepared, eps_min = 15, eps_max = 30,
     keep <- vapply(seq_len(nrow(coords)), function(i) all(is.finite(coords[i, ])), logical(1))
     idx <- idx[keep]
     coords <- coords[keep, , drop = FALSE]
+    stable_order <- order(coords[, 1L], coords[, 2L],
+      .gk_cell_key(prepared$cells[idx, , drop = FALSE]), method = "radix")
+    idx <- idx[stable_order]
+    coords <- coords[stable_order, , drop = FALSE]
     eps <- .gk_structure_eps(coords, eps_min, eps_max, min_pts)
     eps_by_image[[img]] <- eps
     if (nrow(coords) == 0L) next

@@ -39,6 +39,8 @@ summary(cl)
 }
 \seealso{
 Other classification:
+\code{\link[=gk_apply_candidate_rules]{gk_apply_candidate_rules()}},
+\code{\link[=gk_fixed_signal_calls]{gk_fixed_signal_calls()}},
 \code{\link[=gk_state_calls]{gk_state_calls()}},
 \code{\link[=gk_structures]{gk_structures()}}
 }

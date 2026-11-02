@@ -47,12 +47,185 @@
     disposition_log = "XR", state_log = "SL"), sprintf("%04d", order))
   row$time_utc <- .gk_utc_now()
   out$ledgers[[name]] <- rbind(out$ledgers[[name]], row[, names(out$ledgers[[name]]), drop = FALSE])
+  rownames(out$ledgers[[name]]) <- NULL
   out
 }
 
 .gk_review_check <- function(review) {
   .gk_check_class(review, "gk_review")
+  .gk_validate_ledgers(review)
   invisible(review)
+}
+
+.gk_review_validate_base <- function(review) {
+  if (!identical(gk_config_hash(review$config), review$config_sha256) ||
+    !identical(gk_config_hash(review$prepared$config), review$config_sha256) ||
+    !identical(review$prepared$config_sha256, review$config_sha256) ||
+    !identical(review$prepared$source_sha256, review$source_sha256))
+    .gk_abort("The review base source or configuration is inconsistent.", class = "state")
+  gk_review(review$classification, review$state_calls, review$structures,
+    review$thresholds, review$prepared)
+  invisible(TRUE)
+}
+
+.gk_validate_ledgers <- function(review) {
+  expected <- names(.gk_empty_ledgers())
+  if (!is.list(review$ledgers) || !identical(names(review$ledgers), expected))
+    .gk_abort("Review must contain the four declared ledgers.", class = "ledger")
+  rows <- list()
+  for (name in expected) {
+    x <- review$ledgers[[name]]
+    needed <- names(.gk_ledger_columns(name))
+    if (!is.data.frame(x) || !identical(names(x), needed))
+      .gk_abort("Review ledger {.val {name}} has an invalid schema.", class = "ledger")
+    if (!nrow(x)) next
+    for (field in c("sequence", "order")) {
+      value <- x[[field]]
+      if (!is.numeric(value) || anyNA(value) || any(!is.finite(value)) ||
+          any(value < 1 | value != floor(value)))
+        .gk_abort("Ledger sequence and order must be positive integers.", class = "ledger")
+    }
+    if (any(x$sequence != x$order) || is.unsorted(x$order, strictly = TRUE))
+      .gk_abort("Each ledger must retain strictly increasing sequence/order.", class = "ledger")
+    for (field in c("entry_id", "time_utc", "reviewer", "image_id", "reason")) {
+      value <- x[[field]]
+      if (!is.character(value) || anyNA(value) || any(!nzchar(trimws(value))))
+        .gk_abort("Ledger {.val {field}} must contain nonempty values.", class = "ledger")
+    }
+    if (!is.character(x$reverts))
+      .gk_abort("Ledger revert targets must be entry IDs or NA.", class = "ledger")
+    if (any(!x$image_id %in% review$prepared$cells$image_id))
+      .gk_abort("Ledger refers to an image absent from the prepared data.", class = "ledger")
+    control <- !is.na(x$reverts) & nzchar(x$reverts)
+    active <- x[!control, , drop = FALSE]
+    if (name %in% c("cut_log", "state_log")) {
+      pm <- review$config$panel$markers
+      role <- pm$role[match(x$marker, pm$marker)]
+      if (anyNA(role) || any(!role %in% if (name == "state_log") "state" else .gk_gating_roles))
+        .gk_abort("Ledger marker has an invalid role.", class = "ledger")
+      if (name == "cut_log" && any(!is.na(x$parent)))
+        .gk_abort("Identity ledger cuts cannot name a parent.", class = "ledger")
+      if (name == "state_log") {
+        if (anyNA(x$parent) || any(!vapply(seq_len(nrow(x)), function(i)
+          x$parent[[i]] %in% review$config$panel$parents[[x$marker[[i]]]], logical(1))) ||
+          anyNA(x$action) || any(!x$action %in% c("SET_CUT", "ENABLE", "DISABLE")))
+          .gk_abort("State ledger parent or action is invalid.", class = "ledger")
+        active <- active[active$action == "SET_CUT", , drop = FALSE]
+      }
+      if (!is.numeric(active$new_estimate) || any(!is.finite(active$new_estimate)))
+        .gk_abort("Active cut estimates must be finite numbers.", class = "ledger")
+    } else {
+      modes <- if (name == "structure_log") c("STRUCTURE", "BBOX") else c("POINT", "BBOX")
+      if (anyNA(x$mode) || any(!x$mode %in% modes))
+        .gk_abort("Ledger selection mode is invalid.", class = "ledger")
+      for (i in which(x$mode == "BBOX"))
+        .gk_bbox(unlist(x[i, c("xmin", "xmax", "ymin", "ymax")], use.names = FALSE))
+      if (name == "structure_log") {
+        if (anyNA(x$decision) || any(!x$decision %in% .gk_decisions))
+          .gk_abort("Structure ledger decision is invalid.", class = "ledger")
+        for (i in which(x$mode == "STRUCTURE")) {
+          st <- review$structures$structures
+          if (is.na(x$structure_id[[i]]) || !any(st$image_id == x$image_id[[i]] &
+            st$structure_id == x$structure_id[[i]]))
+            .gk_abort("Ledger refers to an absent structure.", class = "ledger")
+        }
+      } else {
+        if (anyNA(x$disposition) || any(!x$disposition %in% c("EXCLUDE", "DELETE", "RESTORE")))
+          .gk_abort("Disposition ledger action is invalid.", class = "ledger")
+        for (i in which(x$mode == "POINT")) {
+          cells <- review$prepared$cells
+          if (is.na(x$cell_id[[i]]) || !any(cells$image_id == x$image_id[[i]] &
+            cells$cell_id == x$cell_id[[i]]))
+            .gk_abort("Ledger refers to an absent cell.", class = "ledger")
+        }
+      }
+    }
+    rows[[name]] <- data.frame(order = x$order, entry_id = x$entry_id,
+      reverts = x$reverts, ledger = name, stringsAsFactors = FALSE)
+  }
+  if (!length(rows)) return(invisible(TRUE))
+  all <- do.call(rbind, rows)
+  if (anyDuplicated(all$order) || anyDuplicated(all$entry_id))
+    .gk_abort("Review ledger orders and entry IDs must be globally unique.", class = "ledger")
+  undo <- !is.na(all$reverts) & nzchar(all$reverts)
+  target <- match(all$reverts[undo], all$entry_id)
+  if (anyNA(target) || any(all$order[target] >= all$order[undo]) ||
+      any(all$ledger[target] != all$ledger[undo]))
+    .gk_abort("An undo must refer to an earlier action in the same ledger.", class = "ledger")
+  invisible(TRUE)
+}
+
+.gk_validate_state_calls <- function(prepared, state_calls, classification, thresholds) {
+  .gk_check_class(state_calls, "gk_state_calls")
+  .gk_check_source(prepared, state_calls, "state_calls")
+  if (!identical(state_calls$thresholds_sha256, .gk_thresholds_hash(thresholds)) ||
+    !identical(state_calls$classification_sha256, .gk_classification_hash(classification)) ||
+    !identical(state_calls$score_sha256, classification$score_sha256))
+    .gk_abort("State calls do not match the classification, thresholds or score space.", class = "state")
+  expected <- list()
+  markers <- prepared$config$panel$markers
+  for (img in unique(prepared$cells$image_id)) {
+    cells <- prepared$cells[prepared$cells$image_id == img, , drop = FALSE]
+    for (marker in markers$marker[markers$role == "state"]) {
+      for (parent in prepared$config$panel$parents[[marker]]) {
+        expected[[length(expected) + 1L]] <- data.frame(image_id = cells$image_id,
+          cell_id = cells$cell_id, marker = marker, parent = parent,
+          stringsAsFactors = FALSE)
+      }
+    }
+  }
+  keys <- c("image_id", "cell_id", "marker", "parent")
+  expected <- if (length(expected)) do.call(rbind, expected) else
+    data.frame(image_id = character(), cell_id = character(), marker = character(),
+      parent = character(), stringsAsFactors = FALSE)
+  rownames(expected) <- NULL
+  calls <- state_calls$calls
+  if (!is.data.frame(calls) || !all(keys %in% names(calls)) ||
+    !identical(calls[, keys, drop = FALSE], expected))
+    .gk_abort("State calls must contain the complete ordered cell, marker and parent keys.", class = "state")
+  for (flag in c("in_parent", "evaluable", "positive", "enabled")) {
+    if (!is.logical(calls[[flag]]) || length(calls[[flag]]) != nrow(calls) || anyNA(calls[[flag]]))
+      .gk_abort("State call flags must be complete logical values.", class = "state")
+  }
+  state_thresholds <- state_calls$state_thresholds
+  threshold_keys <- c("image_id", "marker", "parent")
+  expected_thresholds <- unique(expected[, threshold_keys, drop = FALSE])
+  rownames(expected_thresholds) <- NULL
+  if (!is.data.frame(state_thresholds) || !all(c(threshold_keys, "estimate", "status") %in% names(state_thresholds)) ||
+    !identical(.gk_sha256_object(state_thresholds[, threshold_keys, drop = FALSE]), .gk_sha256_object(expected_thresholds)) ||
+    !identical(attr(state_thresholds, "source_sha256"), prepared$source_sha256) ||
+    !identical(attr(state_thresholds, "config_sha256"), prepared$config_sha256) ||
+    !identical(attr(state_thresholds, "cell_keys"), .gk_cell_keys(prepared$cells)) ||
+    !identical(attr(state_thresholds, "score_sha256"), classification$score_sha256) ||
+    !is.numeric(state_thresholds$estimate) || anyNA(state_thresholds$status) ||
+    any(!state_thresholds$status %in% .gk_status_levels) ||
+    any(!is.finite(state_thresholds$estimate[.gk_is_callable_status(state_thresholds$status)])))
+    .gk_abort("State thresholds have inconsistent keys, values or provenance.", class = "state")
+  score <- .gk_score_matrix(prepared, classification$correction)
+  state_markers <- markers$marker[markers$role == "state"]
+  available <- .gk_score_available(prepared, state_markers)
+  for (i in seq_len(nrow(state_thresholds))) {
+    th <- state_thresholds[i, , drop = FALSE]
+    take <- calls$image_id == th$image_id & calls$marker == th$marker & calls$parent == th$parent
+    idx <- match(.gk_cell_key(calls[take, , drop = FALSE]), .gk_cell_key(prepared$cells))
+    marker <- th$marker[[1L]]
+    loc <- .gk_state_localization(prepared, marker)
+    in_parent <- classification$cells$cell_type[idx] %in% prepared$config$parent_sets[[th$parent[[1L]]]]
+    values <- unname(score[idx, marker])
+    evaluable <- unname(available[idx, marker]) & loc$evaluable[idx] &
+      is.finite(loc$ratio[idx]) & is.finite(values)
+    positive <- evaluable & in_parent & loc$ratio[idx] >= loc$min_ratio &
+      is.finite(th$estimate[[1L]]) & values >= th$estimate[[1L]] &
+      .gk_is_callable_status(th$status[[1L]])
+    if (!identical(calls$score[take], values) ||
+      !identical(calls$estimate[take], rep(th$estimate[[1L]], length(idx))) ||
+      !identical(calls$localization_ratio[take], unname(loc$ratio[idx])) ||
+      !identical(calls$in_parent[take], in_parent) ||
+      !identical(calls$evaluable[take], unname(evaluable)) ||
+      !identical(calls$positive[take], unname(positive)) || any(calls$enabled[take]))
+      .gk_abort("Base state calls differ from their scores, thresholds or parent/localization gates.", class = "state")
+  }
+  invisible(TRUE)
 }
 
 .gk_review_image <- function(review, image_id) {
@@ -115,9 +288,13 @@ gk_review <- function(classification, state_calls, structures, thresholds, prepa
   .gk_check_class(structures, "gk_structures")
   .gk_check_class(thresholds, "gk_thresholds")
   .gk_check_class(prepared, "gk_prepared")
-  if (!identical(prepared$source_sha256, classification$source_sha256) ||
-    !identical(prepared$source_sha256, structures$source_sha256) ||
-    !identical(prepared$config_sha256, classification$config_sha256)) {
+  .gk_validate_classification(prepared, classification, thresholds)
+  .gk_validate_state_calls(prepared, state_calls, classification, thresholds)
+  if (!identical(prepared$source_sha256, structures$source_sha256) ||
+    !identical(prepared$config_sha256, structures$config_sha256) ||
+    !identical(.gk_cell_keys(structures$cell_structure), .gk_cell_keys(prepared$cells)) ||
+    !identical(.gk_classification_hash(structures$classification),
+      .gk_classification_hash(classification))) {
     .gk_abort("Review inputs do not share the same prepared source and configuration.", class = "state")
   }
   structure(list(
@@ -157,13 +334,13 @@ gk_set_cut <- function(review, image_id, marker, parent = NA_character_, estimat
   .gk_review_check(review)
   if (isTRUE(review$locked)) .gk_abort("Locked reviews cannot be changed.", class = "locked")
   .gk_review_image(review, image_id)
+  if (length(parent) != 1L || (!is.na(parent) && !is.character(parent))) {
+    .gk_abort("{.arg parent} must be one parent name or NA.", class = "input")
+  }
   .gk_review_marker(review, marker, state = !is.na(parent))
   .gk_check_reviewer(reviewer)
   .gk_check_reason(reason)
   .gk_check_number(estimate)
-  if (length(parent) != 1L || (!is.na(parent) && !is.character(parent))) {
-    .gk_abort("{.arg parent} must be one parent name or NA.", class = "input")
-  }
   pm <- review$config$panel$markers
   role <- pm$role[pm$marker == marker]
   is_state <- identical(role, "state")
@@ -171,10 +348,17 @@ gk_set_cut <- function(review, image_id, marker, parent = NA_character_, estimat
     .gk_abort("State cut requires one configured parent set.", class = "ledger")
   }
   if (!is_state && !is.na(parent)) .gk_abort("Identity cuts cannot name a parent set.", class = "ledger")
-  source <- if (is_state) review$state_calls$state_thresholds else review$thresholds
+  if (is_state) return(gk_set_state(review, image_id, marker, parent,
+    action = "SET_CUT", estimate = estimate, reviewer = reviewer, reason = reason))
+  source <- review$thresholds
   hit <- .gk_threshold_row(source, image_id, marker, parent)
   old <- if (length(hit)) source$estimate[[hit[[1L]]]] else NA_real_
   old_status <- if (length(hit)) source$status[[hit[[1L]]]] else "NOT_CALLABLE_UNAVAILABLE"
+  effective <- .gk_effective_cut(review, image_id, marker)
+  if (!is.null(effective)) {
+    old <- effective$estimate
+    old_status <- "MANUAL"
+  }
   row <- data.frame(
     image_id = image_id, reason = reason, reviewer = reviewer, reverts = NA_character_,
     marker = marker, parent = as.character(parent), old_estimate = old,
@@ -303,6 +487,8 @@ gk_set_state <- function(review, image_id, marker, parent,
   source <- review$state_calls$state_thresholds
   hit <- .gk_threshold_row(source, image_id, marker, parent)
   old <- if (length(hit)) source$estimate[[hit[[1L]]]] else NA_real_
+  effective <- .gk_effective_cut(review, image_id, marker, parent, state = TRUE)
+  if (!is.null(effective)) old <- effective$estimate
   if (identical(action, "SET_CUT")) {
     if (is.null(estimate)) .gk_abort("SET_CUT needs a finite {.arg estimate}.", class = "input")
     .gk_check_number(estimate)
@@ -330,20 +516,53 @@ gk_set_state <- function(review, image_id, marker, parent,
 }
 
 .gk_reverted_entries <- function(review) {
-  vals <- unlist(lapply(review$ledgers, function(x) x$reverts), use.names = FALSE)
-  unique(vals[!is.na(vals) & nzchar(vals)])
+  # Undo records are control actions. An active undo cancels its target; an
+  # undo of that undo reactivates the original action. Evaluate newest first.
+  rows <- .gk_review_all_rows(review)
+  skipped <- character()
+  if (!nrow(rows)) return(skipped)
+  for (i in rev(seq_len(nrow(rows)))) {
+    if (rows$entry_id[[i]] %in% skipped) next
+    x <- review$ledgers[[rows$ledger[[i]]]]
+    target <- x$reverts[match(rows$entry_id[[i]], x$entry_id)]
+    if (length(target) && !is.na(target) && nzchar(target))
+      skipped <- unique(c(skipped, target))
+  }
+  skipped
+}
+
+.gk_active_ledger <- function(review, name) {
+  x <- review$ledgers[[name]]
+  control <- !is.na(x$reverts) & nzchar(x$reverts)
+  x[!control & !x$entry_id %in% .gk_reverted_entries(review), , drop = FALSE]
 }
 
 .gk_effective_cut <- function(review, image_id, marker, parent = NA_character_, state = FALSE) {
-  log <- review$ledgers[[if (state) "state_log" else "cut_log"]]
-  if (nrow(log) == 0L) return(NULL)
-  skipped <- .gk_reverted_entries(review)
-  log <- log[!log$entry_id %in% skipped & log$image_id == image_id & log$marker == marker, , drop = FALSE]
-  if (state) log <- log[log$parent == parent & log$action %in% c("SET_CUT"), , drop = FALSE]
+  log <- .gk_active_ledger(review, if (state) "state_log" else "cut_log")
+  log <- log[log$image_id == image_id & log$marker == marker, , drop = FALSE]
+  if (state) log <- log[log$parent == parent & log$action == "SET_CUT", , drop = FALSE]
   else log <- log[is.na(log$parent) & is.na(parent), , drop = FALSE]
   if (!nrow(log)) return(NULL)
   row <- log[which.max(log$order), , drop = FALSE]
   list(estimate = row$new_estimate[[1L]], entry_id = row$entry_id[[1L]])
+}
+
+.gk_effective_thresholds <- function(review) {
+  out <- review$thresholds
+  log <- .gk_active_ledger(review, "cut_log")
+  for (i in seq_len(nrow(log))) {
+    hit <- .gk_threshold_row(out, log$image_id[[i]], log$marker[[i]], NA_character_)
+    if (length(hit) != 1L)
+      .gk_abort("A reviewed identity cut must identify exactly one threshold.", class = "ledger")
+    out$estimate[hit] <- log$new_estimate[[i]]
+    out$status[hit] <- "MANUAL"
+    out$method[hit] <- "manual"
+    out$rule[hit] <- "manual"
+    out$args_json[hit] <- .gk_canonical_json(list(value = log$new_estimate[[i]]))
+    out$details[hit] <- paste("Manual threshold set by review action",
+      paste0(log$entry_id[[i]], "."))
+  }
+  out
 }
 
 #' Replay all effective review decisions
@@ -354,19 +573,24 @@ gk_set_state <- function(review, image_id, marker, parent,
 #' @export
 gk_replay <- function(review) {
   .gk_review_check(review)
+  .gk_review_validate_base(review)
   base <- review$classification$cells
-  out <- base
-  coords <- review$prepared$cells[match(out$cell_id, review$prepared$cells$cell_id),
+  effective_thresholds <- .gk_effective_thresholds(review)
+  # Disabled rules are a retained diagnostic, not a repeated warning at every
+  # UI replay. Other warnings still propagate to the caller.
+  effective_classification <- withCallingHandlers(gk_classify(review$prepared,
+    effective_thresholds, review$config, correction = review$classification$correction),
+    gatekeepr_warning_disabled_rules = function(w) invokeRestart("muffleWarning"))
+  out <- effective_classification$cells
+  coords <- review$prepared$cells[match(.gk_cell_key(out), .gk_cell_key(review$prepared$cells)),
     c("x", "y"), drop = FALSE]
   out$x <- coords$x
   out$y <- coords$y
   out$base_cell_type <- base$cell_type
-  out$structure_id <- review$structures$cell_structure$structure_id[match(out$cell_id,
-    review$structures$cell_structure$cell_id)]
+  out$structure_id <- review$structures$cell_structure$structure_id[match(.gk_cell_key(out),
+    .gk_cell_key(review$structures$cell_structure))]
   out$structure_decision <- NA_character_
-  skipped <- .gk_reverted_entries(review)
-  struct_log <- review$ledgers$structure_log
-  if (nrow(struct_log)) struct_log <- struct_log[!struct_log$entry_id %in% skipped, , drop = FALSE]
+  struct_log <- .gk_active_ledger(review, "structure_log")
   if (nrow(struct_log)) {
     for (i in seq_len(nrow(out))) {
       rows <- struct_log[struct_log$image_id == out$image_id[[i]], , drop = FALSE]
@@ -392,12 +616,12 @@ gk_replay <- function(review) {
     out$pending_review[take] <- FALSE
   }
   effective_state <- review$state_calls$calls
-  state_log <- review$ledgers$state_log
-  if (nrow(state_log)) state_log <- state_log[!state_log$entry_id %in% skipped, , drop = FALSE]
+  state_log <- .gk_active_ledger(review, "state_log")
   effective_state$enabled <- FALSE
+  state_cell_index <- match(.gk_cell_key(effective_state), .gk_cell_key(out))
   effective_state$in_parent <- vapply(seq_len(nrow(effective_state)), function(i) {
     labels <- review$config$parent_sets[[effective_state$parent[[i]]]]
-    out$cell_type[match(effective_state$cell_id[[i]], out$cell_id)] %in% labels
+    out$cell_type[state_cell_index[[i]]] %in% labels
   }, logical(1))
   effective_state$positive <- effective_state$evaluable & effective_state$in_parent &
     effective_state$localization_ratio >= vapply(effective_state$marker, function(marker) {
@@ -414,29 +638,35 @@ gk_replay <- function(review) {
         rows <- state_log[state_log$image_id == img & state_log$marker == marker &
           state_log$parent == parent, , drop = FALSE]
         if (nrow(rows)) {
-          last <- rows[which.max(rows$order), ]
-          effective_state$enabled[effective_state$image_id == img &
-            effective_state$marker == marker & effective_state$parent == parent] <-
-            last$action[[1L]] == "ENABLE"
-          if (last$action[[1L]] == "SET_CUT") state_cut[[paste(img, marker, parent, sep = "\r")]] <- last$new_estimate[[1L]]
+          toggles <- rows[rows$action %in% c("ENABLE", "DISABLE"), , drop = FALSE]
+          if (nrow(toggles)) {
+            last <- toggles[which.max(toggles$order), , drop = FALSE]
+            effective_state$enabled[effective_state$image_id == img &
+              effective_state$marker == marker & effective_state$parent == parent] <-
+              last$action[[1L]] == "ENABLE"
+          }
+          cuts <- rows[rows$action == "SET_CUT", , drop = FALSE]
+          if (nrow(cuts)) {
+            last_cut <- cuts[which.max(cuts$order), , drop = FALSE]
+            state_cut[[length(state_cut) + 1L]] <- last_cut
+          }
         }
       }
     }
   }
-  for (key in names(state_cut)) {
-    p <- strsplit(key, "\r", fixed = TRUE)[[1L]]
-    take <- effective_state$image_id == p[[1L]] & effective_state$marker == p[[2L]] & effective_state$parent == p[[3L]]
-    effective_state$estimate[take] <- state_cut[[key]]
-    marker <- p[[2L]]
+  for (cut in state_cut) {
+    take <- effective_state$image_id == cut$image_id[[1L]] &
+      effective_state$marker == cut$marker[[1L]] & effective_state$parent == cut$parent[[1L]]
+    effective_state$estimate[take] <- cut$new_estimate[[1L]]
+    marker <- cut$marker[[1L]]
     loc <- review$config$panel$localization[[marker]]
     min_ratio <- if (is.null(loc)) 0 else loc$min_ratio %||% 0
     effective_state$positive[take] <- effective_state$evaluable[take] &
       effective_state$in_parent[take] & effective_state$localization_ratio[take] >= min_ratio &
-      is.finite(effective_state$score[take]) & effective_state$score[take] >= state_cut[[key]]
+      is.finite(effective_state$score[take]) & effective_state$score[take] >= cut$new_estimate[[1L]]
   }
   dispositions <- rep("NONE", nrow(out))
-  disp_log <- review$ledgers$disposition_log
-  if (nrow(disp_log)) disp_log <- disp_log[!disp_log$entry_id %in% skipped, , drop = FALSE]
+  disp_log <- .gk_active_ledger(review, "disposition_log")
   if (nrow(disp_log)) {
     for (i in seq_len(nrow(disp_log))) {
       hit <- if (disp_log$mode[[i]] == "POINT") {
@@ -454,12 +684,13 @@ gk_replay <- function(review) {
   for (rf in review$config$refinements) {
     take_state <- effective_state$enabled & effective_state$positive &
       effective_state$marker == rf$marker & effective_state$parent == rf$parent
-    state_cells <- unique(effective_state$cell_id[take_state])
-    take <- out$cell_id %in% state_cells & out$cell_type == rf$from_label & out$analysed
+    state_cells <- unique(.gk_cell_key(effective_state[take_state, , drop = FALSE]))
+    take <- .gk_cell_key(out) %in% state_cells & out$cell_type == rf$from_label & out$analysed
     out$cell_type[take] <- rf$to_label
   }
   structure(list(cells = out, state_calls = effective_state,
-    thresholds = review$thresholds, ledgers = review$ledgers,
+    thresholds = effective_thresholds, ledgers = review$ledgers,
+    disabled_rules = effective_classification$disabled_rules,
     config_sha256 = review$config_sha256, source_sha256 = review$source_sha256),
     class = "gk_replayed")
 }
@@ -516,6 +747,10 @@ gk_import_cuts <- function(review, path, reviewer, reason) {
 #' @param confirm Must be `TRUE`, because history is being replaced.
 #' @param backup_dir Directory in which to save the current review first, or
 #'   `NULL` for a temporary directory.
+#' @details Replacement requires the same analytical base. Partial replacement
+#'   must preserve globally unique action orders and valid undo references.
+#'   If histories conflict, use [gk_import_cuts()] to append new cuts, or replace
+#'   the complete history with `scope = "all"`.
 #' @return A new `gk_review` object with `backup_path` attribute.
 #' @family review
 #' @export
@@ -526,17 +761,20 @@ gk_replace_review <- function(review, snapshot_dir,
   if (!isTRUE(confirm)) .gk_abort("Replacing review history needs {.arg confirm = TRUE}.", class = "confirm")
   scope <- rlang::arg_match(scope)
   .gk_check_dir_exists(snapshot_dir)
-  .gk_verify_manifest(snapshot_dir, "verify")
-  checkpoint <- file.path(snapshot_dir, "review.rds")
-  .gk_check_file_exists(checkpoint)
-  incoming <- readRDS(checkpoint)
-  .gk_review_check(incoming)
+  if (isTRUE(review$locked)) .gk_abort("Locked reviews cannot be changed.", class = "locked")
+  snapshot_dir <- .gk_review_path(snapshot_dir)
+  operation_lock <- .gk_review_operation_lock(snapshot_dir)
+  incoming <- tryCatch(.gk_read_review_checkpoint(snapshot_dir),
+    finally = filelock::unlock(operation_lock))
   if (!identical(incoming$source_sha256, review$source_sha256) ||
-    !identical(incoming$config_sha256, review$config_sha256)) {
-    .gk_abort("The replacement review has different source or configuration hashes.", class = "state")
+    !identical(incoming$config_sha256, review$config_sha256) ||
+    !identical(.gk_classification_hash(incoming$classification),
+      .gk_classification_hash(review$classification)) ||
+    !identical(incoming$state_calls$calls, review$state_calls$calls) ||
+    !identical(incoming$structures$cell_structure, review$structures$cell_structure) ||
+    !identical(incoming$structures$structures, review$structures$structures)) {
+    .gk_abort("The replacement review has different source, configuration or analytical base.", class = "state")
   }
-  backup_path <- backup_dir %||% tempfile("gatekeepR-review-backup-")
-  gk_save_review(review, backup_path, overwrite = FALSE)
   selected <- switch(scope,
     cuts = "cut_log", structures = "structure_log",
     dispositions = "disposition_log", states = "state_log",
@@ -544,16 +782,22 @@ gk_replace_review <- function(review, snapshot_dir,
   )
   out <- .gk_review_clone(review)
   for (nm in selected) out$ledgers[[nm]] <- incoming$ledgers[[nm]]
+  .gk_validate_ledgers(out)
+  backup_path <- backup_dir %||% tempfile("gatekeepR-review-backup-")
+  gk_save_review(review, backup_path, overwrite = FALSE)
   attr(out, "backup_path") <- backup_path
   out
 }
 
-#' Append an inverse of the most recent review action
+#' Undo the most recent review action without deleting history
 #'
 #' @param review A [gk_review()] object.
 #' @param reviewer Reviewer identifier.
 #' @param reason Required reason recorded in the ledger.
-#' @return A new `gk_review` object. No existing ledger row is removed.
+#' @details The appended row references the target action. Replay restores the
+#'   state before that action, including earlier overlapping selections. Undoing
+#'   an undo reactivates its target. No existing ledger row is removed.
+#' @return A new `gk_review` object.
 #' @family review
 #' @export
 gk_revert_last <- function(review, reviewer, reason) {
@@ -568,34 +812,9 @@ gk_revert_last <- function(review, reviewer, reason) {
   target <- review$ledgers[[ledger]][review$ledgers[[ledger]]$entry_id ==
     target_meta$entry_id[[1L]], , drop = FALSE]
   reverted_id <- target$entry_id[[1L]]
-  if (identical(ledger, "cut_log")) {
-    row <- target
-    row$sequence <- NA_integer_; row$order <- NA_integer_; row$entry_id <- NA_character_; row$time_utc <- NA_character_
-    row$reviewer <- reviewer; row$reason <- reason; row$reverts <- reverted_id
-    old <- row$new_estimate; row$new_estimate <- row$old_estimate; row$old_estimate <- old
-    return(.gk_append_ledger(review, "cut_log", row[, names(.gk_ledger_columns("cut_log")), drop = FALSE]))
-  }
-  if (identical(ledger, "state_log")) {
-    row <- target
-    row$sequence <- NA_integer_; row$order <- NA_integer_; row$entry_id <- NA_character_; row$time_utc <- NA_character_
-    row$reviewer <- reviewer; row$reason <- reason; row$reverts <- reverted_id
-    if (row$action[[1L]] == "ENABLE") row$action <- "DISABLE"
-    else if (row$action[[1L]] == "DISABLE") row$action <- "ENABLE"
-    else {
-      old <- row$new_estimate; row$new_estimate <- row$old_estimate; row$old_estimate <- old
-    }
-    return(.gk_append_ledger(review, "state_log", row[, names(.gk_ledger_columns("state_log")), drop = FALSE]))
-  }
-  if (identical(ledger, "disposition_log")) {
-    row <- target
-    row$sequence <- NA_integer_; row$order <- NA_integer_; row$entry_id <- NA_character_; row$time_utc <- NA_character_
-    row$reviewer <- reviewer; row$reason <- reason; row$reverts <- reverted_id
-    row$disposition <- "RESTORE"
-    return(.gk_append_ledger(review, "disposition_log", row[, names(.gk_ledger_columns("disposition_log")), drop = FALSE]))
-  }
   row <- target
-  row$sequence <- NA_integer_; row$order <- NA_integer_; row$entry_id <- NA_character_; row$time_utc <- NA_character_
-  row$reviewer <- reviewer; row$reason <- reason; row$reverts <- reverted_id
-  row$decision <- "Unresolved"
-  .gk_append_ledger(review, "structure_log", row[, names(.gk_ledger_columns("structure_log")), drop = FALSE])
+  row$reviewer <- reviewer
+  row$reason <- reason
+  row$reverts <- reverted_id
+  .gk_append_ledger(review, ledger, row)
 }

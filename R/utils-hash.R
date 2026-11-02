@@ -150,38 +150,56 @@
   .gk_sha256_string(.gk_canonical_json(x))
 }
 
-# Content hash of numeric matrices and identifier vectors, independent of R's
-# serialisation format (which embeds the R version). Doubles are hashed as
-# little-endian IEEE-754 bytes, strings as UTF-8 joined by newlines.
+# Data hash v2 is independent of R serialisation and unambiguously binds
+# types, lengths and all attributes (including names, dimensions and dimnames).
+# UTF-8 strings use byte-length prefixes and a separate missing-value tag.
+# Numeric payloads use little-endian bytes; NA/NaN and signed zero each have
+# one canonical representation. Integers, doubles and logicals stay distinct.
+# Recursive values are composed from fixed-width SHA-256 digests, avoiding
+# delimiter or sentinel collisions without per-number JSON formatting.
+.gk_data_hash_version <- 2L
+
+.gk_data_hash_part <- function(x) {
+  if (is.null(x)) return(.gk_sha256_string("gatekeepR-data-v2:null"))
+  type <- typeof(x)
+  if (!type %in% c("list", "logical", "integer", "double", "character", "raw")) {
+    .gk_abort("Data hashes require lists or atomic logical, integer, double, character or raw values.",
+      class = "input")
+  }
+  attrs <- attributes(x)
+  attributes(x) <- NULL
+  attr_hash <- if (is.null(attrs)) .gk_data_hash_part(NULL) else {
+    attr_names <- sort(names(attrs), method = "radix")
+    .gk_sha256_string(paste0(.gk_data_hash_part(attr_names),
+      .gk_data_hash_part(unname(attrs[attr_names]))))
+  }
+  value_hash <- if (identical(type, "list")) {
+    children <- vapply(x, .gk_data_hash_part, character(1), USE.NAMES = FALSE)
+    .gk_sha256_string(paste0(children, collapse = ""))
+  } else if (identical(type, "character")) {
+    encoded <- rep("N", length(x))
+    present <- !is.na(x)
+    if (any(present)) {
+      text <- enc2utf8(x[present])
+      encoded[present] <- paste0("S", nchar(text, type = "bytes"), ":", text)
+    }
+    .gk_sha256_string(paste0(encoded, collapse = ""))
+  } else {
+    bytes <- if (identical(type, "raw")) x else {
+      if (identical(type, "double")) {
+        x[is.na(x)] <- NA_real_
+        x[!is.na(x) & x == 0] <- 0
+      } else if (identical(type, "logical")) x <- as.integer(x)
+      writeBin(x, raw(), endian = "little")
+    }
+    digest::digest(bytes, algo = "sha256", serialize = FALSE)
+  }
+  .gk_sha256_string(paste0("gatekeepR-data-v2:", type, ":", length(x), ":",
+    attr_hash, ":", value_hash))
+}
+
 .gk_sha256_data <- function(...) {
-  parts <- list(...)
-  hashes <- vapply(parts, function(p) {
-    if (is.null(p)) {
-      return("null")
-    }
-    if (is.matrix(p) || is.numeric(p)) {
-      dims <- paste(c(dim(p) %||% length(p), colnames(p)), collapse = "|")
-      if (is.integer(p)) {
-        bytes <- writeBin(as.integer(p), raw(), endian = "little")
-      } else {
-        bytes <- writeBin(as.double(p), raw(), endian = "little")
-      }
-      return(paste0(
-        .gk_sha256_string(dims), ":",
-        digest::digest(bytes, algo = "sha256", serialize = FALSE)
-      ))
-    }
-    if (is.logical(p)) {
-      v <- ifelse(is.na(p), 2L, as.integer(p))
-      return(digest::digest(writeBin(v, raw(), endian = "little"),
-        algo = "sha256", serialize = FALSE
-      ))
-    }
-    v <- as.character(p)
-    v[is.na(v)] <- "NA"
-    .gk_sha256_string(paste(v, collapse = "\n"))
-  }, character(1))
-  .gk_sha256_string(paste(hashes, collapse = ";"))
+  .gk_data_hash_part(unname(list(...)))
 }
 
 #' Short display form of a SHA-256 based identifier

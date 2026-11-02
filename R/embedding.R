@@ -1,18 +1,7 @@
 # PCA, UMAP and density basins used by population-based threshold methods.
 
 .gk_embedding_matrix <- function(prepared, correction) {
-  score <- if (is.null(correction)) {
-    prepared$score
-  } else if (inherits(correction, "gk_corrected")) {
-    correction$matrix
-  } else if (is.list(correction) && is.matrix(correction$matrix)) {
-    correction$matrix
-  } else {
-    .gk_abort(
-      "{.arg correction} must be the result of {.fn gk_correct}.",
-      class = "input"
-    )
-  }
+  score <- .gk_score_matrix(prepared, correction)
   markers <- prepared$config$panel$markers$marker[
     prepared$config$panel$markers$role %in% .gk_gating_roles
   ]
@@ -28,6 +17,7 @@
     )
   }
   x <- score[, markers, drop = FALSE]
+  x[!.gk_score_available(prepared, markers)] <- NA_real_
   for (j in seq_len(ncol(x))) {
     bad <- !is.finite(x[, j])
     if (any(bad)) {
@@ -35,6 +25,20 @@
     }
   }
   list(matrix = x, markers = markers)
+}
+
+.gk_validate_embedding <- function(prepared, embedding, score) {
+  .gk_check_class(embedding, "gk_embedding")
+  .gk_check_source(prepared, embedding, "embedding")
+  if (!identical(embedding$cell_keys, .gk_cell_keys(prepared$cells)) ||
+    !identical(embedding$score_sha256, .gk_score_hash(prepared, score)) ||
+    !is.atomic(embedding$population) ||
+    length(embedding$population) != nrow(prepared$cells) ||
+    !identical(names(embedding$population), prepared$cells$cell_id) ||
+    !identical(embedding$population_sha256, .gk_sha256_object(embedding$population))) {
+    .gk_abort("Embedding populations do not match the ordered cells and score space.", class = "state")
+  }
+  invisible(TRUE)
 }
 
 .gk_embedding_kde <- function(umap, grid, bg) {
@@ -244,6 +248,9 @@ gk_embed <- function(prepared, correction = NULL, n_pcs = 10L,
       ),
       config_sha256 = prepared$config_sha256,
       source_sha256 = prepared$source_sha256,
+      cell_keys = .gk_cell_keys(prepared$cells),
+      score_sha256 = .gk_score_hash(prepared, .gk_score_matrix(prepared, correction)),
+      population_sha256 = .gk_sha256_object(assigned$population),
       created_utc = .gk_utc_now()
     ),
     class = "gk_embedding"

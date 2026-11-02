@@ -28,7 +28,9 @@ gk_import_residual_model(
 }
 \value{
 A hash-bound \code{gk_frozen_residual_model}. The training-score hash is
-unavailable; the authenticated source-file hash is stored in provenance.
+unavailable; the authenticated source-file hash is stored in
+\code{import_source_sha256} and, when absent, provenance's
+\code{external_source_sha256} field.
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
@@ -37,6 +39,11 @@ Validates a numerical parameter bundle and authenticates its external source
 file. The caller maps the external format into the documented parameter
 fields; the source hash authenticates bytes, not mapping correctness or
 scientific approval. No coefficient is estimated or changed.
+Import also supports an explicitly verified legacy parameter record. Keep
+its original file, provenance and bindings; import creates a schema 2 model
+without modifying that file or refitting any parameter. Existing provenance
+fields are preserved, and \code{import_source_sha256} on the model authenticates
+the file supplied to this import. Downstream use requires requalification.
 }
 \examples{
 x <- cbind(A = seq_len(30), B = sin(seq_len(30)))
@@ -54,7 +61,7 @@ unlink(path)
 }
 \seealso{
 Other corrections:
-\code{\link{gk_correct}()},
-\code{\link{gk_fit_residual_model}()}
+\code{\link[=gk_correct]{gk_correct()}},
+\code{\link[=gk_fit_residual_model]{gk_fit_residual_model()}}
 }
 \concept{corrections}
