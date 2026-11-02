@@ -1,4 +1,19 @@
-# gatekeepR development
+# gatekeepR 1.1.0 (unreleased)
+
+* Preserve unavailable marker measurements through correction and state calling;
+  honor configured methods/support and validate ordered source and score bindings.
+* Correct mixture overlap diagnostics and isolate cells by image and cell ID.
+* Replay identity/state cuts, enablement and undo through the shared classifier.
+  Validate checkpoint contents and detect stale concurrent sessions.
+* Add real review controls, checkpoint/resume, explicit human review status and
+  verified snapshot download. Render plots correctly and summarize dotplot means.
+* Introduce version 2 snapshots/checkpoints and unambiguous data hashes. Bind all
+  replay inputs, outputs, review decisions and status; reject mutated snapshots
+  and verify staged exports before publication. Preserve exact decimal scores.
+* Legacy records are preserved; regenerate/review into new paths. Explicit
+  unverified inspection remains available for legacy exports. Frozen residual
+  parameters require explicit import and downstream requalification, not refitting.
+
 
 * Standardize the named v5 package logo across README, documentation pages
   and available application headers, with matching light and dark artwork.
@@ -13,7 +28,6 @@
 
 - Preserve review session ownership across checkpoint saves, reject foreign-owner writes, and serialize save/load operations with a separate filesystem lock.
 
-# gatekeepR (development version)
 
 * Added `gk_fit_residual_model()` and `gk_apply_residual_model()` for freezing
   common-score identity and first-principal-component panel residual spaces.
@@ -34,7 +48,7 @@
 
 # gatekeepR 1.0.0
 
-Initial CRAN release.
+Initial package implementation; CRAN publication was not established.
 
 * Added the study-neutral configuration model, cellspec 1.0 adapter,
   preparation and callability checks, simulator, and bundled example data.
