@@ -1,0 +1,37 @@
+test_that("manifest boundaries do not rely on the Windows readlink stub", {
+  root <- withr::local_tempdir()
+  outside <- withr::local_tempdir()
+  writeLines("external evidence", file.path(outside, "source.txt"))
+  writeLines("ordinary", file.path(root, "regular.txt"))
+  links <- file.path(root, c("file-link", "directory-link", "dangling-link", "internal-link"))
+  targets <- c(file.path(outside, "source.txt"), outside, file.path(outside, "absent"),
+    file.path(root, "regular.txt"))
+  linked <- suppressWarnings(file.symlink(targets, links))
+  withr::defer(fs::link_delete(links[fs::is_link(links)]))
+  if (!all(linked)) skip("This platform does not permit the required symbolic links")
+  local_mocked_bindings(Sys.readlink = function(paths) rep("", length(paths)), .package = "base")
+  members <- .gk_list_files(root)
+  expect_true(all(basename(links) %in% members))
+  expect_false("directory-link/source.txt" %in% members)
+  expect_identical(.gk_manifest_regular_file(root,
+    c("regular.txt", "file-link", "directory-link/source.txt", "dangling-link", "internal-link", "missing")),
+    c(TRUE, FALSE, FALSE, FALSE, FALSE, FALSE))
+  expect_error(.gk_write_manifest(root, "file-link"), "regular files")
+  expect_error(.gk_write_manifest(root, "internal-link"), "regular files")
+  expect_false(file.exists(file.path(root, "MANIFEST.sha256")))
+  expect_identical(readLines(file.path(outside, "source.txt")), "external evidence")
+})
+
+test_that("Windows junctions cannot enter a verified manifest", {
+  skip_if_not(.Platform$OS.type == "windows", "Windows junction check")
+  root <- withr::local_tempdir()
+  outside <- withr::local_tempdir()
+  writeLines("keep", file.path(outside, "source.txt"))
+  junction <- file.path(root, "junction")
+  expect_true(Sys.junction(outside, junction))
+  withr::defer(fs::link_delete(junction))
+  expect_identical(.gk_list_files(root), "junction")
+  expect_false(.gk_manifest_regular_file(root, "junction/source.txt"))
+  expect_error(.gk_write_manifest(root, "junction/source.txt"), "regular files")
+  expect_identical(readLines(file.path(outside, "source.txt")), "keep")
+})

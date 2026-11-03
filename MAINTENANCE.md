@@ -1,3 +1,36 @@
+# Hosted portability follow-up — 3 November 2026
+
+Published baseline: `c97cfa2`. The earlier audit below is historical; its
+publication-authorization statements predate that main commit.
+
+The Windows job reported two traversal failures because base R's
+`Sys.readlink()` returns empty strings on Windows. Manifest discovery now uses
+the explicit `fs` dependency to refuse native file/directory links, dangling links
+and junctions; root and member containment use the same canonical `path_real`
+operation. Within-root aliases remain refused under the existing no-link
+contract. The two observed Windows fixture-cleanup warnings are addressed with
+`fs::link_delete`, without removing or weakening assertions.
+
+The pkgdown job failed before building because it could not resolve `cellspecR`.
+Its R setup now declares the CTTIR r-universe, matching the existing R-check
+workflow. The new synthetic link regressions fail five assertions against the
+frozen baseline. The complete local suite passed 1,116 assertions with no
+failures or warnings; the native Windows junction case is reserved for Windows.
+Shared house lint and workflow validation pass, and independent source review
+checked the fs/libuv Windows semantics. Coverage reached 96.65%, above the
+95% gate. The complete source-package check passed with zero errors, zero
+warnings and one submission/dependency-availability NOTE. Exact-head hosted
+Windows qualification remains separate from these macOS results.
+
+No public scientific API, data schema, R minimum or release/deployment gate was
+changed. These path checks do not establish race-free OS-level containment or
+qualify every possible filesystem reparse-point type.
+
+Contracts: [R readlink behavior](https://stat.ethz.ch/R-manual/R-devel/library/base/html/Sys.readlink.html)
+and [fs file-type queries](https://fs.r-lib.org/reference/is_file.html).
+
+---
+
 # Maintenance audit — 2 November 2026
 
 Repository CTTIR/gatekeepR; base `9514a37b688f2dc3abecfaf0e0153a0e0835bb91`.

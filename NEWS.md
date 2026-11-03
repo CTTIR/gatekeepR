@@ -1,5 +1,8 @@
 # gatekeepR 1.1.0 (unreleased)
 
+* Detect native symbolic links, dangling links and Windows junctions without
+  relying on the Windows `Sys.readlink()` stub; retain manifest and overwrite
+  boundaries across platforms.
 * Preserve unavailable marker measurements through correction and state calling;
   honor configured methods/support and validate ordered source and score bindings.
 * Correct mixture overlap diagnostics and isolate cells by image and cell ID.

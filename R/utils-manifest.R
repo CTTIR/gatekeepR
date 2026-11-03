@@ -72,8 +72,7 @@
     for (child in children) {
       entry <- if (nzchar(relative)) paste(relative, child, sep = "/") else child
       path <- file.path(dir, entry)
-      link <- Sys.readlink(path)
-      is_link <- !is.na(link) && nzchar(link)
+      is_link <- isTRUE(fs::is_link(path))
       if (dir.exists(path) && !is_link) out <- c(out, walk(entry)) else out <- c(out, entry)
     }
     out
@@ -88,17 +87,17 @@
 }
 
 .gk_manifest_regular_file <- function(dir, relative) {
-  root <- normalizePath(dir, winslash = "/", mustWork = TRUE)
+  root <- fs::path_real(dir)
   vapply(relative, function(entry) {
     if (!.gk_manifest_safe_path(entry)) return(FALSE)
     parts <- strsplit(entry, "/", fixed = TRUE)[[1L]]
     for (i in seq_along(parts)) {
-      link <- Sys.readlink(file.path(dir, paste(parts[seq_len(i)], collapse = "/")))
-      if (!is.na(link) && nzchar(link)) return(FALSE)
+      path <- file.path(dir, paste(parts[seq_len(i)], collapse = "/"))
+      if (isTRUE(fs::is_link(path))) return(FALSE)
     }
     path <- file.path(dir, entry)
     if (!isTRUE(utils::file_test("-f", path))) return(FALSE)
-    resolved <- normalizePath(path, winslash = "/", mustWork = TRUE)
+    resolved <- fs::path_real(path)
     startsWith(resolved, paste0(sub("/+$", "", root), "/"))
   }, logical(1), USE.NAMES = FALSE)
 }

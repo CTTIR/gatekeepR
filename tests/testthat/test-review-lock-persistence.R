@@ -48,7 +48,10 @@ test_that("operation locks prevent another process from saving or loading", {
   pkg <- system.file(package = "gatekeepR")
   aliases <- c(dir, paste0(dir, "/"), file.path(dir, "."))
   link <- file.path(dirname(dir), "review alias")
-  if (suppressWarnings(file.symlink(dir, link))) aliases <- c(aliases, link)
+  if (suppressWarnings(file.symlink(dir, link))) {
+    aliases <- c(aliases, link)
+    withr::defer(fs::link_delete(link))
+  }
   result <- callr::r(function(pkg, aliases, review) {
     if (file.exists(file.path(pkg, "Meta", "package.rds"))) {
       library(gatekeepR, lib.loc = dirname(pkg))
