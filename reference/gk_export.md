@@ -1,6 +1,7 @@
 # Write a locked review export
 
-Write a locked review export
+Modified snapshots are rejected before writing. Staged files must pass
+content and replay verification before they replace the destination.
 
 ## Usage
 

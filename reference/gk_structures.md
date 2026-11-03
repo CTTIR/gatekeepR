@@ -7,6 +7,9 @@ structure decision. Epsilon is the 95th percentile of the
 `(min_pts - 1)`th nearest-neighbour distance, bounded by `eps_min` and
 `eps_max`. Retained structures are ordered by decreasing size and then
 centroid coordinates, making IDs stable under input row permutation.
+Cells enter DBSCAN in coordinate and composite image/cell-key order so
+ambiguous border points receive the same assignment when input rows are
+reordered.
 
 ## Usage
 
@@ -51,7 +54,10 @@ parameters and provenance hashes.
 
 ## See also
 
-Other classification: [`gk_classify()`](gk_classify.md),
+Other classification:
+[`gk_apply_candidate_rules()`](gk_apply_candidate_rules.md),
+[`gk_classify()`](gk_classify.md),
+[`gk_fixed_signal_calls()`](gk_fixed_signal_calls.md),
 [`gk_state_calls()`](gk_state_calls.md)
 
 ## Examples

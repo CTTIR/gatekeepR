@@ -74,8 +74,8 @@
 - [`gk_replace_review()`](gk_replace_review.md) : Replace selected
   review ledgers from a saved checkpoint
 - [`gk_replay()`](gk_replay.md) : Replay all effective review decisions
-- [`gk_revert_last()`](gk_revert_last.md) : Append an inverse of the
-  most recent review action
+- [`gk_revert_last()`](gk_revert_last.md) : Undo the most recent review
+  action without deleting history
 - [`gk_review()`](gk_review.md) **\[experimental\]** : Create an
   editable review state
 - [`gk_save_review()`](gk_save_review.md) **\[experimental\]** : Save a
@@ -98,8 +98,8 @@
   per-image marker thresholds
 - [`gk_validate_config()`](gk_validate_config.md) **\[experimental\]** :
   Validate a gating configuration
-- [`gk_verify_export()`](gk_verify_export.md) : Verify manifest
-  integrity, replay and reconciliation invariants
+- [`gk_verify_export()`](gk_verify_export.md) : Verify content identity,
+  replay and reconciliation invariants
 - [`gk_write_cellspec()`](gk_write_cellspec.md)
   [`gk_read_cellspec()`](gk_write_cellspec.md) **\[experimental\]** :
   Read and write cellspec directories

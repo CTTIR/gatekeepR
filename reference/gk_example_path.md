@@ -7,18 +7,18 @@ Returns the path of a file or directory shipped in `inst/extdata`:
 - `"example-slide"`: a cellspec directory from `gk_simulate(seed = 1)`;
 
 - `"example-config.json"`: [`gk_example_config()`](gk_example_config.md)
-  written as JSON;
+  written as JSON.
 
-- `"example-review"`: a saved review working directory;
-
-- `"example-export"`: a locked, verified export of that review.
+Review checkpoints and exports are created by the reviewer rather than
+bundled as pre-reviewed decisions. Use [`gk_review()`](gk_review.md) and
+[`gk_save_review()`](gk_save_review.md) to create a checkpoint, or
+[`gk_lock()`](gk_lock.md) and [`gk_export()`](gk_export.md) for an
+export.
 
 ## Usage
 
 ``` r
-gk_example_path(
-  name = c("example-slide", "example-config.json", "example-review", "example-export")
-)
+gk_example_path(name = c("example-slide", "example-config.json"))
 ```
 
 ## Arguments

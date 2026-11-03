@@ -75,7 +75,7 @@ prep <- gk_prepare(x, gk_example_config())
 prep
 #> <gk_prepared>: 8,000 cells, 1 image, 12 markers
 #> • Config SHA-256: "2bdc84a35985"
-#> • Source SHA-256: "5861333323bd"
+#> • Source SHA-256: "acf56a1aa0cb"
 #> Callability: NOT_CALLABLE_ABSENT = 1; NOT_GATED = 1; PENDING_THRESHOLD = 10
 gk_callability(prep)
 #>      image_id marker                 role              status  support

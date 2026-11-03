@@ -4,12 +4,20 @@ Estimates a separate state-marker threshold for every image and parent set,
 then returns a long table containing every cell by marker by parent
 combination. Localisation requirements are evaluated on the raw selected
 measurements. State calls are disabled for analysis by default and become
-effective only after a review ledger enables them."><meta property="og:description" content="
+effective only after a review ledger enables them.
+parent_crossing compares the parent with its reference; valley, tail
+and mixture estimate within the parent (or pooled parent union). Raw
+support is required even for manual cuts. Estimated positive and negative
+pools must each meet the marker's min_cells requirement."><meta property="og:description" content="
 Estimates a separate state-marker threshold for every image and parent set,
 then returns a long table containing every cell by marker by parent
 combination. Localisation requirements are evaluated on the raw selected
 measurements. State calls are disabled for analysis by default and become
-effective only after a review ledger enables them."><meta property="og:image" content="/logo.svg"><meta name="theme-color" content="#1565c0"></head><body>
+effective only after a review ledger enables them.
+parent_crossing compares the parent with its reference; valley, tail
+and mixture estimate within the parent (or pooled parent union). Raw
+support is required even for manual cuts. Estimated positive and negative
+pools must each meet the marker's min_cells requirement."><meta property="og:image" content="/logo.svg"><meta name="theme-color" content="#1565c0"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -18,7 +26,7 @@ effective only after a review ledger enables them."><meta property="og:image" co
     <!-- Standard logo aliases contain the named v5 light and dark hexes. -->
     <a class="navbar-brand me-2" href="../index.html"><img src="../logo.svg" alt="" class="themakr-navbar-logo" data-cttir-dark-src="../reference/figures/logo-dark.svg">gatekeepR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -63,7 +71,11 @@ effective only after a review ledger enables them."><meta property="og:image" co
 then returns a long table containing every cell by marker by parent
 combination. Localisation requirements are evaluated on the raw selected
 measurements. State calls are disabled for analysis by default and become
-effective only after a review ledger enables them.</p>
+effective only after a review ledger enables them.
+<code>parent_crossing</code> compares the parent with its reference; <code>valley</code>, <code>tail</code>
+and <code>mixture</code> estimate within the parent (or pooled parent union). Raw
+support is required even for manual cuts. Estimated positive and negative
+pools must each meet the marker's <code>min_cells</code> requirement.</p>
     </div>
 
     <div class="section level2">
@@ -99,7 +111,9 @@ effective only after a review ledger enables them.</p>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p>Other classification:
+<code><a href="gk_apply_candidate_rules.html">gk_apply_candidate_rules()</a></code>,
 <code><a href="gk_classify.html">gk_classify()</a></code>,
+<code><a href="gk_fixed_signal_calls.html">gk_fixed_signal_calls()</a></code>,
 <code><a href="gk_structures.html">gk_structures()</a></code></p></div>
     </div>
 

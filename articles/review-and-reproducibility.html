@@ -29,7 +29,7 @@
     <!-- Standard logo aliases contain the named v5 light and dark hexes. -->
     <a class="navbar-brand me-2" href="../index.html"><img src="../logo.svg" alt="" class="themakr-navbar-logo" data-cttir-dark-src="../reference/figures/logo-dark.svg">gatekeepR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -105,29 +105,58 @@
 </div>
 <!-- cttir-vignette-logo: end -->
 <p>Review actions are append-only. Each action has an order, reviewer,
-reason, and target identity. The effective result is calculated by
-replaying those actions in order.</p>
+reason, image and target identity. Effective results are calculated by
+replaying the active actions; undo restores the prior effective decision
+without deleting rows.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">review</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gk_review.html">gk_review</a></span><span class="op">(</span><span class="va">classification</span>, <span class="va">states</span>, <span class="va">structures</span>, <span class="va">thresholds</span>, <span class="va">prep</span><span class="op">)</span></span>
-<span><span class="va">review</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gk_set_cut.html">gk_set_cut</a></span><span class="op">(</span><span class="va">review</span>, marker <span class="op">=</span> <span class="st">"marker_a"</span>, estimate <span class="op">=</span> <span class="fl">0.5</span>,</span>
-<span>  reviewer <span class="op">=</span> <span class="st">"reviewer-01"</span>, reason <span class="op">=</span> <span class="st">"manual boundary"</span><span class="op">)</span></span>
-<span><span class="va">review</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gk_dispose.html">gk_dispose</a></span><span class="op">(</span><span class="va">review</span>, cell_id <span class="op">=</span> <span class="st">"cell-001"</span>, disposition <span class="op">=</span> <span class="st">"DELETE"</span>,</span>
-<span>  reviewer <span class="op">=</span> <span class="st">"reviewer-01"</span>, reason <span class="op">=</span> <span class="st">"out of tissue"</span><span class="op">)</span></span>
-<span><span class="va">reviewed</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gk_replay.html">gk_replay</a></span><span class="op">(</span><span class="va">review</span><span class="op">)</span></span></code></pre></div>
-<p><code><a href="../reference/gk_save_review.html">gk_save_review()</a></code> writes a staged, checksummed review
-directory and <code><a href="../reference/gk_load_review.html">gk_load_review()</a></code> restores it. Once the review
-is complete, <code><a href="../reference/gk_lock.html">gk_lock()</a></code> blocks further mutation and
-<code><a href="../reference/gk_export.html">gk_export()</a></code> writes the reproducible result. Verify it
-before delivery:</p>
+<code class="sourceCode R"><span><span class="va">config</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gk_example_config.html">gk_example_config</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">prep</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gk_prepare.html">gk_prepare</a></span><span class="op">(</span><span class="fu"><a href="../reference/gk_simulate.html">gk_simulate</a></span><span class="op">(</span>n_cells <span class="op">=</span> <span class="fl">300L</span>, seed <span class="op">=</span> <span class="fl">7L</span><span class="op">)</span>, <span class="va">config</span>, quiet <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">thresholds</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gk_thresholds.html">gk_thresholds</a></span><span class="op">(</span><span class="va">prep</span>, <span class="va">config</span>, seed <span class="op">=</span> <span class="fl">7L</span><span class="op">)</span></span>
+<span><span class="va">classification</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gk_classify.html">gk_classify</a></span><span class="op">(</span><span class="va">prep</span>, <span class="va">thresholds</span>, <span class="va">config</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: 4 hierarchy rules disabled because required markers are not</span></span>
+<span><span class="co">#&gt; callable.</span></span>
+<span><span class="va">states</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gk_state_calls.html">gk_state_calls</a></span><span class="op">(</span><span class="va">prep</span>, <span class="va">thresholds</span>, <span class="va">classification</span>, <span class="va">config</span><span class="op">)</span></span>
+<span><span class="va">structures</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gk_structures.html">gk_structures</a></span><span class="op">(</span><span class="va">classification</span>, <span class="va">prep</span><span class="op">)</span></span>
+<span><span class="va">review</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gk_review.html">gk_review</a></span><span class="op">(</span><span class="va">classification</span>, <span class="va">states</span>, <span class="va">structures</span>, <span class="va">thresholds</span>, <span class="va">prep</span><span class="op">)</span></span>
+<span><span class="va">image_id</span> <span class="op">&lt;-</span> <span class="va">prep</span><span class="op">$</span><span class="va">cells</span><span class="op">$</span><span class="va">image_id</span><span class="op">[[</span><span class="fl">1L</span><span class="op">]</span><span class="op">]</span></span>
+<span><span class="va">review</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gk_set_cut.html">gk_set_cut</a></span><span class="op">(</span><span class="va">review</span>, <span class="va">image_id</span>, marker <span class="op">=</span> <span class="st">"PanCK"</span>, estimate <span class="op">=</span> <span class="fl">3</span>,</span>
+<span>  reviewer <span class="op">=</span> <span class="st">"example-reviewer"</span>, reason <span class="op">=</span> <span class="st">"Demonstrate a manual boundary"</span><span class="op">)</span></span>
+<span><span class="va">review</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gk_dispose.html">gk_dispose</a></span><span class="op">(</span><span class="va">review</span>, <span class="va">image_id</span>, cell_id <span class="op">=</span> <span class="va">prep</span><span class="op">$</span><span class="va">cells</span><span class="op">$</span><span class="va">cell_id</span><span class="op">[[</span><span class="fl">1L</span><span class="op">]</span><span class="op">]</span>,</span>
+<span>  disposition <span class="op">=</span> <span class="st">"DELETE"</span>, reviewer <span class="op">=</span> <span class="st">"example-reviewer"</span>, reason <span class="op">=</span> <span class="st">"Demonstrate exclusion"</span><span class="op">)</span></span>
+<span><span class="va">reviewed</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gk_replay.html">gk_replay</a></span><span class="op">(</span><span class="va">review</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="op">!</span><span class="va">reviewed</span><span class="op">$</span><span class="va">cells</span><span class="op">$</span><span class="va">analysed</span><span class="op">[[</span><span class="fl">1L</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
+<p><code><a href="../reference/gk_save_review.html">gk_save_review()</a></code> writes a staged, checksummed checkpoint
+and <code><a href="../reference/gk_load_review.html">gk_load_review()</a></code> validates and restores it. A loaded
+review retains its checkpoint revision; a stale concurrent save fails
+until the review is reloaded. Owner locks persist across R processes.
+Once the previous owner has stopped,
+<code>gk_load_review(path, takeover = TRUE)</code> explicitly claims
+that checkpoint in the new process; never take over an active reviewer.
+<code><a href="../reference/gk_lock.html">gk_lock()</a></code> returns a separate snapshot. Keep that return
+value and pass it to <code><a href="../reference/gk_export.html">gk_export()</a></code>; the editable review
+remains a separate object.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/gk_save_review.html">gk_save_review</a></span><span class="op">(</span><span class="va">review</span>, <span class="st">"review"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/gk_lock.html">gk_lock</a></span><span class="op">(</span><span class="va">review</span>, reviewer <span class="op">=</span> <span class="st">"reviewer-01"</span><span class="op">)</span></span>
-<span><span class="va">export</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gk_export.html">gk_export</a></span><span class="op">(</span><span class="va">review</span>, <span class="st">"export"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/gk_verify_export.html">gk_verify_export</a></span><span class="op">(</span><span class="va">export</span><span class="op">)</span></span></code></pre></div>
-<p>The verification step checks identifiers, configuration and source
-hashes, ledger replay, deletion history, and threshold hashes. It is
-suitable for a batch validation job as well as for a human review
-handoff.</p>
+<code class="sourceCode R"><span><span class="va">checkpoint_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="st">"gatekeepR-checkpoint-"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/gk_save_review.html">gk_save_review</a></span><span class="op">(</span><span class="va">review</span>, <span class="va">checkpoint_dir</span><span class="op">)</span></span>
+<span><span class="va">loaded</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gk_load_review.html">gk_load_review</a></span><span class="op">(</span><span class="va">checkpoint_dir</span><span class="op">)</span></span>
+<span><span class="va">snapshot</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gk_lock.html">gk_lock</a></span><span class="op">(</span><span class="va">loaded</span>, reviewer <span class="op">=</span> <span class="st">"example-reviewer"</span>, status <span class="op">=</span> <span class="st">"PENDING"</span><span class="op">)</span></span>
+<span><span class="va">export_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="st">"gatekeepR-export-"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/gk_export.html">gk_export</a></span><span class="op">(</span><span class="va">snapshot</span>, <span class="va">export_dir</span><span class="op">)</span></span>
+<span><span class="va">checks</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gk_verify_export.html">gk_verify_export</a></span><span class="op">(</span><span class="va">export_dir</span>, expected_review_id <span class="op">=</span> <span class="va">snapshot</span><span class="op">$</span><span class="va">review_id_full</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/all.html" class="external-link">all</a></span><span class="op">(</span><span class="va">checks</span><span class="op">$</span><span class="va">ok</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p>Version 2 binds typed source/replay inputs, correction model,
+ledgers, effective scores/cells/states and reviewer/status to the
+content ID. It verifies file transport and exact numerical replay before
+publication. REVIEWED records an explicit human assertion, not
+authenticated identity or biological validity. Retain the full ID
+independently when checking delivered exports: a completely replaced
+export cannot be authenticated by hashes stored only inside itself.</p>
+<p>Preserve version 1 checkpoints and exports unchanged. Regenerate
+analytical objects from original source/configuration, re-review changed
+results and save to new paths. Legacy export inspection is available
+explicitly via <code>gk_read_export(path, verify = FALSE)</code> and
+does not claim integrity. The new scientific and hash bindings
+deliberately reject old mixed analytical objects.</p>
   </main>
 </div>
 

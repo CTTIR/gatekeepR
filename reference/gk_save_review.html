@@ -8,7 +8,7 @@
     <!-- Standard logo aliases contain the named v5 light and dark hexes. -->
     <a class="navbar-brand me-2" href="../index.html"><img src="../logo.svg" alt="" class="themakr-navbar-logo" data-cttir-dark-src="../reference/figures/logo-dark.svg">gatekeepR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -74,7 +74,7 @@
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>The saved directory invisibly.</p>
+    <p>The saved directory invisibly, with a <code>checkpoint_revision</code> attribute.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -83,7 +83,13 @@ Both save and load use an operating-system lock on a separate hidden sibling
 file named <code>.DIRECTORY.gatekeepR.lock</code>. This empty file remains after use;
 do not remove it while sessions may be accessing the review. The filesystem
 must support advisory file locks, and its parent directory must be writable.
-Session ownership is preserved when replacing the checkpoint.</p>
+Session ownership is preserved when replacing the checkpoint.
+Reviews returned by <code><a href="gk_load_review.html">gk_load_review()</a></code> carry a checkpoint revision. Saving
+that review back to its working directory rejects intervening writes, even
+from another browser session in the same R process. After saving, reload the
+checkpoint before further editing, or copy the returned path's
+<code>checkpoint_revision</code> attribute to <code>review$checkpoint_revision</code>.
+Explicit overwrites with reviews that were never loaded remain supported.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

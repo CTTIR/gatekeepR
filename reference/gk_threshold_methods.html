@@ -6,14 +6,22 @@ method with threshold_method and its arguments with threshold_args in
 gk_panel().
 State markers also accept pooled (default FALSE): with pooled = TRUE
 one estimate is made over the union of the marker's parent sets and used
-for every parent, and the threshold table records this."><meta property="og:description" content="
+for every parent, and the threshold table records this.
+The valley, tail and mixture methods use the scores within that parent
+or union; only parent_crossing compares it with an external reference.
+Estimated positive and negative pools must each satisfy min_cells from
+gk_min_support(). Manual cuts still require the raw support checks."><meta property="og:description" content="
 Lists the threshold estimation methods, the marker roles allowed to use
 them, their arguments with defaults, and a description. Set a marker's
 method with threshold_method and its arguments with threshold_args in
 gk_panel().
 State markers also accept pooled (default FALSE): with pooled = TRUE
 one estimate is made over the union of the marker's parent sets and used
-for every parent, and the threshold table records this."><meta property="og:image" content="/logo.svg"><meta name="theme-color" content="#1565c0"></head><body>
+for every parent, and the threshold table records this.
+The valley, tail and mixture methods use the scores within that parent
+or union; only parent_crossing compares it with an external reference.
+Estimated positive and negative pools must each satisfy min_cells from
+gk_min_support(). Manual cuts still require the raw support checks."><meta property="og:image" content="/logo.svg"><meta name="theme-color" content="#1565c0"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -22,7 +30,7 @@ for every parent, and the threshold table records this."><meta property="og:imag
     <!-- Standard logo aliases contain the named v5 light and dark hexes. -->
     <a class="navbar-brand me-2" href="../index.html"><img src="../logo.svg" alt="" class="themakr-navbar-logo" data-cttir-dark-src="../reference/figures/logo-dark.svg">gatekeepR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -69,7 +77,11 @@ method with <code>threshold_method</code> and its arguments with <code>threshold
 <code><a href="gk_panel.html">gk_panel()</a></code>.</p>
 <p>State markers also accept <code>pooled</code> (default <code>FALSE</code>): with <code>pooled = TRUE</code>
 one estimate is made over the union of the marker's parent sets and used
-for every parent, and the threshold table records this.</p>
+for every parent, and the threshold table records this.
+The <code>valley</code>, <code>tail</code> and <code>mixture</code> methods use the scores within that parent
+or union; only <code>parent_crossing</code> compares it with an external reference.
+Estimated positive and negative pools must each satisfy <code>min_cells</code> from
+<code><a href="gk_min_support.html">gk_min_support()</a></code>. Manual cuts still require the raw support checks.</p>
     </div>
 
     <div class="section level2">

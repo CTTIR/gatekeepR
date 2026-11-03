@@ -10,7 +10,11 @@ in [`gk_panel()`](gk_panel.md).
 State markers also accept `pooled` (default `FALSE`): with
 `pooled = TRUE` one estimate is made over the union of the marker's
 parent sets and used for every parent, and the threshold table records
-this.
+this. The `valley`, `tail` and `mixture` methods use the scores within
+that parent or union; only `parent_crossing` compares it with an
+external reference. Estimated positive and negative pools must each
+satisfy `min_cells` from [`gk_min_support()`](gk_min_support.md). Manual
+cuts still require the raw support checks.
 
 ## Usage
 

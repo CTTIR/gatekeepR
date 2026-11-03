@@ -4,12 +4,16 @@ Runs deterministic centroid-based DBSCAN on cells awaiting a configured
 structure decision. Epsilon is the 95th percentile of the (min_pts - 1)th
 nearest-neighbour distance, bounded by eps_min and eps_max. Retained
 structures are ordered by decreasing size and then centroid coordinates,
-making IDs stable under input row permutation."><meta property="og:description" content="
+making IDs stable under input row permutation. Cells enter DBSCAN in
+coordinate and composite image/cell-key order so ambiguous border points
+receive the same assignment when input rows are reordered."><meta property="og:description" content="
 Runs deterministic centroid-based DBSCAN on cells awaiting a configured
 structure decision. Epsilon is the 95th percentile of the (min_pts - 1)th
 nearest-neighbour distance, bounded by eps_min and eps_max. Retained
 structures are ordered by decreasing size and then centroid coordinates,
-making IDs stable under input row permutation."><meta property="og:image" content="/logo.svg"><meta name="theme-color" content="#1565c0"></head><body>
+making IDs stable under input row permutation. Cells enter DBSCAN in
+coordinate and composite image/cell-key order so ambiguous border points
+receive the same assignment when input rows are reordered."><meta property="og:image" content="/logo.svg"><meta name="theme-color" content="#1565c0"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -18,7 +22,7 @@ making IDs stable under input row permutation."><meta property="og:image" conten
     <!-- Standard logo aliases contain the named v5 light and dark hexes. -->
     <a class="navbar-brand me-2" href="../index.html"><img src="../logo.svg" alt="" class="themakr-navbar-logo" data-cttir-dark-src="../reference/figures/logo-dark.svg">gatekeepR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -63,7 +67,9 @@ making IDs stable under input row permutation."><meta property="og:image" conten
 structure decision. Epsilon is the 95th percentile of the <code>(min_pts - 1)</code>th
 nearest-neighbour distance, bounded by <code>eps_min</code> and <code>eps_max</code>. Retained
 structures are ordered by decreasing size and then centroid coordinates,
-making IDs stable under input row permutation.</p>
+making IDs stable under input row permutation. Cells enter DBSCAN in
+coordinate and composite image/cell-key order so ambiguous border points
+receive the same assignment when input rows are reordered.</p>
     </div>
 
     <div class="section level2">
@@ -111,7 +117,9 @@ parameters and provenance hashes.</p>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p>Other classification:
+<code><a href="gk_apply_candidate_rules.html">gk_apply_candidate_rules()</a></code>,
 <code><a href="gk_classify.html">gk_classify()</a></code>,
+<code><a href="gk_fixed_signal_calls.html">gk_fixed_signal_calls()</a></code>,
 <code><a href="gk_state_calls.html">gk_state_calls()</a></code></p></div>
     </div>
 

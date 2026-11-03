@@ -24,7 +24,14 @@ exact ordered marker dictionary is required. Optional marker NA values
 remain NA. The model contains no fitted per-cell matrix and can be saved
 with [`base::saveRDS()`](https://rdrr.io/r/base/readRDS.html). Its
 content hash binds parameters, dimensions, names, provenance and
-bindings.
+bindings. Schema `gk_frozen_residual_2.0.0` uses corrected round-trip
+numeric formatting for content hashes. Legacy schema 1 models must not
+be applied or relabelled as schema 2. Preserve their files and verify
+the original parameter records;
+[`gk_import_residual_model()`](gk_import_residual_model.md) can import
+those records with an authenticated source-file hash without refitting.
+Preserve prior provenance and bindings, then requalify the resulting
+score space before downstream use.
 
 This is a numerical fit/apply contract, not raw-channel callability,
 gate estimation or biological validation. The caller owns raw
@@ -82,7 +89,8 @@ SHA-256. Apply returns a list with `identity` and `gate` matrices and
 
 ## See also
 
-Other corrections: [`gk_correct()`](gk_correct.md)
+Other corrections: [`gk_correct()`](gk_correct.md),
+[`gk_import_residual_model()`](gk_import_residual_model.md)
 
 ## Examples
 

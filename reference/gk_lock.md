@@ -1,6 +1,10 @@
 # Lock a review into an immutable snapshot
 
-Lock a review into an immutable snapshot
+The version 2 review ID binds source identity, typed replay inputs,
+effective outputs, ledgers, correction model, reviewer and status. It is
+a content hash, not a signature or proof of a reviewer's identity.
+REVIEWED records the human reviewer's assertion; it does not certify
+scientific or clinical validity.
 
 ## Usage
 

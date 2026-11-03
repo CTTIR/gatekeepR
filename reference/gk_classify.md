@@ -41,7 +41,10 @@ hashes needed for review and export.
 
 ## See also
 
-Other classification: [`gk_state_calls()`](gk_state_calls.md),
+Other classification:
+[`gk_apply_candidate_rules()`](gk_apply_candidate_rules.md),
+[`gk_fixed_signal_calls()`](gk_fixed_signal_calls.md),
+[`gk_state_calls()`](gk_state_calls.md),
 [`gk_structures()`](gk_structures.md)
 
 ## Examples

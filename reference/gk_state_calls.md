@@ -7,6 +7,10 @@ set, then returns a long table containing every cell by marker by parent
 combination. Localisation requirements are evaluated on the raw selected
 measurements. State calls are disabled for analysis by default and
 become effective only after a review ledger enables them.
+`parent_crossing` compares the parent with its reference; `valley`,
+`tail` and `mixture` estimate within the parent (or pooled parent
+union). Raw support is required even for manual cuts. Estimated positive
+and negative pools must each meet the marker's `min_cells` requirement.
 
 ## Usage
 
@@ -39,7 +43,10 @@ An object of class `gk_state_calls` with long `calls`, per-parent
 
 ## See also
 
-Other classification: [`gk_classify()`](gk_classify.md),
+Other classification:
+[`gk_apply_candidate_rules()`](gk_apply_candidate_rules.md),
+[`gk_classify()`](gk_classify.md),
+[`gk_fixed_signal_calls()`](gk_fixed_signal_calls.md),
 [`gk_structures()`](gk_structures.md)
 
 ## Examples

@@ -18,19 +18,28 @@ structures, review, and export.
 ``` r
 
 cfg <- gk_example_config()
-prep <- gk_prepare(cells, config = cfg)
+cells <- gk_simulate(n_cells = 300L, seed = 7L)
+prep <- gk_prepare(cells, config = cfg, quiet = TRUE)
 corrected <- gk_correct(prep, method = "robust_z")
-thresholds <- gk_thresholds(prep, cfg, correction = corrected)
-classification <- gk_classify(corrected, thresholds, config = cfg)
-states <- gk_state_calls(corrected, thresholds, config = cfg)
-structures <- gk_structures(classification, corrected)
-review <- gk_review(classification, states, structures, thresholds, corrected)
+thresholds <- gk_thresholds(prep, cfg, correction = corrected, seed = 7L)
+classification <- gk_classify(prep, thresholds, config = cfg, correction = corrected)
+#> Warning: 4 hierarchy rules disabled because required markers are not
+#> callable.
+states <- gk_state_calls(prep, thresholds, classification, config = cfg)
+structures <- gk_structures(classification, prep)
+review <- gk_review(classification, states, structures, thresholds, prep)
 reviewed <- gk_replay(review)
 
-snapshot <- gk_lock(review, reviewer = "reviewer-01")
-gk_export(snapshot, dir = "export")
-gk_verify_export("export")
+snapshot <- gk_lock(review, reviewer = "example-reviewer", status = "PENDING")
+export_dir <- tempfile("gatekeepR-example-")
+gk_export(snapshot, dir = export_dir)
+stopifnot(all(gk_verify_export(export_dir,
+  expected_review_id = snapshot$review_id_full)$ok))
 ```
+
+PENDING is deliberate: running an example does not complete scientific
+review. Warnings about disabled rules identify unsupported channels in
+the simulated panel and are retained as evidence in the export.
 
 [`gk_replay()`](../reference/gk_replay.md) is the review boundary: it
 applies the append-only ledgers to the initial calls and returns the
@@ -55,11 +64,27 @@ Plots are thin views over the same objects used by batch code:
 
 ``` r
 
-gk_plot_map(reviewed, image_id = "image-01")
-gk_plot_thresholds(thresholds)
-gk_plot_overview(reviewed, image_id = "image-01")
+image_id <- prep$cells$image_id[[1L]]
+gk_plot_map(reviewed, image_id = image_id)
 ```
 
-The Shiny shell can load a review or an exported result with
-`gk_app(review = review)` or `gk_app(export = export)`. The app does not
-create a separate classification implementation.
+![](gatekeepR_files/figure-html/plots-1.png)
+
+``` r
+
+gk_plot_thresholds(thresholds, image_id = image_id)
+```
+
+![](gatekeepR_files/figure-html/plots-2.png)
+
+``` r
+
+gk_plot_overview(reviewed, image_id = image_id)
+```
+
+![](gatekeepR_files/figure-html/plots-3.png)
+
+The review app can load a review or an exported result with
+`shiny::runApp(gk_app(review = review))` or
+`shiny::runApp(gk_app(export = export_dir))`. The app does not create a
+separate classification implementation.

@@ -6,7 +6,12 @@ Validates a numerical parameter bundle and authenticates its external
 source file. The caller maps the external format into the documented
 parameter fields; the source hash authenticates bytes, not mapping
 correctness or scientific approval. No coefficient is estimated or
-changed.
+changed. Import also supports an explicitly verified legacy parameter
+record. Keep its original file, provenance and bindings; import creates
+a schema 2 model without modifying that file or refitting any parameter.
+Existing provenance fields are preserved, and `import_source_sha256` on
+the model authenticates the file supplied to this import. Downstream use
+requires requalification.
 
 ## Usage
 
@@ -49,7 +54,9 @@ gk_import_residual_model(
 ## Value
 
 A hash-bound `gk_frozen_residual_model`. The training-score hash is
-unavailable; the authenticated source-file hash is stored in provenance.
+unavailable; the authenticated source-file hash is stored in
+`import_source_sha256` and, when absent, provenance's
+`external_source_sha256` field.
 
 ## See also
 

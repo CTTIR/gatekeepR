@@ -3,11 +3,21 @@
 Validates a numerical parameter bundle and authenticates its external source
 file. The caller maps the external format into the documented parameter
 fields; the source hash authenticates bytes, not mapping correctness or
-scientific approval. No coefficient is estimated or changed."><meta property="og:description" content="
+scientific approval. No coefficient is estimated or changed.
+Import also supports an explicitly verified legacy parameter record. Keep
+its original file, provenance and bindings; import creates a schema 2 model
+without modifying that file or refitting any parameter. Existing provenance
+fields are preserved, and import_source_sha256 on the model authenticates
+the file supplied to this import. Downstream use requires requalification."><meta property="og:description" content="
 Validates a numerical parameter bundle and authenticates its external source
 file. The caller maps the external format into the documented parameter
 fields; the source hash authenticates bytes, not mapping correctness or
-scientific approval. No coefficient is estimated or changed."><meta property="og:image" content="/logo.svg"><meta name="theme-color" content="#1565c0"></head><body>
+scientific approval. No coefficient is estimated or changed.
+Import also supports an explicitly verified legacy parameter record. Keep
+its original file, provenance and bindings; import creates a schema 2 model
+without modifying that file or refitting any parameter. Existing provenance
+fields are preserved, and import_source_sha256 on the model authenticates
+the file supplied to this import. Downstream use requires requalification."><meta property="og:image" content="/logo.svg"><meta name="theme-color" content="#1565c0"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -16,7 +26,7 @@ scientific approval. No coefficient is estimated or changed."><meta property="og
     <!-- Standard logo aliases contain the named v5 light and dark hexes. -->
     <a class="navbar-brand me-2" href="../index.html"><img src="../logo.svg" alt="" class="themakr-navbar-logo" data-cttir-dark-src="../reference/figures/logo-dark.svg">gatekeepR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -60,7 +70,12 @@ scientific approval. No coefficient is estimated or changed."><meta property="og
 <p>Validates a numerical parameter bundle and authenticates its external source
 file. The caller maps the external format into the documented parameter
 fields; the source hash authenticates bytes, not mapping correctness or
-scientific approval. No coefficient is estimated or changed.</p>
+scientific approval. No coefficient is estimated or changed.
+Import also supports an explicitly verified legacy parameter record. Keep
+its original file, provenance and bindings; import creates a schema 2 model
+without modifying that file or refitting any parameter. Existing provenance
+fields are preserved, and <code>import_source_sha256</code> on the model authenticates
+the file supplied to this import. Downstream use requires requalification.</p>
     </div>
 
     <div class="section level2">
@@ -104,7 +119,9 @@ scientific approval. No coefficient is estimated or changed.</p>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A hash-bound <code>gk_frozen_residual_model</code>. The training-score hash is
-unavailable; the authenticated source-file hash is stored in provenance.</p>
+unavailable; the authenticated source-file hash is stored in
+<code>import_source_sha256</code> and, when absent, provenance's
+<code>external_source_sha256</code> field.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

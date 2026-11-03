@@ -1,6 +1,9 @@
 # Plot marker means by classified cell type
 
-Plot marker means by classified cell type
+One point represents the mean of observed finite scores for one image,
+marker and cell type. Point size is the number of contributing cells.
+Scores use the same correction as the classification. Objects with
+mismatched source data, row order or score space are rejected.
 
 ## Usage
 

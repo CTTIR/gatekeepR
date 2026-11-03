@@ -17,6 +17,12 @@ another row cannot refit the scores of an unchanged row. The exact ordered
 marker dictionary is required. Optional marker NA values remain NA.
 The model contains no fitted per-cell matrix and can be saved with base::saveRDS().
 Its content hash binds parameters, dimensions, names, provenance and bindings.
+Schema gk_frozen_residual_2.0.0 uses corrected round-trip numeric formatting
+for content hashes. Legacy schema 1 models must not be applied or relabelled
+as schema 2. Preserve their files and verify the original parameter records;
+gk_import_residual_model() can import those records with an authenticated
+source-file hash without refitting. Preserve prior provenance and bindings,
+then requalify the resulting score space before downstream use.
 This is a numerical fit/apply contract, not raw-channel callability, gate
 estimation or biological validation. The caller owns raw measurement
 selection, any asinh cofactor, image-specific training scope and downstream
@@ -40,6 +46,12 @@ another row cannot refit the scores of an unchanged row. The exact ordered
 marker dictionary is required. Optional marker NA values remain NA.
 The model contains no fitted per-cell matrix and can be saved with base::saveRDS().
 Its content hash binds parameters, dimensions, names, provenance and bindings.
+Schema gk_frozen_residual_2.0.0 uses corrected round-trip numeric formatting
+for content hashes. Legacy schema 1 models must not be applied or relabelled
+as schema 2. Preserve their files and verify the original parameter records;
+gk_import_residual_model() can import those records with an authenticated
+source-file hash without refitting. Preserve prior provenance and bindings,
+then requalify the resulting score space before downstream use.
 This is a numerical fit/apply contract, not raw-channel callability, gate
 estimation or biological validation. The caller owns raw measurement
 selection, any asinh cofactor, image-specific training scope and downstream
@@ -54,7 +66,7 @@ model on a different image or cohort requires separate scientific qualification.
     <!-- Standard logo aliases contain the named v5 light and dark hexes. -->
     <a class="navbar-brand me-2" href="../index.html"><img src="../logo.svg" alt="" class="themakr-navbar-logo" data-cttir-dark-src="../reference/figures/logo-dark.svg">gatekeepR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -111,7 +123,13 @@ inputs and rank-deficient regression fits fail; they are never imputed.</p>
 another row cannot refit the scores of an unchanged row. The exact ordered
 marker dictionary is required. Optional marker NA values remain NA.
 The model contains no fitted per-cell matrix and can be saved with <code><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">base::saveRDS()</a></code>.
-Its content hash binds parameters, dimensions, names, provenance and bindings.</p>
+Its content hash binds parameters, dimensions, names, provenance and bindings.
+Schema <code>gk_frozen_residual_2.0.0</code> uses corrected round-trip numeric formatting
+for content hashes. Legacy schema 1 models must not be applied or relabelled
+as schema 2. Preserve their files and verify the original parameter records;
+<code><a href="gk_import_residual_model.html">gk_import_residual_model()</a></code> can import those records with an authenticated
+source-file hash without refitting. Preserve prior provenance and bindings,
+then requalify the resulting score space before downstream use.</p>
 <p>This is a numerical fit/apply contract, not raw-channel callability, gate
 estimation or biological validation. The caller owns raw measurement
 selection, any asinh cofactor, image-specific training scope and downstream
@@ -169,7 +187,8 @@ Apply returns a list with <code>identity</code> and <code>gate</code> matrices a
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p>Other corrections:
-<code><a href="gk_correct.html">gk_correct()</a></code></p></div>
+<code><a href="gk_correct.html">gk_correct()</a></code>,
+<code><a href="gk_import_residual_model.html">gk_import_residual_model()</a></code></p></div>
     </div>
 
     <div class="section level2">

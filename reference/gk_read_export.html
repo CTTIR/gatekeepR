@@ -8,7 +8,7 @@
     <!-- Standard logo aliases contain the named v5 light and dark hexes. -->
     <a class="navbar-brand me-2" href="../index.html"><img src="../logo.svg" alt="" class="themakr-navbar-logo" data-cttir-dark-src="../reference/figures/logo-dark.svg">gatekeepR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -53,7 +53,7 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">gk_read_export</span><span class="op">(</span><span class="va">dir</span>, verify <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">gk_read_export</span><span class="op">(</span><span class="va">dir</span>, verify <span class="op">=</span> <span class="cn">TRUE</span>, expected_review_id <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -65,7 +65,12 @@
 
 
 <dt id="arg-verify">verify<a class="anchor" aria-label="anchor" href="#arg-verify"></a></dt>
-<dd><p>Verify before reading?</p></dd>
+<dd><p>Verify before reading? <code>FALSE</code> permits inspection of legacy or
+untrusted exports and makes no integrity claim.</p></dd>
+
+
+<dt id="arg-expected-review-id">expected_review_id<a class="anchor" aria-label="anchor" href="#arg-expected-review-id"></a></dt>
+<dd><p>Optional full ID passed to <code><a href="gk_verify_export.html">gk_verify_export()</a></code>.</p></dd>
 
 </dl></div>
     <div class="section level2">

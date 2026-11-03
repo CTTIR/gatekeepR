@@ -100,7 +100,7 @@ x
 #>   markers   12: CD20, CD21, CD31, CD3e, CD45, CD4, CD68, CD8, FOXP3, Ki67, Pa...
 #>   pixel     0.5 um/px
 #>   adjacency none
-#>   source    unknown (gatekeepR::gk_simulate 1.0.0)
+#>   source    unknown (gatekeepR::gk_simulate 1.1.0)
 table(x$cells$sim_population)
 #> 
 #>       b_cell        cd4_t        cd8_t      contact  endothelial   epithelial 

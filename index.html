@@ -32,7 +32,7 @@
     <!-- Standard logo aliases contain the named v5 light and dark hexes. -->
     <a class="navbar-brand me-2" href="index.html"><img src="logo.svg" alt="" class="themakr-navbar-logo" data-cttir-dark-src="reference/figures/logo-dark.svg">gatekeepR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -92,7 +92,7 @@
 <strong>Lock:</strong> freezes the result into a single immutable review snapshot, which every exported file and every later analysis refers to.</li>
 </ul>
 <blockquote>
-<p><strong>Status: 1.0.0 release candidate.</strong> The configuration, preparation, correction, threshold, classification, review, export and plotting paths are implemented. The package is being checked for its first CRAN submission.</p>
+<p><strong>Status: 1.1.0 development candidate, not submitted.</strong> The configuration, preparation, correction, threshold, classification, review, export and plotting paths are implemented. The package is being checked for its first CRAN submission.</p>
 </blockquote>
 <div class="section level2">
 <h2 id="why">Why<a class="anchor" aria-label="anchor" href="#why"></a>
@@ -248,17 +248,39 @@ phenoscapR / cohort statistics / reports</code></pre>
 <span><span class="va">shapes</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/gk_structures.html">gk_structures</a></span><span class="op">(</span><span class="va">cls</span>, <span class="va">prep</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">rev</span>    <span class="op">&lt;-</span> <span class="fu"><a href="reference/gk_review.html">gk_review</a></span><span class="op">(</span><span class="va">cls</span>, <span class="va">states</span>, <span class="va">shapes</span>, <span class="va">thr</span>, <span class="va">prep</span><span class="op">)</span></span>
-<span><span class="va">snap</span>   <span class="op">&lt;-</span> <span class="fu"><a href="reference/gk_lock.html">gk_lock</a></span><span class="op">(</span><span class="va">rev</span>, reviewer <span class="op">=</span> <span class="st">"reviewer-01"</span>, status <span class="op">=</span> <span class="st">"REVIEWED"</span><span class="op">)</span></span>
+<span><span class="va">snap</span>   <span class="op">&lt;-</span> <span class="fu"><a href="reference/gk_lock.html">gk_lock</a></span><span class="op">(</span><span class="va">rev</span>, reviewer <span class="op">=</span> <span class="st">"reviewer-01"</span>, status <span class="op">=</span> <span class="st">"PENDING"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/gk_export.html">gk_export</a></span><span class="op">(</span><span class="va">snap</span>, <span class="st">"reviews/example-01"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="reference/gk_verify_export.html">gk_verify_export</a></span><span class="op">(</span><span class="st">"reviews/example-01"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="reference/gk_verify_export.html">gk_verify_export</a></span><span class="op">(</span><span class="st">"reviews/example-01"</span>, expected_review_id <span class="op">=</span> <span class="va">snap</span><span class="op">$</span><span class="va">review_id_full</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+<h2 id="installation-and-first-use">Installation and first use<a class="anchor" aria-label="anchor" href="#installation-and-first-use"></a>
 </h2>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># install.packages("pak")</span></span>
-<span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pak.html" class="external-link">pak</a></span><span class="op">(</span><span class="st">"CTTIR/gatekeepR"</span><span class="op">)</span></span></code></pre></div>
-<p>The development version can be installed from GitHub. Optional features use packages listed in <code>Suggests</code>, including <code>uwot</code>, <code>dbscan</code>, <code>ggplot2</code>, <code>shiny</code> and <code>patchwork</code>.</p>
+<p>R 4.1 or later is required. Install the source archive prepared for this version into a project library (a compiler is needed for dependencies without binaries). Replace the archive path with the actual built package:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> .Rlib</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="va">R_LIBS_USER</span><span class="op">=</span><span class="st">"</span><span class="va">$PWD</span><span class="st">/.Rlib"</span> <span class="ex">Rscript</span> <span class="at">-e</span> <span class="st">'install.packages(c("cli", "data.table", "digest", "filelock", "jsonlite", "lifecycle", "MASS", "rlang", "dbscan", "ggplot2", "shiny", "uwot", "patchwork"), repos="https://cloud.r-project.org")'</span></span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="va">R_LIBS_USER</span><span class="op">=</span><span class="st">"</span><span class="va">$PWD</span><span class="st">/.Rlib"</span> <span class="ex">R</span> CMD INSTALL /path/to/gatekeepR_1.1.0.tar.gz</span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="va">R_LIBS_USER</span><span class="op">=</span><span class="st">"</span><span class="va">$PWD</span><span class="st">/.Rlib"</span> <span class="ex">R</span></span></code></pre></div>
+<p>For the published GitHub development branch, use <code>pak::pak("CTTIR/gatekeepR")</code>; unpublished maintenance changes are available only in the prepared local archive. Canonical cellspec directories use the optional adapter: <code>install.packages("cellspecR", repos = c("https://cttir.r-universe.dev", "https://cloud.r-project.org"))</code>. The bundled legacy example also works without that adapter.</p>
+<p><code>EBImage</code> is optional for the basin method, and is installed through <code>BiocManager::install("EBImage")</code>; its fftwtools dependency needs FFTW headers and libraries when built from source. It is unnecessary for the example below.</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/CTTIR/gatekeepR" class="external-link">gatekeepR</a></span><span class="op">)</span></span>
+<span><span class="va">config</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/gk_example_config.html">gk_example_config</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">prep</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/gk_prepare.html">gk_prepare</a></span><span class="op">(</span><span class="fu"><a href="reference/gk_example_path.html">gk_example_path</a></span><span class="op">(</span><span class="st">"example-slide"</span><span class="op">)</span>, <span class="va">config</span>, quiet <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">thr</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/gk_thresholds.html">gk_thresholds</a></span><span class="op">(</span><span class="va">prep</span>, <span class="va">config</span>, seed <span class="op">=</span> <span class="fl">1L</span><span class="op">)</span></span>
+<span><span class="va">cls</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/gk_classify.html">gk_classify</a></span><span class="op">(</span><span class="va">prep</span>, <span class="va">thr</span>, <span class="va">config</span><span class="op">)</span></span>
+<span><span class="va">states</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/gk_state_calls.html">gk_state_calls</a></span><span class="op">(</span><span class="va">prep</span>, <span class="va">thr</span>, <span class="va">cls</span>, <span class="va">config</span><span class="op">)</span></span>
+<span><span class="va">shapes</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/gk_structures.html">gk_structures</a></span><span class="op">(</span><span class="va">cls</span>, <span class="va">prep</span><span class="op">)</span></span>
+<span><span class="va">review</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/gk_review.html">gk_review</a></span><span class="op">(</span><span class="va">cls</span>, <span class="va">states</span>, <span class="va">shapes</span>, <span class="va">thr</span>, <span class="va">prep</span><span class="op">)</span></span>
+<span><span class="fu">shiny</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/runApp.html" class="external-link">runApp</a></span><span class="op">(</span><span class="fu"><a href="reference/gk_app.html">gk_app</a></span><span class="op">(</span>review <span class="op">=</span> <span class="va">review</span>, workdir <span class="op">=</span> <span class="st">"my-review"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p>The app provides marker cuts, structure IDs or rectangular spatial selections, cell/region dispositions, state cuts and enablement, and undo. Every change requires a reviewer and reason. Save explicitly to create a checkpoint; resume with <code>shiny::runApp(gk_app(workdir = "my-review"))</code> in the owning R process. The owner lock persists after that process ends. Only after confirming the prior review process has stopped, claim its checkpoint with <code>gk_load_review("my-review", takeover = TRUE)</code> and then open <code>gk_app(workdir = "my-review")</code> in the same new R process. Do not take over a live reviewer. A concurrent stale session must reload before saving. Maps and the table are bounded for interactive use.</p>
+<p>Lock as PENDING until scientific review is complete. REVIEWED requires an explicit human choice; the label records that assertion and does not validate the assay or authenticate the reviewer. Each edit invalidates the previous snapshot download. An export opens as a read-only inspector with <code>shiny::runApp(gk_app(export = "reviews/example-01"))</code>.</p>
+</div>
+<div class="section level2">
+<h2 id="version-11-migration-and-verification">Version 1.1 migration and verification<a class="anchor" aria-label="anchor" href="#version-11-migration-and-verification"></a>
+</h2>
+<p>Preserve existing source data, model files, checkpoints and exports. Version 2 exports bind typed replay inputs, scores, localization, effective cells and states, reviewer decisions, correction parameters, actual source identity and review status. Verification checks exact numeric transport and shared-API replay. Keep <code>snapshot$review_id_full</code> separately; pass it as <code>expected_review_id</code> to reject a substituted whole export. Hash verification is not a digital signature.</p>
+<p>Legacy exports remain inspectable with <code>gk_read_export(path, verify = FALSE)</code>; that explicitly bypasses verification. Regenerate analytical objects from the original source/configuration, review the changed results, and save a new checkpoint/export to a new path. Old correction/source bindings cannot be reused with the stronger numerical and provenance contract. Frozen residual models need explicit parameter import and requalification as described in <code><a href="reference/gk_import_residual_model.html">?gk_import_residual_model</a></code>; retain their original files and provenance. Do not refit a frozen model merely to migrate its storage.</p>
+<p>The bundled panel and simulated data are examples. Study-specific method qualification, human review, hosted CI and submission acceptance are separate from local package checks. See <a href="MAINTENANCE.html">MAINTENANCE.md</a> for audit evidence.</p>
 </div>
 <div class="section level2">
 <h2 id="contributing">Contributing<a class="anchor" aria-label="anchor" href="#contributing"></a>

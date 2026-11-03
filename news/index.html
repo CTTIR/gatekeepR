@@ -8,7 +8,7 @@
     <!-- Standard logo aliases contain the named v5 light and dark hexes. -->
     <a class="navbar-brand me-2" href="../index.html"><img src="../logo.svg" alt="" class="themakr-navbar-logo" data-cttir-dark-src="../reference/figures/logo-dark.svg">gatekeepR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -47,14 +47,26 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="development version" id="gatekeepr-development-version">gatekeepR (development version)<a class="anchor" aria-label="anchor" href="#gatekeepr-development-version"></a></h2>
-<ul><li><p>Added <code><a href="../reference/gk_fit_residual_model.html">gk_fit_residual_model()</a></code> and <code><a href="../reference/gk_fit_residual_model.html">gk_apply_residual_model()</a></code> for freezing common-score identity and first-principal-component panel residual spaces. Application reuses fitted parameters without refitting, requires the exact marker dictionary, and preserves optional missing values. Content hashes bind model parameters, typed metadata and caller-supplied threshold records. Raw-channel support, training-image scope and biological decisions remain explicit caller responsibilities; existing <code><a href="../reference/gk_correct.html">gk_correct()</a></code> behavior is unchanged.</p></li>
+<h2 class="pkg-version" data-toc-text="1.1.0" id="gatekeepr-110-unreleased">gatekeepR 1.1.0 (unreleased)<a class="anchor" aria-label="anchor" href="#gatekeepr-110-unreleased"></a></h2>
+<ul><li><p>Detect native symbolic links, dangling links and Windows junctions without relying on the Windows <code><a href="https://rdrr.io/r/base/Sys.readlink.html" class="external-link">Sys.readlink()</a></code> stub; retain manifest and overwrite boundaries across platforms.</p></li>
+<li><p>Preserve unavailable marker measurements through correction and state calling; honor configured methods/support and validate ordered source and score bindings.</p></li>
+<li><p>Correct mixture overlap diagnostics and isolate cells by image and cell ID.</p></li>
+<li><p>Replay identity/state cuts, enablement and undo through the shared classifier. Validate checkpoint contents and detect stale concurrent sessions.</p></li>
+<li><p>Add real review controls, checkpoint/resume, explicit human review status and verified snapshot download. Render plots correctly and summarize dotplot means.</p></li>
+<li><p>Introduce version 2 snapshots/checkpoints and unambiguous data hashes. Bind all replay inputs, outputs, review decisions and status; reject mutated snapshots and verify staged exports before publication. Preserve exact decimal scores.</p></li>
+<li><p>Legacy records are preserved; regenerate/review into new paths. Explicit unverified inspection remains available for legacy exports. Frozen residual parameters require explicit import and downstream requalification, not refitting.</p></li>
+<li><p>Fix every plot helper (<code><a href="../reference/gk_plot_density.html">gk_plot_density()</a></code>, <code><a href="../reference/gk_plot_thresholds.html">gk_plot_thresholds()</a></code>, <code><a href="../reference/gk_plot_map.html">gk_plot_map()</a></code>, <code><a href="../reference/gk_plot_dotplot.html">gk_plot_dotplot()</a></code>, <code><a href="../reference/gk_plot_states.html">gk_plot_states()</a></code>, <code><a href="../reference/gk_plot_embedding.html">gk_plot_embedding()</a></code> and <code><a href="../reference/gk_plot_overview.html">gk_plot_overview()</a></code>), which failed when drawn with “Can’t subset <code>.data</code> outside of a data mask context”. The tests now build each plot instead of only checking its class.</p></li>
+<li><p>Standardize the named v5 package logo across README, documentation pages and available application headers, with matching light and dark artwork.</p></li>
+<li><p>Add fixed numerical threshold calls and state diagnostics with explicit parent eligibility, localization, missingness and non-authorizing audit outputs.</p></li>
+<li><p>Add authenticated external residual-parameter import without fitting, fixed raw-support-aware ternary calls, and declarative candidate rules with explicit unavailable states. These APIs never authorize scientific review or production.</p></li>
+<li><p>Preserve review session ownership across checkpoint saves, reject foreign-owner writes, and serialize save/load operations with a separate filesystem lock.</p></li>
+<li><p>Added <code><a href="../reference/gk_fit_residual_model.html">gk_fit_residual_model()</a></code> and <code><a href="../reference/gk_fit_residual_model.html">gk_apply_residual_model()</a></code> for freezing common-score identity and first-principal-component panel residual spaces. Application reuses fitted parameters without refitting, requires the exact marker dictionary, and preserves optional missing values. Content hashes bind model parameters, typed metadata and caller-supplied threshold records. Raw-channel support, training-image scope and biological decisions remain explicit caller responsibilities; existing <code><a href="../reference/gk_correct.html">gk_correct()</a></code> behavior is unchanged.</p></li>
 <li><p>Cell-table readers recognize canonical cellspecR directories in Parquet and typed TSV formats. Explicit canonical writes delegate to cellspecR and preserve metadata, adjacency and exact numeric values. They require the optional cellspecR dependency and valid declared image calibration.</p></li>
 <li><p><code><a href="../reference/gk_write_cellspec.html">gk_write_cellspec()</a></code> retains its legacy default for compatibility and adds an explicit <code>format</code> argument. The legacy format is planned for retirement after migration is qualified; new integrations should select canonical <code>"parquet"</code> or <code>"tsv.gz"</code>. Schema errors never trigger a legacy fallback.</p></li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.0.0" id="gatekeepr-100">gatekeepR 1.0.0<a class="anchor" aria-label="anchor" href="#gatekeepr-100"></a></h2>
-<p>Initial CRAN release.</p>
+<p>Initial package implementation; CRAN publication was not established.</p>
 <ul><li>Added the study-neutral configuration model, cellspec 1.0 adapter, preparation and callability checks, simulator, and bundled example data.</li>
 <li>Added reproducible score corrections, per-image threshold estimation with evidence, and PCA/UMAP population embeddings.</li>
 <li>Added declarative classification, state calls, structure review, append-only review ledgers, persistence, immutable snapshots, and verifiable exports.</li>

@@ -1,6 +1,6 @@
-# Append an inverse of the most recent review action
+# Undo the most recent review action without deleting history
 
-Append an inverse of the most recent review action
+Undo the most recent review action without deleting history
 
 ## Usage
 
@@ -24,7 +24,13 @@ gk_revert_last(review, reviewer, reason)
 
 ## Value
 
-A new `gk_review` object. No existing ledger row is removed.
+A new `gk_review` object.
+
+## Details
+
+The appended row references the target action. Replay restores the state
+before that action, including earlier overlapping selections. Undoing an
+undo reactivates its target. No existing ledger row is removed.
 
 ## See also
 

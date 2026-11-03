@@ -41,6 +41,13 @@ gk_replace_review(
 
 A new `gk_review` object with `backup_path` attribute.
 
+## Details
+
+Replacement requires the same analytical base. Partial replacement must
+preserve globally unique action orders and valid undo references. If
+histories conflict, use [`gk_import_cuts()`](gk_import_cuts.md) to
+append new cuts, or replace the complete history with `scope = "all"`.
+
 ## See also
 
 Other review: [`gk_decide_structure()`](gk_decide_structure.md),

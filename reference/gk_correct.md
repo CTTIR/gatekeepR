@@ -3,10 +3,16 @@
 **\[experimental\]**
 
 Applies a deterministic correction to transformed marker scores. Markers
-that fail the raw support checks are excluded from fitting and are `NA`
-in the corrected matrix, so correction cannot create signal in an absent
-channel. The fitted parameters are returned in a `gk_correction_model`
-and can be applied again to the same prepared data.
+on images that fail the raw support checks are excluded from fitting and
+are `NA` in the corrected matrix. Missing measurements remain `NA`.
+Fitting uses all supported images together; residual methods use median
+imputation internally without exposing imputed values as measurements.
+The fitted parameters are returned in a `gk_correction_model` and can be
+applied again to the same prepared data. Stored correction models from
+older data-hash versions must be regenerated from their original source
+and configuration. For migration of the separate frozen residual
+parameter models, see
+[`gk_apply_residual_model()`](gk_fit_residual_model.md).
 
 ## Usage
 
@@ -48,7 +54,9 @@ all fitted centres, scales, rotations and coefficients.
 
 ## See also
 
-Other corrections: [`gk_fit_residual_model()`](gk_fit_residual_model.md)
+Other corrections:
+[`gk_fit_residual_model()`](gk_fit_residual_model.md),
+[`gk_import_residual_model()`](gk_import_residual_model.md)
 
 ## Examples
 

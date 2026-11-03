@@ -1,6 +1,11 @@
 # Launch the gatekeepR review application
 
-Launch the gatekeepR review application
+Review threshold, structure, disposition and state decisions in a local
+Shiny session. Every change requires a reviewer and reason and appends a
+ledger entry. A locked download uses one verified snapshot; subsequent
+edits invalidate that download until a new snapshot is locked. Choosing
+`REVIEWED` is an explicit human assessment, not automatic panel
+validation.
 
 ## Usage
 
@@ -23,7 +28,7 @@ gk_app(
 
 - review:
 
-  An existing gk_review() object.
+  An existing [`gk_review()`](gk_review.md) object.
 
 - cellspec:
 
@@ -31,31 +36,38 @@ gk_app(
 
 - config:
 
-  A gk_config() used with cellspec.
+  A [`gk_config()`](gk_config.md) used with cellspec.
 
 - workdir:
 
-  A saved review directory.
+  A saved review directory to resume, or a new checkpoint directory when
+  supplying `review` or `cellspec`. Checkpoints are written only when
+  Save checkpoint is clicked. Existing directories must be resumed with
+  `workdir` alone, preventing replacement with an unrelated review.
 
 - export:
 
-  A verified export directory to inspect.
+  A verified export directory to inspect read-only.
 
 - reviewer:
 
-  Reviewer identifier shown in the app.
+  Initial reviewer identifier; it can be changed in the app.
 
 - max_upload_mb:
 
-  Maximum upload size for a future upload view.
+  Reserved compatibility option. There is no upload view.
 
 - allow_local_paths:
 
-  Allow local path inputs.
+  Allow `cellspec` to be a local path. Explicit `workdir` and `export`
+  arguments are trusted host configuration; there are no
+  browser-supplied local path inputs.
 
 - max_plot_points:
 
-  Maximum points shown in map views.
+  Maximum cells displayed in the map. The cell table shows at most 500
+  cells, or this limit if it is smaller. Display limits never change
+  analysis, ledgers or exported rows.
 
 - ...:
 
@@ -64,3 +76,12 @@ gk_app(
 ## Value
 
 A shiny.appobj.
+
+## Details
+
+Review state is private to each browser session. When a checkpoint
+directory is configured, only the first active browser session can save
+it. Separate R processes are additionally protected by the checkpoint
+ownership rules in [`gk_save_review()`](gk_save_review.md). The download
+is a gzip-compressed tar archive containing a `review` directory that
+can be checked with [`gk_verify_export()`](gk_verify_export.md).

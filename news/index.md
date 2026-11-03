@@ -1,6 +1,65 @@
 # Changelog
 
-## gatekeepR (development version)
+## gatekeepR 1.1.0 (unreleased)
+
+- Detect native symbolic links, dangling links and Windows junctions
+  without relying on the Windows
+  [`Sys.readlink()`](https://rdrr.io/r/base/Sys.readlink.html) stub;
+  retain manifest and overwrite boundaries across platforms.
+
+- Preserve unavailable marker measurements through correction and state
+  calling; honor configured methods/support and validate ordered source
+  and score bindings.
+
+- Correct mixture overlap diagnostics and isolate cells by image and
+  cell ID.
+
+- Replay identity/state cuts, enablement and undo through the shared
+  classifier. Validate checkpoint contents and detect stale concurrent
+  sessions.
+
+- Add real review controls, checkpoint/resume, explicit human review
+  status and verified snapshot download. Render plots correctly and
+  summarize dotplot means.
+
+- Introduce version 2 snapshots/checkpoints and unambiguous data hashes.
+  Bind all replay inputs, outputs, review decisions and status; reject
+  mutated snapshots and verify staged exports before publication.
+  Preserve exact decimal scores.
+
+- Legacy records are preserved; regenerate/review into new paths.
+  Explicit unverified inspection remains available for legacy exports.
+  Frozen residual parameters require explicit import and downstream
+  requalification, not refitting.
+
+- Fix every plot helper
+  ([`gk_plot_density()`](../reference/gk_plot_density.md),
+  [`gk_plot_thresholds()`](../reference/gk_plot_thresholds.md),
+  [`gk_plot_map()`](../reference/gk_plot_map.md),
+  [`gk_plot_dotplot()`](../reference/gk_plot_dotplot.md),
+  [`gk_plot_states()`](../reference/gk_plot_states.md),
+  [`gk_plot_embedding()`](../reference/gk_plot_embedding.md) and
+  [`gk_plot_overview()`](../reference/gk_plot_overview.md)), which
+  failed when drawn with “Can’t subset `.data` outside of a data mask
+  context”. The tests now build each plot instead of only checking its
+  class.
+
+- Standardize the named v5 package logo across README, documentation
+  pages and available application headers, with matching light and dark
+  artwork.
+
+- Add fixed numerical threshold calls and state diagnostics with
+  explicit parent eligibility, localization, missingness and
+  non-authorizing audit outputs.
+
+- Add authenticated external residual-parameter import without fitting,
+  fixed raw-support-aware ternary calls, and declarative candidate rules
+  with explicit unavailable states. These APIs never authorize
+  scientific review or production.
+
+- Preserve review session ownership across checkpoint saves, reject
+  foreign-owner writes, and serialize save/load operations with a
+  separate filesystem lock.
 
 - Added
   [`gk_fit_residual_model()`](../reference/gk_fit_residual_model.md) and
@@ -28,7 +87,7 @@
 
 ## gatekeepR 1.0.0
 
-Initial CRAN release.
+Initial package implementation; CRAN publication was not established.
 
 - Added the study-neutral configuration model, cellspec 1.0 adapter,
   preparation and callability checks, simulator, and bundled example
