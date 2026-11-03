@@ -12,6 +12,8 @@ test_that("argument checks abort with gatekeepr_error_input and the user's argum
   expect_silent(.gk_check_number(NA_real_, allow_na = TRUE))
   expect_identical(.gk_check_count(3), 3L)
   expect_error(.gk_check_count(1.5), class = "gatekeepr_error_input")
+  expect_identical(.gk_check_count(.Machine$integer.max), .Machine$integer.max)
+  expect_error(.gk_check_count(2^31), class = "gatekeepr_error_input")
   expect_error(.gk_check_choice("x", c("a", "b")), class = "gatekeepr_error_input")
   expect_error(.gk_check_class(1, "gk_config"), class = "gatekeepr_error_input")
   expect_error(.gk_check_class(1, "gk_config", hint = "Use {.fn gk_config}."), "gk_config")

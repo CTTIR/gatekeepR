@@ -16,7 +16,7 @@ into cell types that a person has reviewed.
 - **Lock:** freezes the result into a single immutable review snapshot, which
   every exported file and every later analysis refers to.
 
-> **Status: 1.0.0 release candidate.** The configuration, preparation, correction,
+> **Status: 1.1.0 development candidate, not submitted.** The configuration, preparation, correction,
 > threshold, classification, review, export and plotting paths are implemented.
 > The package is being checked for its first CRAN submission.
 
@@ -116,21 +116,84 @@ states <- gk_state_calls(prep, thr, cls, config)
 shapes <- gk_structures(cls, prep)
 
 rev    <- gk_review(cls, states, shapes, thr, prep)
-snap   <- gk_lock(rev, reviewer = "reviewer-01", status = "REVIEWED")
+snap   <- gk_lock(rev, reviewer = "reviewer-01", status = "PENDING")
 gk_export(snap, "reviews/example-01")
-gk_verify_export("reviews/example-01")
+gk_verify_export("reviews/example-01", expected_review_id = snap$review_id_full)
 ```
 
-## Installation
+## Installation and first use
+
+R 4.1 or later is required. Install the source archive prepared for this version
+into a project library (a compiler is needed for dependencies without binaries).
+Replace the archive path with the actual built package:
+
+```sh
+mkdir -p .Rlib
+R_LIBS_USER="$PWD/.Rlib" Rscript -e 'install.packages(c("cli", "data.table", "digest", "filelock", "jsonlite", "lifecycle", "MASS", "rlang", "dbscan", "ggplot2", "shiny", "uwot", "patchwork"), repos="https://cloud.r-project.org")'
+R_LIBS_USER="$PWD/.Rlib" R CMD INSTALL /path/to/gatekeepR_1.1.0.tar.gz
+R_LIBS_USER="$PWD/.Rlib" R
+```
+
+For the published GitHub development branch, use `pak::pak("CTTIR/gatekeepR")`;
+unpublished maintenance changes are available only in the prepared local archive.
+Canonical cellspec directories use the optional adapter:
+`install.packages("cellspecR", repos = c("https://cttir.r-universe.dev",
+"https://cloud.r-project.org"))`. The bundled legacy example also works without
+that adapter.
+
+`EBImage` is optional for the basin method, and is installed through
+`BiocManager::install("EBImage")`; its fftwtools dependency needs FFTW headers and
+libraries when built from source. It is unnecessary for the example below.
 
 ```r
-# install.packages("pak")
-pak::pak("CTTIR/gatekeepR")
+library(gatekeepR)
+config <- gk_example_config()
+prep <- gk_prepare(gk_example_path("example-slide"), config, quiet = TRUE)
+thr <- gk_thresholds(prep, config, seed = 1L)
+cls <- gk_classify(prep, thr, config)
+states <- gk_state_calls(prep, thr, cls, config)
+shapes <- gk_structures(cls, prep)
+review <- gk_review(cls, states, shapes, thr, prep)
+shiny::runApp(gk_app(review = review, workdir = "my-review"))
 ```
 
-The development version can be installed from GitHub. Optional features use
-packages listed in `Suggests`, including `uwot`, `dbscan`, `ggplot2`, `shiny`
-and `patchwork`.
+The app provides marker cuts, structure IDs or rectangular spatial selections,
+cell/region dispositions, state cuts and enablement, and undo. Every change
+requires a reviewer and reason. Save explicitly to create a checkpoint; resume
+with `shiny::runApp(gk_app(workdir = "my-review"))` in the owning R process.
+The owner lock persists after that process ends. Only after confirming the prior
+review process has stopped, claim its checkpoint with
+`gk_load_review("my-review", takeover = TRUE)` and then open `gk_app(workdir =
+"my-review")` in the same new R process. Do not take over a live reviewer. A
+concurrent stale session must reload before saving. Maps and the table are
+bounded for interactive use.
+
+Lock as PENDING until scientific review is complete. REVIEWED requires an
+explicit human choice; the label records that assertion and does not validate
+the assay or authenticate the reviewer. Each edit invalidates the previous
+snapshot download. An export opens as a read-only inspector with
+`shiny::runApp(gk_app(export = "reviews/example-01"))`.
+
+## Version 1.1 migration and verification
+
+Preserve existing source data, model files, checkpoints and exports. Version 2
+exports bind typed replay inputs, scores, localization, effective cells and
+states, reviewer decisions, correction parameters, actual source identity and
+review status. Verification checks exact numeric transport and shared-API replay.
+Keep `snapshot$review_id_full` separately; pass it as `expected_review_id` to
+reject a substituted whole export. Hash verification is not a digital signature.
+
+Legacy exports remain inspectable with `gk_read_export(path, verify = FALSE)`;
+that explicitly bypasses verification. Regenerate analytical objects from the
+original source/configuration, review the changed results, and save a new
+checkpoint/export to a new path. Old correction/source bindings cannot be reused
+with the stronger numerical and provenance contract. Frozen residual models need
+explicit parameter import and requalification as described in `?gk_import_residual_model`; retain their original files and provenance. Do not refit a frozen model
+merely to migrate its storage.
+
+The bundled panel and simulated data are examples. Study-specific method
+qualification, human review, hosted CI and submission acceptance are separate
+from local package checks. See [MAINTENANCE.md](MAINTENANCE.md) for audit evidence.
 
 ## Contributing
 

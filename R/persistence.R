@@ -81,6 +81,44 @@
   action = "character"
 )
 
+.gk_read_review_checkpoint <- function(dir) {
+  # The caller holds the sibling operation lock through this entire read.
+  .gk_verify_manifest(dir, "verify")
+  path <- file.path(dir, "review.rds")
+  .gk_check_file_exists(path)
+  review <- readRDS(path)
+  .gk_review_check(review)
+  for (name in names(review$ledgers)) {
+    ledger_path <- file.path(dir, "ledgers", paste0(name, ".tsv"))
+    .gk_check_file_exists(ledger_path)
+    ledger <- .gk_read_tsv(ledger_path, types = .gk_ledger_types)
+    if (!identical(.gk_sha256_object(ledger), .gk_sha256_object(review$ledgers[[name]])))
+      .gk_abort("The saved ledger {.val {name}} differs from the checkpoint.", class = "verify")
+  }
+  parsed_config <- .gk_config_from_list(.gk_read_json(file.path(dir, "config.json")))
+  metadata <- .gk_read_json(file.path(dir, "metadata.json"))
+  if (!identical(metadata$schema_version, "2.0.0"))
+    .gk_abort(paste("Legacy checkpoint provenance cannot be verified by this version.",
+      "Preserve this directory; regenerate the analytical base from the original data",
+      "and re-review the recorded actions before saving a new checkpoint."), class = "verify")
+  if (!identical(gk_config_hash(parsed_config), review$config_sha256) ||
+    !identical(gk_config_hash(review$config), review$config_sha256) ||
+    !identical(gk_config_hash(review$prepared$config), review$config_sha256) ||
+    !identical(review$prepared$config_sha256, review$config_sha256) ||
+    !identical(review$prepared$source_sha256, review$source_sha256))
+    .gk_abort("The saved source or configuration does not match the review.", class = "verify")
+  expected <- list(schema_version = "2.0.0", config_sha256 = review$config_sha256,
+    source_sha256 = review$source_sha256,
+    thresholds_sha256 = .gk_thresholds_hash(review$thresholds),
+    updated_utc = review$updated_utc)
+  if (!identical(.gk_sha256_object(metadata), .gk_sha256_object(expected)))
+    .gk_abort("The saved metadata does not match the checkpoint.", class = "verify")
+  # Recheck all cross-component bindings without replacing the saved history.
+  gk_review(review$classification, review$state_calls, review$structures,
+    review$thresholds, review$prepared)
+  review
+}
+
 #' Save a review checkpoint atomically
 #'
 #' @description
@@ -96,12 +134,19 @@
 #' do not remove it while sessions may be accessing the review. The filesystem
 #' must support advisory file locks, and its parent directory must be writable.
 #' Session ownership is preserved when replacing the checkpoint.
+#' Reviews returned by [gk_load_review()] carry a checkpoint revision. Saving
+#' that review back to its working directory rejects intervening writes, even
+#' from another browser session in the same R process. After saving, reload the
+#' checkpoint before further editing, or copy the returned path's
+#' `checkpoint_revision` attribute to `review$checkpoint_revision`.
+#' Explicit overwrites with reviews that were never loaded remain supported.
 #'
-#' @return The saved directory invisibly.
+#' @return The saved directory invisibly, with a `checkpoint_revision` attribute.
 #' @family review
 #' @export
 gk_save_review <- function(review, dir, overwrite = FALSE) {
   .gk_review_check(review)
+  .gk_review_validate_base(review)
   .gk_check_string(dir)
   .gk_check_flag(overwrite)
   dir <- .gk_review_path(dir)
@@ -112,6 +157,14 @@ gk_save_review <- function(review, dir, overwrite = FALSE) {
     .gk_abort("Review directory {.path {dir}} is owned by another session.",
       class = "lockfile")
   }
+  checkpoint <- file.path(dir, "review.rds")
+  if (!is.null(review$checkpoint_revision) && !is.null(review$working_dir) &&
+    identical(.gk_review_path(review$working_dir), dir)) {
+    if (!file.exists(checkpoint) ||
+      !identical(review$checkpoint_revision, .gk_sha256_file(checkpoint)))
+      .gk_abort("The checkpoint changed after this review was loaded. Reload it before saving.",
+        class = "lockfile")
+  }
   stage <- .gk_stage_dir(dir, overwrite = overwrite)
   on.exit(unlink(stage, recursive = TRUE), add = TRUE)
   if (file.exists(file.path(dir, "review.rds"))) {
@@ -120,9 +173,11 @@ gk_save_review <- function(review, dir, overwrite = FALSE) {
   dir.create(file.path(stage, "ledgers"), recursive = TRUE, showWarnings = FALSE)
   save_review <- review
   save_review$updated_utc <- .gk_utc_now()
+  save_review$checkpoint_revision <- NULL
+  save_review$working_dir <- NULL
   saveRDS(save_review, file.path(stage, "review.rds"), version = 3L)
   .gk_write_json(list(
-    schema_version = "1.0.0", config_sha256 = review$config_sha256,
+    schema_version = "2.0.0", config_sha256 = review$config_sha256,
     source_sha256 = review$source_sha256,
     thresholds_sha256 = .gk_thresholds_hash(review$thresholds),
     updated_utc = save_review$updated_utc
@@ -137,8 +192,9 @@ gk_save_review <- function(review, dir, overwrite = FALSE) {
   }
   files <- setdiff(.gk_list_files(stage), "review.lock")
   .gk_write_manifest(stage, files)
+  revision <- .gk_sha256_file(file.path(stage, "review.rds"))
   .gk_publish_dir(stage, dir, overwrite = overwrite)
-  invisible(dir)
+  invisible(structure(dir, checkpoint_revision = revision))
 }
 
 #' Load a review checkpoint and acquire its single-writer lock
@@ -163,24 +219,8 @@ gk_load_review <- function(dir, takeover = FALSE) {
   dir <- .gk_review_path(dir)
   operation_lock <- .gk_review_operation_lock(dir)
   on.exit(filelock::unlock(operation_lock), add = TRUE)
-  .gk_verify_manifest(dir, "verify")
-  path <- file.path(dir, "review.rds")
-  .gk_check_file_exists(path)
-  review <- readRDS(path)
-  .gk_review_check(review)
-  for (name in names(review$ledgers)) {
-    ledger_path <- file.path(dir, "ledgers", paste0(name, ".tsv"))
-    .gk_check_file_exists(ledger_path)
-    review$ledgers[[name]] <- .gk_read_tsv(ledger_path, types = .gk_ledger_types)
-  }
-  config <- .gk_read_json(file.path(dir, "config.json"))
-  parsed_config <- .gk_config_from_list(config)
-  if (!identical(gk_config_hash(parsed_config), review$config_sha256)) {
-    .gk_abort("The saved configuration hash does not match the review.", class = "verify")
-  }
-  if (!identical(.gk_thresholds_hash(review$thresholds), review$classification$thresholds_sha256)) {
-    .gk_abort("The saved threshold hash does not match the classification.", class = "verify")
-  }
+  review <- .gk_read_review_checkpoint(dir)
+  review$checkpoint_revision <- .gk_sha256_file(file.path(dir, "review.rds"))
   .gk_acquire_review_lock(dir, takeover = takeover)
   review$locked <- FALSE
   review$working_dir <- dir

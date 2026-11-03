@@ -14,7 +14,7 @@ gk_save_review(review, dir, overwrite = FALSE)
 \item{overwrite}{Replace an existing directory.}
 }
 \value{
-The saved directory invisibly.
+The saved directory invisibly, with a \code{checkpoint_revision} attribute.
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
@@ -26,6 +26,12 @@ file named \code{.DIRECTORY.gatekeepR.lock}. This empty file remains after use;
 do not remove it while sessions may be accessing the review. The filesystem
 must support advisory file locks, and its parent directory must be writable.
 Session ownership is preserved when replacing the checkpoint.
+Reviews returned by \code{\link[=gk_load_review]{gk_load_review()}} carry a checkpoint revision. Saving
+that review back to its working directory rejects intervening writes, even
+from another browser session in the same R process. After saving, reload the
+checkpoint before further editing, or copy the returned path's
+\code{checkpoint_revision} attribute to \code{review$checkpoint_revision}.
+Explicit overwrites with reviews that were never loaded remain supported.
 }
 \seealso{
 Other review:

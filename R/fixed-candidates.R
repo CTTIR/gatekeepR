@@ -11,6 +11,11 @@
 #' file. The caller maps the external format into the documented parameter
 #' fields; the source hash authenticates bytes, not mapping correctness or
 #' scientific approval. No coefficient is estimated or changed.
+#' Import also supports an explicitly verified legacy parameter record. Keep
+#' its original file, provenance and bindings; import creates a schema 2 model
+#' without modifying that file or refitting any parameter. Existing provenance
+#' fields are preserved, and `import_source_sha256` on the model authenticates
+#' the file supplied to this import. Downstream use requires requalification.
 #'
 #' @param parameters Named list containing `panel`, `identity_markers`,
 #'   `identity_robust`, `identity_regression`, `identity_center`, `identity_scale`,
@@ -21,7 +26,9 @@
 #' @param provenance Named list of caller source and transformation metadata.
 #' @param bindings Named list of immutable caller policies or thresholds.
 #' @return A hash-bound `gk_frozen_residual_model`. The training-score hash is
-#'   unavailable; the authenticated source-file hash is stored in provenance.
+#'   unavailable; the authenticated source-file hash is stored in
+#'   `import_source_sha256` and, when absent, provenance's
+#'   `external_source_sha256` field.
 #' @family corrections
 #' @export
 #' @examples
@@ -93,9 +100,10 @@ gk_import_residual_model <- function(parameters, source_file, source_sha256,
       "Provenance and bindings must be named lists.")
     .gk_residual_hash_payload(value)
   }
-  provenance$external_source_sha256 <- source_sha256
-  model <- c(list(schema = "gk_frozen_residual_1.0.0"), parameters[fields],
+  if (is.null(provenance$external_source_sha256)) provenance$external_source_sha256 <- source_sha256
+  model <- c(list(schema = .gk_frozen_residual_schema), parameters[fields],
     list(source_scores_sha256 = NA_character_, provenance = provenance, bindings = bindings))
+  model$import_source_sha256 <- source_sha256
   model$model_sha256 <- .gk_residual_hash(model)
   structure(model, class = "gk_frozen_residual_model")
 }

@@ -4,12 +4,15 @@
 \alias{gk_read_export}
 \title{Read a verified export}
 \usage{
-gk_read_export(dir, verify = TRUE)
+gk_read_export(dir, verify = TRUE, expected_review_id = NULL)
 }
 \arguments{
 \item{dir}{Export directory.}
 
-\item{verify}{Verify before reading?}
+\item{verify}{Verify before reading? \code{FALSE} permits inspection of legacy or
+untrusted exports and makes no integrity claim.}
+
+\item{expected_review_id}{Optional full ID passed to \code{\link[=gk_verify_export]{gk_verify_export()}}.}
 }
 \value{
 A \code{gk_export} list containing snapshot, configuration and tables.

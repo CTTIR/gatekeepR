@@ -38,30 +38,55 @@ knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
 ```
 
 Review actions are append-only. Each action has an order, reviewer, reason,
-and target identity. The effective result is calculated by replaying those
-actions in order.
+image and target identity. Effective results are calculated by replaying the
+active actions; undo restores the prior effective decision without deleting rows.
 
-```{r review-template, eval=FALSE}
+```{r review}
+config <- gk_example_config()
+prep <- gk_prepare(gk_simulate(n_cells = 300L, seed = 7L), config, quiet = TRUE)
+thresholds <- gk_thresholds(prep, config, seed = 7L)
+classification <- gk_classify(prep, thresholds, config)
+states <- gk_state_calls(prep, thresholds, classification, config)
+structures <- gk_structures(classification, prep)
 review <- gk_review(classification, states, structures, thresholds, prep)
-review <- gk_set_cut(review, marker = "marker_a", estimate = 0.5,
-  reviewer = "reviewer-01", reason = "manual boundary")
-review <- gk_dispose(review, cell_id = "cell-001", disposition = "DELETE",
-  reviewer = "reviewer-01", reason = "out of tissue")
+image_id <- prep$cells$image_id[[1L]]
+review <- gk_set_cut(review, image_id, marker = "PanCK", estimate = 3,
+  reviewer = "example-reviewer", reason = "Demonstrate a manual boundary")
+review <- gk_dispose(review, image_id, cell_id = prep$cells$cell_id[[1L]],
+  disposition = "DELETE", reviewer = "example-reviewer", reason = "Demonstrate exclusion")
 reviewed <- gk_replay(review)
+stopifnot(!reviewed$cells$analysed[[1L]])
 ```
 
-`gk_save_review()` writes a staged, checksummed review directory and
-`gk_load_review()` restores it. Once the review is complete, `gk_lock()` blocks
-further mutation and `gk_export()` writes the reproducible result. Verify it
-before delivery:
+`gk_save_review()` writes a staged, checksummed checkpoint and
+`gk_load_review()` validates and restores it. A loaded review retains its
+checkpoint revision; a stale concurrent save fails until the review is reloaded.
+Owner locks persist across R processes. Once the previous owner has stopped,
+`gk_load_review(path, takeover = TRUE)` explicitly claims that checkpoint in the
+new process; never take over an active reviewer.
+`gk_lock()` returns a separate snapshot. Keep that return value and pass it to
+`gk_export()`; the editable review remains a separate object.
 
-```{r export-template, eval=FALSE}
-gk_save_review(review, "review")
-gk_lock(review, reviewer = "reviewer-01")
-export <- gk_export(review, "export")
-gk_verify_export(export)
+```{r export}
+checkpoint_dir <- tempfile("gatekeepR-checkpoint-")
+gk_save_review(review, checkpoint_dir)
+loaded <- gk_load_review(checkpoint_dir)
+snapshot <- gk_lock(loaded, reviewer = "example-reviewer", status = "PENDING")
+export_dir <- tempfile("gatekeepR-export-")
+gk_export(snapshot, export_dir)
+checks <- gk_verify_export(export_dir, expected_review_id = snapshot$review_id_full)
+stopifnot(all(checks$ok))
 ```
 
-The verification step checks identifiers, configuration and source hashes,
-ledger replay, deletion history, and threshold hashes. It is suitable for a
-batch validation job as well as for a human review handoff.
+Version 2 binds typed source/replay inputs, correction model, ledgers, effective
+scores/cells/states and reviewer/status to the content ID. It verifies file
+transport and exact numerical replay before publication. REVIEWED records an
+explicit human assertion, not authenticated identity or biological validity.
+Retain the full ID independently when checking delivered exports: a completely
+replaced export cannot be authenticated by hashes stored only inside itself.
+
+Preserve version 1 checkpoints and exports unchanged. Regenerate analytical
+objects from original source/configuration, re-review changed results and save
+to new paths. Legacy export inspection is available explicitly via
+`gk_read_export(path, verify = FALSE)` and does not claim integrity. The new
+scientific and hash bindings deliberately reject old mixed analytical objects.

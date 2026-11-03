@@ -59,3 +59,46 @@ test_that("data hashes depend on content, not on R serialisation", {
   expect_false(identical(.gk_sha256_data("a"), .gk_sha256_data(NA_character_)))
   expect_identical(.gk_short_hash(h1, 8L), substr(h1, 1, 8))
 })
+
+test_that("data hash v2 has unambiguous strings, missingness and argument boundaries", {
+  expect_false(identical(.gk_sha256_data(c("a\nb", "c")),
+    .gk_sha256_data(c("a", "b\nc"))))
+  expect_false(identical(.gk_sha256_data(NA_character_),
+    .gk_sha256_data(paste0(intToUtf8(1L), "NA"))))
+  expect_false(identical(.gk_sha256_data(c(NA_character_, "")),
+    .gk_sha256_data(c("", NA_character_))))
+  expect_false(identical(.gk_sha256_data(character()), .gk_sha256_data("")))
+  expect_false(identical(.gk_sha256_data(c("a", "b")), .gk_sha256_data("a", "b")))
+  expect_false(identical(.gk_sha256_data(NULL), .gk_sha256_data()))
+  expect_false(identical(.gk_sha256_data(list()), .gk_sha256_data(NULL)))
+  latin <- iconv("café", from = "UTF-8", to = "latin1")
+  expect_identical(.gk_sha256_data(latin), .gk_sha256_data(enc2utf8(latin)))
+})
+
+test_that("data hash v2 binds storage types, shape, names and marker keys", {
+  hashes <- vapply(list(TRUE, 1L, 1, "1", as.raw(1)), .gk_sha256_data, character(1))
+  expect_length(unique(hashes), length(hashes))
+  m <- matrix(as.double(1:6), 2L, dimnames = list(c("one", "two"), c("A", "B", "C")))
+  variants <- list(m, unname(m), as.vector(m), matrix(as.vector(m), 3L),
+    m[2:1, ], m[, 3:1], structure(m, dimnames = list(c("one", "other"), c("A", "B", "C"))))
+  expect_length(unique(vapply(variants, .gk_sha256_data, character(1))), length(variants))
+  a <- matrix(1, 1L, 2L, dimnames = list(NULL, c("A|B", "C")))
+  b <- matrix(1, 1L, 2L, dimnames = list(NULL, c("A", "B|C")))
+  expect_false(identical(.gk_sha256_data(a), .gk_sha256_data(b)))
+  expect_false(identical(.gk_sha256_data(c(A = 1)), .gk_sha256_data(c(B = 1))))
+  expect_false(identical(.gk_sha256_data(data.frame(x = 1:2)),
+    .gk_sha256_data(data.frame(x = as.double(1:2)))))
+  expect_error(.gk_sha256_data(new.env()), class = "gatekeepr_error_input")
+})
+
+test_that("data hash v2 canonicalizes numeric missing values and signed zero", {
+  expect_identical(.gk_sha256_data(c(-0, NA_real_, NaN)),
+    .gk_sha256_data(c(0, NaN, NA_real_)))
+  expect_false(identical(.gk_sha256_data(NA_real_), .gk_sha256_data(0)))
+  expect_false(identical(.gk_sha256_data(Inf), .gk_sha256_data(-Inf)))
+  expect_false(identical(.gk_sha256_data(NA_integer_), .gk_sha256_data(NA_real_)))
+  expect_identical(.gk_sha256_data(structure(1, a = "a", b = "b")),
+    .gk_sha256_data(structure(1, b = "b", a = "a")))
+  x <- list(values = matrix(c(NA_real_, 0, 1, 2), 2), ids = c("α", "x\ny"))
+  expect_identical(.gk_sha256_data(x), .gk_sha256_data(unserialize(serialize(x, NULL, version = 2))))
+})

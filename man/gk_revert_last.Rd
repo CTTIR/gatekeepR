@@ -2,7 +2,7 @@
 % Please edit documentation in R/review.R
 \name{gk_revert_last}
 \alias{gk_revert_last}
-\title{Append an inverse of the most recent review action}
+\title{Undo the most recent review action without deleting history}
 \usage{
 gk_revert_last(review, reviewer, reason)
 }
@@ -14,10 +14,15 @@ gk_revert_last(review, reviewer, reason)
 \item{reason}{Required reason recorded in the ledger.}
 }
 \value{
-A new \code{gk_review} object. No existing ledger row is removed.
+A new \code{gk_review} object.
 }
 \description{
-Append an inverse of the most recent review action
+Undo the most recent review action without deleting history
+}
+\details{
+The appended row references the target action. Replay restores the
+state before that action, including earlier overlapping selections. Undoing
+an undo reactivates its target. No existing ledger row is removed.
 }
 \seealso{
 Other review:

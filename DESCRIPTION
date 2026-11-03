@@ -1,6 +1,6 @@
 Package: gatekeepR
 Title: Reviewable Marker Gating and Phenotyping for Multiplexed Imaging
-Version: 1.0.0
+Version: 1.1.0
 Authors@R:
     person("R.", "Heller",
            email = "raban.heller@uni-ulm.de",
@@ -48,7 +48,7 @@ Suggests:
     testthat (>= 3.0.0),
     uwot,
     withr
-Remotes: CTTIR/cellspecR
+Additional_repositories: https://cttir.r-universe.dev
 Config/testthat/edition: 3
 VignetteBuilder: knitr
 Encoding: UTF-8

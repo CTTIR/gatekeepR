@@ -66,5 +66,122 @@ test_that("staging refuses to overwrite unless asked and cleans up", {
   stage <- .gk_stage_dir(nested)
   expect_true(dir.exists(stage))
   stale <- .gk_stage_dir(nested)
-  expect_identical(stale, stage)
+  expect_false(identical(stale, stage))
+  expect_true(dir.exists(stage))
+  expect_true(dir.exists(stale))
+})
+
+
+test_that("staging and rollback never erase pre-existing pid-named directories", {
+  root <- withr::local_tempdir()
+  dir <- file.path(root, "out")
+  for (suffix in c(".partial-", ".old-")) {
+    existing <- paste0(dir, suffix, Sys.getpid())
+    dir.create(existing)
+    writeLines("preserve", file.path(existing, "sentinel"))
+  }
+  write_bound_dir(dir)
+  stage <- .gk_stage_dir(dir, overwrite = TRUE)
+  writeLines("replacement", file.path(stage, "new.txt"))
+  .gk_write_manifest(stage, "new.txt")
+  .gk_publish_dir(stage, dir, overwrite = TRUE)
+  for (suffix in c(".partial-", ".old-"))
+    expect_identical(readLines(file.path(paste0(dir, suffix, Sys.getpid()), "sentinel")), "preserve")
+})
+
+test_that("failed publication restores existing content and retains staged data", {
+  dir <- file.path(withr::local_tempdir(), "out")
+  write_bound_dir(dir)
+  stage <- .gk_stage_dir(dir, overwrite = TRUE)
+  writeLines("replacement", file.path(stage, "new.txt"))
+  testthat::local_mocked_bindings(.gk_rename_dir = function(from, to) {
+    if (identical(from, stage)) return(FALSE)
+    file.rename(from, to)
+  })
+  expect_error(.gk_publish_dir(stage, dir, overwrite = TRUE), "previous directory was preserved")
+  expect_identical(readLines(file.path(dir, "a.txt")), "a.txt")
+  expect_identical(readLines(file.path(stage, "new.txt")), "replacement")
+})
+
+test_that("failed rollback preserves the old directory at the reported recovery path", {
+  root <- withr::local_tempdir()
+  dir <- file.path(root, "out")
+  write_bound_dir(dir)
+  stage <- .gk_stage_dir(dir, overwrite = TRUE)
+  writeLines("replacement", file.path(stage, "new.txt"))
+  target <- normalizePath(dir, winslash = "/", mustWork = TRUE)
+  testthat::local_mocked_bindings(.gk_rename_dir = function(from, to) {
+    if (!identical(from, target)) return(FALSE)
+    file.rename(from, to)
+  })
+  expect_error(.gk_publish_dir(stage, dir, overwrite = TRUE), "previous directory is preserved at")
+  old <- list.dirs(root, recursive = FALSE, full.names = TRUE)
+  old <- old[grepl("out.old-", basename(old), fixed = TRUE)]
+  expect_length(old, 1L)
+  expect_identical(readLines(file.path(old, "checkpoint", "a.txt")), "a.txt")
+  expect_identical(readLines(file.path(stage, "new.txt")), "replacement")
+})
+
+test_that("duplicate, backslash and noncanonical manifest paths fail before reads", {
+  dir <- file.path(withr::local_tempdir(), "out")
+  write_bound_dir(dir)
+  original <- readLines(file.path(dir, "MANIFEST.sha256"))
+  writeLines(c(original, original[[1L]]), file.path(dir, "MANIFEST.sha256"))
+  checks <- .gk_manifest_checks(dir)
+  expect_false(checks$ok[checks$check == "manifest_paths_unique"])
+  bad_paths <- c("../escape", "a/../escape", "/absolute", "C:/absolute", "a\\b", "a//b", "./a", "a/.")
+  for (path in bad_paths) {
+    writeLines(paste0(strrep("0", 64), "  ", path), file.path(dir, "MANIFEST.sha256"))
+    checks <- .gk_manifest_checks(dir)
+    expect_false(checks$ok[checks$check == "manifest_paths_safe"], info = path)
+  }
+  expect_error(.gk_write_manifest(dir, c("a.txt", "a.txt")), "unique regular files")
+})
+
+test_that("manifests reject directories and symlinks without traversing them", {
+  root <- withr::local_tempdir()
+  dir <- file.path(root, "out")
+  write_bound_dir(dir)
+  writeLines(paste0(strrep("0", 64), "  sub"), file.path(dir, "MANIFEST.sha256"))
+  checks <- .gk_manifest_checks(dir)
+  expect_false(checks$ok[checks$check == "listed_files_regular"])
+  outside <- file.path(root, "outside")
+  dir.create(outside)
+  writeLines("external", file.path(outside, "external.txt"))
+  link <- file.path(dir, "link")
+  if (!file.symlink(outside, link)) skip("Symbolic links unavailable")
+  writeLines(paste0(strrep("0", 64), "  link/external.txt"), file.path(dir, "MANIFEST.sha256"))
+  checks <- .gk_manifest_checks(dir)
+  expect_false(checks$ok[checks$check == "listed_files_regular"])
+  expect_true("link" %in% .gk_list_files(dir))
+  expect_false("link/external.txt" %in% .gk_list_files(dir))
+  expect_error(.gk_write_manifest(dir, "link/external.txt"), "regular files")
+  unlink(file.path(dir, "DONE"))
+  file.symlink(file.path(outside, "external.txt"), file.path(dir, "DONE"))
+  checks <- .gk_manifest_checks(dir)
+  expect_false(checks$ok[checks$check == "control_files_regular"])
+})
+
+
+test_that("unexpected publication errors restore the previous directory", {
+  dir <- file.path(withr::local_tempdir(), "out")
+  write_bound_dir(dir)
+  stage <- .gk_stage_dir(dir, overwrite = TRUE)
+  writeLines("replacement", file.path(stage, "new.txt"))
+  testthat::local_mocked_bindings(.gk_rename_dir = function(from, to) {
+    if (identical(from, stage)) cli::cli_abort("simulated interrupted rename")
+    file.rename(from, to)
+  })
+  expect_error(.gk_publish_dir(stage, dir, overwrite = TRUE), "simulated interrupted rename")
+  expect_identical(readLines(file.path(dir, "a.txt")), "a.txt")
+  expect_identical(readLines(file.path(stage, "new.txt")), "replacement")
+})
+
+test_that("DONE fields cannot contain duplicate identities", {
+  dir <- file.path(withr::local_tempdir(), "out")
+  write_bound_dir(dir)
+  path <- file.path(dir, "DONE")
+  writeLines(c(readLines(path), "review_id another-identity"), path)
+  checks <- .gk_manifest_checks(dir)
+  expect_false(checks$ok[checks$check == "done_well_formed"])
 })

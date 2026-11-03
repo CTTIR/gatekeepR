@@ -27,6 +27,10 @@ then returns a long table containing every cell by marker by parent
 combination. Localisation requirements are evaluated on the raw selected
 measurements. State calls are disabled for analysis by default and become
 effective only after a review ledger enables them.
+\code{parent_crossing} compares the parent with its reference; \code{valley}, \code{tail}
+and \code{mixture} estimate within the parent (or pooled parent union). Raw
+support is required even for manual cuts. Estimated positive and negative
+pools must each meet the marker's \code{min_cells} requirement.
 }
 \examples{
 prep <- gk_prepare(gk_example_path("example-slide"), gk_example_config(), quiet = TRUE)
@@ -38,7 +42,9 @@ head(states$calls)
 }
 \seealso{
 Other classification:
+\code{\link[=gk_apply_candidate_rules]{gk_apply_candidate_rules()}},
 \code{\link[=gk_classify]{gk_classify()}},
+\code{\link[=gk_fixed_signal_calls]{gk_fixed_signal_calls()}},
 \code{\link[=gk_structures]{gk_structures()}}
 }
 \concept{classification}

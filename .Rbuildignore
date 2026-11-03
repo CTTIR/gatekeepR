@@ -27,3 +27,6 @@
 ^\.git$
 ^site$
 ^tools/branding$
+^MAINTENANCE\.md$
+^\.checks$
+^Rplots\.pdf$

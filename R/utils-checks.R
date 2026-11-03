@@ -79,11 +79,11 @@
 .gk_check_count <- function(x, arg = rlang::caller_arg(x),
                             call = rlang::caller_env(), min = 0L) {
   ok <- is.numeric(x) && length(x) == 1L && !is.na(x) && is.finite(x) &&
-    x == round(x) && x >= min
+    x == round(x) && x >= min && x <= .Machine$integer.max
   if (!ok) {
     .gk_abort(
       c(
-        "{.arg {arg}} must be a single whole number >= {min}.",
+        "{.arg {arg}} must be a single whole number in [{min}, {(.Machine$integer.max)}].",
         "x" = "Got {.obj_type_friendly {x}}."
       ),
       class = "input", call = call

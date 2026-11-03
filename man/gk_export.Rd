@@ -17,7 +17,8 @@ gk_export(snapshot, dir, overwrite = FALSE)
 The destination directory invisibly.
 }
 \description{
-Write a locked review export
+Modified snapshots are rejected before writing. Staged files must pass
+content and replay verification before they replace the destination.
 }
 \seealso{
 Other export:

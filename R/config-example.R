@@ -109,9 +109,11 @@ gk_example_config <- function() {
 #' Returns the path of a file or directory shipped in `inst/extdata`:
 #'
 #' * `"example-slide"`: a cellspec directory from `gk_simulate(seed = 1)`;
-#' * `"example-config.json"`: [gk_example_config()] written as JSON;
-#' * `"example-review"`: a saved review working directory;
-#' * `"example-export"`: a locked, verified export of that review.
+#' * `"example-config.json"`: [gk_example_config()] written as JSON.
+#'
+#' Review checkpoints and exports are created by the reviewer rather than
+#' bundled as pre-reviewed decisions. Use [gk_review()] and [gk_save_review()]
+#' to create a checkpoint, or [gk_lock()] and [gk_export()] for an export.
 #'
 #' @param name Which example to locate.
 #'
@@ -123,8 +125,7 @@ gk_example_config <- function() {
 #' @family example data
 #' @export
 gk_example_path <- function(name = c(
-                              "example-slide", "example-config.json",
-                              "example-review", "example-export"
+                              "example-slide", "example-config.json"
                             )) {
   name <- rlang::arg_match(name)
   path <- system.file("extdata", name, package = "gatekeepR")

@@ -1,11 +1,7 @@
 # Parent-specific state calls and localisation gates.
 
 .gk_state_score <- function(prepared, classification) {
-  if (!is.null(classification$correction) && inherits(classification$correction, "gk_corrected")) {
-    classification$correction$matrix
-  } else {
-    prepared$score
-  }
+  .gk_score_matrix(prepared, classification$correction)
 }
 
 .gk_state_reference_labels <- function(config, marker, parent, args) {
@@ -17,7 +13,7 @@
 }
 
 .gk_state_estimate <- function(values, in_parent, cell_type, config, marker,
-                               parent, method, args, min_auc) {
+                               parent, method, args, min_auc, min_cells = 20L) {
   positive <- values[in_parent & is.finite(values)]
   reference_labels <- .gk_state_reference_labels(config, marker, parent, args)
   reference <- if (is.null(reference_labels)) {
@@ -34,7 +30,18 @@
         details = "Fixed threshold from configuration."))
     }
   }
-  if (length(positive) < 2L || length(reference) < 2L) {
+  if (method %in% c("valley", "tail", "mixture")) {
+    result <- switch(method,
+      valley = .gk_estimate_valley(positive, args),
+      tail = .gk_estimate_tail(positive, args),
+      mixture = .gk_estimate_mixture(positive, args)
+    )
+    return(.gk_enforce_pool_support(result, min_cells))
+  }
+  if (!identical(method, "parent_crossing")) {
+    return(.gk_no_separation(details = "The configured state method cannot estimate a threshold."))
+  }
+  if (length(positive) < max(2L, min_cells) || length(reference) < max(2L, min_cells)) {
     return(list(status = "NOT_CALLABLE_UNDERPOWERED", estimate = NA_real_,
       crossing = NA_real_, auc = NA_real_, n_positive_pool = length(positive),
       n_negative_pool = length(reference), rule = NA_character_,
@@ -77,6 +84,10 @@
 #' combination. Localisation requirements are evaluated on the raw selected
 #' measurements. State calls are disabled for analysis by default and become
 #' effective only after a review ledger enables them.
+#' `parent_crossing` compares the parent with its reference; `valley`, `tail`
+#' and `mixture` estimate within the parent (or pooled parent union). Raw
+#' support is required even for manual cuts. Estimated positive and negative
+#' pools must each meet the marker's `min_cells` requirement.
 #'
 #' @param prepared A [gk_prepare()] result.
 #' @param thresholds A [gk_thresholds()] result for identity markers.
@@ -104,10 +115,12 @@ gk_state_calls <- function(prepared, thresholds, classification, config) {
     !identical(prepared$config_sha256, gk_config_hash(config))) {
     .gk_abort("Inputs do not share the same configuration.", class = "state")
   }
+  .gk_validate_classification(prepared, classification, thresholds)
   pm <- config$panel$markers
   states <- pm$marker[pm$role == "state"]
   cells <- prepared$cells
   score <- .gk_state_score(prepared, classification)
+  available <- .gk_score_available(prepared, states)
   labels <- classification$cells$cell_type
   rows <- list()
   threshold_rows <- list()
@@ -118,29 +131,31 @@ gk_state_calls <- function(prepared, thresholds, classification, config) {
       method <- pm$threshold_method[pm$marker == marker][[1L]]
       args <- .gk_method_args(method, config$panel$threshold_args[[marker]], role = "state")
       loc <- .gk_state_localization(prepared, marker)
-      parent_calls <- list()
+      supported <- .gk_raw_supported(prepared, img, marker)
+      cb <- prepared$callability[prepared$callability$image_id == img &
+        prepared$callability$marker == marker, , drop = FALSE]
       for (parent in parents) {
         parent_labels <- config$parent_sets[[parent]]
         in_parent <- labels %in% parent_labels
-        estimate <- .gk_state_estimate(
-          score[image_idx, marker], in_parent[image_idx], labels[image_idx],
-          config, marker, parent, method, args,
-          config$panel$min_support[[marker]]$min_auc
-        )
+        estimate_in <- in_parent
         if (isTRUE(args$pooled) && length(parents) > 1L) {
-          # A pooled estimate is computed once below; this marker/parent row
-          # records the same cut for every configured parent.
-          pooled_in <- Reduce(`|`, lapply(parents, function(p) labels %in% config$parent_sets[[p]]))
-          estimate <- .gk_state_estimate(
-            score[image_idx, marker], pooled_in[image_idx], labels[image_idx],
-            config, marker, parent, method, args,
-            config$panel$min_support[[marker]]$min_auc
-          )
+          estimate_in <- Reduce(`|`, lapply(parents, function(p) labels %in% config$parent_sets[[p]]))
         }
+        estimate <- if (!supported) {
+          .gk_no_separation(
+            if (nrow(cb)) cb$status[[1L]] else "NOT_CALLABLE_UNAVAILABLE",
+            if (nrow(cb)) cb$details[[1L]] else "Marker is not callable."
+          )
+        } else .gk_state_estimate(
+          score[image_idx, marker], estimate_in[image_idx], labels[image_idx],
+          config, marker, parent, method, args,
+          config$panel$min_support[[marker]]$min_auc,
+          config$panel$min_support[[marker]]$min_cells
+        )
         threshold_rows[[length(threshold_rows) + 1L]] <- data.frame(
           image_id = img, marker = marker, parent = parent, role = "state",
           method = method, status = estimate$status, estimate = estimate$estimate,
-          crossing = estimate$crossing, negative_q99 = NA_real_, auc = estimate$auc,
+          crossing = estimate$crossing, negative_q99 = estimate$negative_q99 %||% NA_real_, auc = estimate$auc,
           n_positive_pool = estimate$n_positive_pool,
           n_negative_pool = estimate$n_negative_pool,
           positive_populations = NA_character_, negative_populations = NA_character_,
@@ -150,13 +165,13 @@ gk_state_calls <- function(prepared, thresholds, classification, config) {
         )
         enabled <- FALSE
         positive <- rep(FALSE, length(image_idx))
-        if (is.finite(estimate$estimate)) {
-          evaluable <- loc$evaluable[image_idx] & is.finite(score[image_idx, marker])
+        evaluable <- supported & available[image_idx, marker] &
+          loc$evaluable[image_idx] & is.finite(loc$ratio[image_idx]) &
+          is.finite(score[image_idx, marker])
+        if (.gk_is_callable_status(estimate$status) && is.finite(estimate$estimate)) {
           positive <- evaluable & in_parent[image_idx] &
             loc$ratio[image_idx] >= loc$min_ratio &
             score[image_idx, marker] >= estimate$estimate
-        } else {
-          evaluable <- loc$evaluable[image_idx] & is.finite(score[image_idx, marker])
         }
         rows[[length(rows) + 1L]] <- data.frame(
           image_id = img, cell_id = cells$cell_id[image_idx], marker = marker,
@@ -168,12 +183,19 @@ gk_state_calls <- function(prepared, thresholds, classification, config) {
       }
     }
   }
-  call_out <- do.call(rbind, rows)
+  call_out <- if (length(rows)) do.call(rbind, rows) else data.frame(
+    image_id = character(), cell_id = character(), marker = character(),
+    parent = character(), in_parent = logical(), evaluable = logical(),
+    score = double(), estimate = double(), localization_ratio = double(),
+    positive = logical(), enabled = logical(), stringsAsFactors = FALSE
+  )
   rownames(call_out) <- NULL
-  threshold_out <- do.call(rbind, threshold_rows)
+  threshold_out <- if (length(threshold_rows)) do.call(rbind, threshold_rows) else thresholds[FALSE, ]
   rownames(threshold_out) <- NULL
   attr(threshold_out, "config_sha256") <- prepared$config_sha256
   attr(threshold_out, "source_sha256") <- prepared$source_sha256
+  attr(threshold_out, "cell_keys") <- .gk_cell_keys(cells)
+  attr(threshold_out, "score_sha256") <- .gk_score_hash(prepared, score)
   structure(
     list(
       calls = call_out, state_thresholds = structure(threshold_out,
@@ -181,6 +203,8 @@ gk_state_calls <- function(prepared, thresholds, classification, config) {
       prepared = prepared, classification = classification,
       config = config, config_sha256 = prepared$config_sha256,
       thresholds_sha256 = .gk_thresholds_hash(thresholds),
+      classification_sha256 = .gk_classification_hash(classification),
+      score_sha256 = .gk_score_hash(prepared, score),
       source_sha256 = prepared$source_sha256
     ),
     class = "gk_state_calls"

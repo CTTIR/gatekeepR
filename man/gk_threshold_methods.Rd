@@ -21,6 +21,10 @@ method with \code{threshold_method} and its arguments with \code{threshold_args}
 State markers also accept \code{pooled} (default \code{FALSE}): with \code{pooled = TRUE}
 one estimate is made over the union of the marker's parent sets and used
 for every parent, and the threshold table records this.
+The \code{valley}, \code{tail} and \code{mixture} methods use the scores within that parent
+or union; only \code{parent_crossing} compares it with an external reference.
+Estimated positive and negative pools must each satisfy \code{min_cells} from
+\code{\link[=gk_min_support]{gk_min_support()}}. Manual cuts still require the raw support checks.
 }
 \examples{
 gk_threshold_methods()[, c("method", "role_allowed")]

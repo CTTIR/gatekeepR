@@ -80,8 +80,9 @@ gk_prepare <- function(x, config, image_id = NULL, quiet = FALSE) {
   ))
   used_features <- sort(used_features)
   source_sha256 <- .gk_sha256_data(
-    cells$image_id, cells$cell_id, cells$x, cells$y,
-    x$measurements[rows, used_features, drop = FALSE]
+    .gk_cell_key(cells), cells$sample_id, cells$x, cells$y,
+    x$measurements[rows, used_features, drop = FALSE],
+    .gk_sha256_object(d[match(used_features, d$feature_id), , drop = FALSE])
   )
   prepared <- structure(
     list(
@@ -96,6 +97,7 @@ gk_prepare <- function(x, config, image_id = NULL, quiet = FALSE) {
       config = config,
       config_sha256 = gk_config_hash(config),
       source_sha256 = source_sha256,
+      data_hash_version = .gk_data_hash_version,
       source_manifest_sha256 = x$provenance$manifest_sha256 %||% NA_character_,
       created_utc = .gk_utc_now(),
       gatekeepr_version = .gk_package_version()
@@ -131,7 +133,8 @@ gk_prepare <- function(x, config, image_id = NULL, quiet = FALSE) {
 
 # Raw numerator/denominator measurements for localisation rules; ratio as in
 # the reference builder: (numerator + 1e-9) / (denominator + 1e-9), evaluable only
-# where both are finite.
+# where both inputs and the resulting ratio are finite and the adjusted
+# denominator is nonzero.
 .gk_localization <- function(x, config, rows) {
   loc <- config$panel$localization
   loc <- loc[!vapply(loc, is.null, logical(1))]
@@ -145,9 +148,11 @@ gk_prepare <- function(x, config, image_id = NULL, quiet = FALSE) {
     features <<- c(features, d$feature_id[c(jn, jd)])
     num <- x$measurements[rows, jn]
     den <- x$measurements[rows, jd]
-    evaluable <- is.finite(num) & is.finite(den)
+    evaluable <- is.finite(num) & is.finite(den) & (den + 1e-9 != 0)
     ratio <- rep(NA_real_, length(rows))
     ratio[evaluable] <- (num[evaluable] + 1e-9) / (den[evaluable] + 1e-9)
+    evaluable <- evaluable & is.finite(ratio)
+    ratio[!evaluable] <- NA_real_
     data.frame(numerator = num, denominator = den, ratio = ratio, evaluable = evaluable)
   })
   names(out) <- names(loc)

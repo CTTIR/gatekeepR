@@ -39,6 +39,20 @@ test_that("TSV reading tolerates CRLF line endings", {
   expect_identical(back$b, c("x", "y"))
 })
 
+test_that("TSV decimals retain threshold-adjacent IEEE values", {
+  # Hexadecimal inputs provide an independent exact numerical oracle.
+  values <- c(as.double("0x1.d899e84a31fc5p+1"), pi, .Machine$double.xmin,
+    .Machine$double.xmax, .Machine$double.eps, -0, NA_real_, Inf, -Inf)
+  withr::local_seed(71)
+  values <- c(values, stats::rnorm(1000), exp(stats::runif(1000, -700, 700)))
+  for (extension in c(".tsv", ".tsv.gz")) {
+    path <- withr::local_tempfile(fileext = extension)
+    .gk_write_tsv(data.frame(value = values), path)
+    expect_identical(.gk_read_tsv(path, c(value = "double"))$value, values)
+  }
+  expect_error(.gk_parse_double("1,2"), "Invalid numeric")
+})
+
 test_that("atomic JSON writes and reads", {
   dir <- withr::local_tempdir()
   path <- file.path(dir, "x.json")
@@ -60,7 +74,8 @@ test_that("local seeds are reproducible and restore the caller's RNG state", {
   expect_identical(a, b)
   withr::with_preserve_seed({
     suppressWarnings(RNGkind(sample.kind = "Rounding"))
-    c1 <- .gk_with_seed(7, sample.int(100, 5))
+    expect_warning(c1 <- .gk_with_seed(7, sample.int(100, 5)),
+      "non-uniform 'Rounding' sampler used")
     expect_identical(RNGkind()[[3L]], "Rounding")
     RNGkind(sample.kind = "Rejection")
   })

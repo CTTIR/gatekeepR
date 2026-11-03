@@ -6,12 +6,7 @@
 )
 
 .gk_correction_callable <- function(prepared, markers) {
-  cb <- prepared$callability
-  status <- vapply(markers, function(mk) {
-    rows <- cb$status[cb$marker == mk]
-    length(rows) > 0L && !any(grepl("^NOT_CALLABLE", rows))
-  }, logical(1))
-  status
+  colSums(.gk_score_available(prepared, markers)) > 0L
 }
 
 .gk_correction_stats <- function(x) {
@@ -152,7 +147,10 @@
     list(
       matrix = matrix, model = model,
       config_sha256 = prepared$config_sha256,
-      source_sha256 = prepared$source_sha256
+      source_sha256 = prepared$source_sha256,
+      cell_keys = .gk_cell_keys(prepared$cells),
+      data_hash_version = .gk_data_hash_version,
+      score_sha256 = .gk_score_hash(prepared, matrix)
     ),
     class = "gk_corrected"
   )
@@ -164,10 +162,15 @@
 #' `r lifecycle::badge("experimental")`
 #'
 #' Applies a deterministic correction to transformed marker scores. Markers
-#' that fail the raw support checks are excluded from fitting and are `NA` in
-#' the corrected matrix, so correction cannot create signal in an absent
-#' channel. The fitted parameters are returned in a
+#' on images that fail the raw support checks are excluded from fitting and
+#' are `NA` in the corrected matrix. Missing measurements remain `NA`.
+#' Fitting uses all supported images together; residual methods use median
+#' imputation internally without exposing imputed values as measurements.
+#' The fitted parameters are returned in a
 #' `gk_correction_model` and can be applied again to the same prepared data.
+#' Stored correction models from older data-hash versions must be regenerated
+#' from their original source and configuration. For migration of the separate
+#' frozen residual parameter models, see [gk_apply_residual_model()].
 #'
 #' @param prepared A [gk_prepare()] result.
 #' @param method One of `"none"`, `"robust_z"`, `"common_score_residual"`
@@ -220,7 +223,13 @@ gk_correct <- function(prepared,
     fit <- list()
   } else {
     x <- prepared$score[, fit_markers, drop = FALSE]
-    if (any(!is.finite(x))) {
+    available <- .gk_score_available(prepared, fit_markers)
+    x[!available] <- NA_real_
+    fit_rows <- which(rowSums(available) > 0L)
+    x <- x[fit_rows, , drop = FALSE]
+    # Only multivariate residual fitting needs a complete matrix. Robust
+    # location/scale use the observed values, preserving the fitting sample.
+    if (method %in% c("common_score_residual", "pc1_panel_residual") && any(!is.finite(x))) {
       for (j in seq_len(ncol(x))) {
         x[!is.finite(x[, j]), j] <- stats::median(x[, j], na.rm = TRUE)
       }
@@ -243,6 +252,12 @@ gk_correct <- function(prepared,
         .gk_fit_pc1_panel(x, identity, row_center)
       }
     )
+    fitted <- matrix(NA_real_, nrow(prepared$score), length(fit_markers),
+      dimnames = dimnames(prepared$score[, fit_markers, drop = FALSE]))
+    fitted[fit_rows, ] <- fit$matrix
+    fitted[!available] <- NA_real_
+    fit$matrix <- fitted
+    fit$fit_rows <- fit_rows
     out[, fit_markers] <- fit$matrix
   }
   model <- .gk_correction_model(
@@ -250,13 +265,21 @@ gk_correct <- function(prepared,
   )
   model$config_sha256 <- prepared$config_sha256
   model$source_sha256 <- prepared$source_sha256
+  model$cell_keys <- .gk_cell_keys(prepared$cells)
+  model$matrix_sha256 <- .gk_sha256_data(model$matrix)
+  model$data_hash_version <- .gk_data_hash_version
   .gk_correction_result(prepared, out, model)
 }
 
 .gk_reapply_correction <- function(prepared, model, markers = NULL) {
   .gk_check_class(model, "gk_correction_model", arg = "method")
+  if (!identical(model$data_hash_version, .gk_data_hash_version)) {
+    .gk_abort("This stored correction model uses an older data-hash version; regenerate it from the original source and configuration.",
+      class = "state")
+  }
   if (!identical(model$source_sha256, prepared$source_sha256) ||
-    !identical(model$config_sha256, prepared$config_sha256)) {
+    !identical(model$config_sha256, prepared$config_sha256) ||
+    !identical(model$cell_keys, .gk_cell_keys(prepared$cells))) {
     .gk_abort(
       c(
         "The correction model was fitted to different prepared data.",
@@ -265,24 +288,30 @@ gk_correct <- function(prepared,
       class = "state"
     )
   }
-  selected <- markers %||% model$input_markers
+  selected <- markers %||% model$selected_markers %||% model$input_markers
   .gk_check_character(selected, min_length = 1L, unique = TRUE)
   if (!all(selected %in% model$input_markers)) {
     .gk_abort("The stored correction model does not contain {.arg markers}.", class = "input")
   }
   out <- prepared$score
-  if (length(model$noncallable_markers) > 0L) {
-    out[, model$noncallable_markers] <- NA_real_
+  bad <- intersect(selected, model$noncallable_markers)
+  if (length(bad) > 0L) {
+    out[, bad] <- NA_real_
   }
   fit_markers <- model$callable_markers
   if (length(fit_markers) > 0L) {
     x <- prepared$score[, fit_markers, drop = FALSE]
-    if (!is.matrix(model$matrix) || !identical(colnames(model$matrix), fit_markers) ||
-      nrow(model$matrix) != nrow(x) || any(!is.finite(model$matrix))) {
+    available <- .gk_score_available(prepared, fit_markers)
+    if (!is.matrix(model$matrix) || !identical(dimnames(model$matrix), dimnames(x)) ||
+      !identical(dim(model$matrix), dim(x)) ||
+      !identical(model$matrix_sha256, .gk_sha256_data(model$matrix)) ||
+      any(!is.finite(model$matrix[available])) || any(!is.na(model$matrix[!available]))) {
       .gk_abort("The stored correction model has invalid fitted values.", class = "state")
     }
-    out[, fit_markers] <- model$matrix
+    apply_markers <- intersect(selected, fit_markers)
+    out[, apply_markers] <- model$matrix[, apply_markers, drop = FALSE]
   }
+  model$selected_markers <- selected
   .gk_correction_result(prepared, out, model)
 }
 

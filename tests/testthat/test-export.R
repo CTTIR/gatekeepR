@@ -29,7 +29,7 @@ test_that("export verification detects tampering and semantic contradictions", {
   bad$replayed$cells$analysed[[1L]] <- TRUE
   bad$replayed$cells$disposition_effective[[1L]] <- "DELETE"
   bad_dir <- tempfile("gatekeepR-export-bad-")
-  gk_export(bad, bad_dir)
-  expect_error(gk_verify_export(bad_dir), class = "gatekeepr_error_verify")
+  expect_error(gk_export(bad, bad_dir), class = "gatekeepr_error_verify")
+  expect_false(dir.exists(bad_dir))
   unlink(bad_dir, recursive = TRUE)
 })

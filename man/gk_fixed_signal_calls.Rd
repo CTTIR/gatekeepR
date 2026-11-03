@@ -54,9 +54,9 @@ gk_fixed_signal_calls(x, x, sources, f, c(A = 2), c(A = TRUE), 2)$calls
 }
 \seealso{
 Other classification:
-\code{\link{gk_apply_candidate_rules}()},
-\code{\link{gk_classify}()},
-\code{\link{gk_state_calls}()},
-\code{\link{gk_structures}()}
+\code{\link[=gk_apply_candidate_rules]{gk_apply_candidate_rules()}},
+\code{\link[=gk_classify]{gk_classify()}},
+\code{\link[=gk_state_calls]{gk_state_calls()}},
+\code{\link[=gk_structures]{gk_structures()}}
 }
 \concept{classification}

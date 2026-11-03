@@ -116,19 +116,10 @@ gk_classify <- function(prepared, thresholds, config, correction = NULL) {
   if (!identical(prepared$config_sha256, gk_config_hash(config))) {
     .gk_abort("{.arg config} does not match the configuration used for preparation.", class = "state")
   }
-  if (!identical(attr(thresholds, "config_sha256"), prepared$config_sha256)) {
-    .gk_abort("{.arg thresholds} does not match the prepared configuration.", class = "state")
-  }
-  score <- if (is.null(correction)) prepared$score else {
-    .gk_check_class(correction, "gk_corrected")
-    if (!identical(correction$source_sha256, prepared$source_sha256) ||
-      !identical(correction$config_sha256, prepared$config_sha256)) {
-      .gk_abort("{.arg correction} does not match the prepared data.", class = "state")
-    }
-    correction$matrix
-  }
+  score <- .gk_validate_thresholds(prepared, thresholds, correction)
   pm <- config$panel$markers
   gating <- pm$marker[pm$role %in% .gk_gating_roles]
+  available <- .gk_score_available(prepared, gating)
   cells <- prepared$cells
   calls <- matrix(NA, nrow(cells), length(gating),
     dimnames = list(cells$cell_id, gating)
@@ -141,8 +132,10 @@ gk_classify <- function(prepared, thresholds, config, correction = NULL) {
     callable <- stats::setNames(rep(FALSE, length(gating)), gating)
     for (mk in gating) {
       hit <- .gk_threshold_lookup(thresholds, img, mk)
-      callable[[mk]] <- .gk_is_callable_status(hit$status) && is.finite(hit$estimate)
-      if (callable[[mk]]) calls[idx, mk] <- is.finite(score[idx, mk]) & score[idx, mk] >= hit$estimate
+      callable[[mk]] <- .gk_raw_supported(prepared, img, mk) &&
+        .gk_is_callable_status(hit$status) && is.finite(hit$estimate)
+      if (callable[[mk]]) calls[idx, mk] <- available[idx, mk] &
+        is.finite(score[idx, mk]) & score[idx, mk] >= hit$estimate
     }
     callable_by_image[[img]] <- callable
     evaluated <- .gk_rule_table_for_image(config, img, calls[idx, , drop = FALSE], callable)
@@ -215,11 +208,12 @@ gk_classify <- function(prepared, thresholds, config, correction = NULL) {
   )
   for (nm in flag_names) cell_out[[nm]] <- flag_values[[nm]]
   cell_out$excluded <- excluded
-  structure(
+  result <- structure(
     list(
       cells = cell_out, calls = calls, disabled_rules = disabled_rules,
       config = config, config_sha256 = prepared$config_sha256,
       thresholds_sha256 = .gk_thresholds_hash(thresholds),
+      score_sha256 = .gk_score_hash(prepared, score),
       source_sha256 = prepared$source_sha256,
       source_manifest_sha256 = prepared$source_manifest_sha256,
       coordinates = cells[, c("image_id", "cell_id", "x", "y"), drop = FALSE],
@@ -228,6 +222,8 @@ gk_classify <- function(prepared, thresholds, config, correction = NULL) {
     ),
     class = "gk_classification"
   )
+  result$classification_sha256 <- .gk_classification_hash(result)
+  result
 }
 
 #' @export
