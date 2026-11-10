@@ -66,7 +66,7 @@ then requalify the resulting score space before downstream use.
 This is a numerical fit/apply contract, not raw-channel callability, gate
 estimation or biological validation. The caller owns raw measurement
 selection, any asinh cofactor, image-specific training scope and downstream
-decisions. Constant raw channels may retain historical residual artifacts;
+decisions. Constant raw channels may retain historical residual artefacts;
 downstream callers must enforce raw support independently. Reusing a fitted
 model on a different image or cohort requires separate scientific qualification.
 }
