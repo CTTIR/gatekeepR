@@ -226,6 +226,8 @@ test_that("state estimation and persistence cover manual, reference and lock pat
 
 test_that("plot, structure and app wrappers cover optional branches", {
   skip_if_not_installed("ggplot2")
+  skip_if_not_installed("dbscan")
+  skip_if_not_installed("shiny")
   prep <- gk_example_prepared()
   cfg <- gk_example_config()
   thresholds <- gk_thresholds(prep, cfg, seed = 1L)

@@ -1,5 +1,6 @@
 # Small, fully controlled review exercises real preparation and classification.
 gk_integrity_review <- function(state_values = rep(seq_len(12), 2), duplicate_keys = FALSE) {
+  testthat::skip_if_not_installed("dbscan")
   markers <- c("A", "S")
   config <- gk_config(
     signal_policy = gk_signal_policy(markers),

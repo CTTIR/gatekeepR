@@ -1,4 +1,5 @@
 gk_app_test_review <- function(n = 100L) {
+  testthat::skip_if_not_installed("dbscan")
   cfg <- gk_config(gk_signal_policy(c("A", "S")),
     gk_panel(c("A", "S"), role = c("identity", "state"), transform = "none",
       threshold_method = "manual", threshold_args = list(A = list(value = 50), S = list(value = 75)),

@@ -49,6 +49,7 @@ gk_example_prepared <- function() {
 }
 
 gk_example_review <- function() {
+  testthat::skip_if_not_installed("dbscan")
   if (is.null(gk_test_env$review)) {
     prep <- gk_example_prepared()
     cfg <- gk_example_config()
