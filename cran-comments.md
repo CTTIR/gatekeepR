@@ -5,8 +5,9 @@ This is a new submission (gatekeepR 1.2.0).
 ## Test environments
 
 * local macOS (aarch64-apple-darwin), R 4.6.1:
-  `R CMD check --as-cran --no-manual` on the built tarball. LaTeX is not
-  installed on this machine, so the PDF manual was not built locally. The
+  `R CMD check --as-cran --no-manual` on the built tarball. The PDF manual
+  was built locally with TinyTeX (TeX Live 2026) via `R CMD Rd2pdf` without
+  errors; the check run itself used `--no-manual`. The
   optional Bioconductor package 'EBImage' could not be installed locally
   (its dependency 'fftwtools' needs the FFTW system library), so this run
   used `_R_CHECK_FORCE_SUGGESTS_=false`; the EBImage tests are skipped when
