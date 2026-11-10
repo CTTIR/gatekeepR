@@ -1,6 +1,9 @@
 # Changelog
 
-## gatekeepR 1.1.0 (unreleased)
+## gatekeepR 1.2.0
+
+Version 1.1.0 was prepared but not released; its changes are included
+here.
 
 - Detect native symbolic links, dangling links and Windows junctions
   without relying on the Windows
@@ -8,7 +11,7 @@
   retain manifest and overwrite boundaries across platforms.
 
 - Preserve unavailable marker measurements through correction and state
-  calling; honor configured methods/support and validate ordered source
+  calling; honour configured methods/support and validate ordered source
   and score bindings.
 
 - Correct mixture overlap diagnostics and isolate cells by image and
@@ -71,7 +74,7 @@
   metadata and caller-supplied threshold records. Raw-channel support,
   training-image scope and biological decisions remain explicit caller
   responsibilities; existing
-  [`gk_correct()`](../reference/gk_correct.md) behavior is unchanged.
+  [`gk_correct()`](../reference/gk_correct.md) behaviour is unchanged.
 
 - Cell-table readers recognize canonical cellspecR directories in
   Parquet and typed TSV formats. Explicit canonical writes delegate to
@@ -84,6 +87,11 @@
   argument. The legacy format is planned for retirement after migration
   is qualified; new integrations should select canonical `"parquet"` or
   `"tsv.gz"`. Schema errors never trigger a legacy fallback.
+
+- Prepare the first CRAN submission: the documentation is declared as
+  British English (`Language: en-GB`), a spelling word list is added,
+  and the version is aligned across `DESCRIPTION`, `inst/CITATION`,
+  `CITATION.cff`, `.zenodo.json` and the README.
 
 ## gatekeepR 1.0.0
 

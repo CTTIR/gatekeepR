@@ -11,10 +11,10 @@ images into cell types that a person has reviewed.
 - **Lock:** freezes the result into a single immutable review snapshot,
   which every exported file and every later analysis refers to.
 
-> **Status: 1.1.0 development candidate, not submitted.** The
-> configuration, preparation, correction, threshold, classification,
-> review, export and plotting paths are implemented. The package is
-> being checked for its first CRAN submission.
+> **Status: 1.2.0.** The configuration, preparation, correction,
+> threshold, classification, review, export and plotting paths are
+> implemented. The package is being checked for its first CRAN
+> submission.
 
 ## Why
 
@@ -129,7 +129,7 @@ package:
 ``` sh
 mkdir -p .Rlib
 R_LIBS_USER="$PWD/.Rlib" Rscript -e 'install.packages(c("cli", "data.table", "digest", "filelock", "jsonlite", "lifecycle", "MASS", "rlang", "dbscan", "ggplot2", "shiny", "uwot", "patchwork"), repos="https://cloud.r-project.org")'
-R_LIBS_USER="$PWD/.Rlib" R CMD INSTALL /path/to/gatekeepR_1.1.0.tar.gz
+R_LIBS_USER="$PWD/.Rlib" R CMD INSTALL /path/to/gatekeepR_1.2.0.tar.gz
 R_LIBS_USER="$PWD/.Rlib" R
 ```
 
