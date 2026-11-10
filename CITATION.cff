@@ -1,7 +1,7 @@
 cff-version: 1.2.0
 message: "Please cite this software when using it in research."
 title: "gatekeepR: Reviewable Marker Gating and Phenotyping for Multiplexed Imaging"
-version: 1.1.0
+version: 1.2.0
 authors:
   - family-names: Heller
     given-names: "R."

@@ -1,6 +1,6 @@
 Package: gatekeepR
 Title: Reviewable Marker Gating and Phenotyping for Multiplexed Imaging
-Version: 1.1.0
+Version: 1.2.0
 Authors@R:
     person("R.", "Heller",
            email = "raban.heller@uni-ulm.de",
@@ -53,7 +53,7 @@ Additional_repositories: https://cttir.r-universe.dev
 Config/testthat/edition: 3
 VignetteBuilder: knitr
 Encoding: UTF-8
-Language: en-US
+Language: en-GB
 Roxygen: list(markdown = TRUE)
 Config/Needs/website: CTTIR/themakR
-Config/roxygen2/version: 8.0.0
+Config/roxygen2/version: 8.1.1

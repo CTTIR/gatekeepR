@@ -1,24 +1,47 @@
-## Version 1.1.0 — prepared, not submitted
+## Submission
 
-## Test environment
+This is a new submission (gatekeepR 1.2.0).
 
-* macOS 27.0.1, aarch64, R 4.6.1.
-* Final source archive: `R CMD check --as-cran`.
-* Hosted Linux/Windows and older supported R checks remain pending.
+## Test environments
 
-## Results
+* local macOS (aarch64-apple-darwin), R 4.6.1:
+  `R CMD check --as-cran --no-manual` on the built tarball. LaTeX is not
+  installed on this machine, so the PDF manual was not built locally. The
+  optional Bioconductor package 'EBImage' could not be installed locally
+  (its dependency 'fftwtools' needs the FFTW system library), so this run
+  used `_R_CHECK_FORCE_SUGGESTS_=false`; the EBImage tests are skipped when
+  it is not installed. cellspecR 1.2.0 was installed from the CTTIR
+  R-universe.
+* GitHub Actions (r-lib/actions v2, `--as-cran`, all Suggests installed):
+  * macos-latest (R release)
+  * windows-latest (R release)
+  * ubuntu-latest (R devel, release, oldrel-1)
 
-0 errors, 0 warnings, 1 NOTE. The NOTE identifies a new submission and the
-optional cellspecR dependency outside mainstream repositories. Its declared
-Additional_repositories URL provides cellspecR 1.1.0 and incoming checks confirmed
-availability. Strong dependencies are available from CRAN; optional EBImage is
-from Bioconductor.
+## R CMD check results
 
-The as-CRAN tests passed 1,069 assertions with 23 documented skips. The full
-coverage run with NOT_CRAN=true passed 1,103 assertions without failures,
-warnings or skips, and measured 96.655216% coverage against the unchanged 95%
-gate. Exact evidence and remaining release steps are recorded in MAINTENANCE.md.
+0 errors | 0 warnings | 1 note
 
-The package contains only simulated and study-neutral example data. Version 2
-review/checkpoint/hash formats require explicit migration and re-review of legacy
-records; original data and frozen parameter records are preserved.
+* checking CRAN incoming feasibility ... NOTE
+  Maintainer: 'R. Heller <raban.heller@uni-ulm.de>'
+  New submission
+  Suggests or Enhances not in mainstream repositories:
+    cellspecR
+  Availability using Additional_repositories specification:
+    cellspecR   yes   https://cttir.r-universe.dev
+
+  This is the first submission of this package. cellspecR is optional: it is
+  available from the repository declared in `Additional_repositories` and is
+  used only conditionally (`requireNamespace()` in code,
+  `skip_if_not_installed()` in tests).
+
+## Additional notes
+
+* 'EBImage' (Bioconductor) is suggested for one optional threshold method and
+  is used conditionally.
+* Examples, tests and vignettes use only simulated, study-neutral data, write
+  only to `tempdir()` and do not access the network. The 'shiny' review
+  application is only launched on request.
+
+## Downstream dependencies
+
+There are currently no downstream dependencies on CRAN.
