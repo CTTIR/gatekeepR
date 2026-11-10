@@ -26,7 +26,11 @@ test_that("gk_cellspec() builds a spec-conformant object", {
   expect_identical(x$cells$sample_id, rep("img-1", 3))
   expect_identical(x$dictionary$compartment, c("cell", "nucleus"))
   expect_identical(x$channels$marker, "A")
-  expect_snapshot(print(x))
+})
+
+test_that("gatekeepR leaves the cellspec print method to cellspecR", {
+  registered <- getNamespaceInfo(asNamespace("gatekeepR"), "S3methods")
+  expect_false(any(registered[, 2L] == "cellspec"))
 })
 
 test_that("gk_cellspec() rejects structurally invalid input", {

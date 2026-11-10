@@ -9,14 +9,6 @@
             A        cell      mean                 <NA>         0
             B     nucleus      mean                 cell         0
 
-# gk_cellspec() builds a spec-conformant object
-
-    Code
-      print(x)
-    Message
-      <cellspec> 1.0.0: 3 cells, 1 image, 1 marker, 2 features
-      Markers: "A"
-
 # gk_cellspec() rejects structurally invalid input
 
     Code

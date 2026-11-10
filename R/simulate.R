@@ -39,7 +39,7 @@
 #'
 #' @examples
 #' x <- gk_simulate(n_cells = 2000, seed = 3)
-#' x
+#' dim(x$measurements)
 #' table(x$cells$sim_population)
 #'
 #' @family example data

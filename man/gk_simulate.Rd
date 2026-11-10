@@ -64,7 +64,7 @@ exports typically are. Ground truth is stored in the extra cell columns
 }
 \examples{
 x <- gk_simulate(n_cells = 2000, seed = 3)
-x
+dim(x$measurements)
 table(x$cells$sim_population)
 
 }

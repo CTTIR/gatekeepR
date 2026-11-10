@@ -56,7 +56,7 @@ failures retain their \code{cellspec_error} condition classes.
 }
 \examples{
 x <- gk_read_cellspec(gk_example_path("example-slide"))
-x
+dim(x$measurements)
 out <- file.path(tempdir(), "copy-of-example")
 gk_write_cellspec(x, out, overwrite = TRUE)
 unlink(out, recursive = TRUE)

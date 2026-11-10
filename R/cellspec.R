@@ -180,7 +180,7 @@ print.gk_signal_policy <- function(x, ...) {
 #' )
 #' m <- cbind("cell:CD3e:mean" = c(1, 50, 3), "nucleus:FOXP3:mean" = c(0, 12, 1))
 #' x <- gk_cellspec(cells, m)
-#' x
+#' x$dictionary
 #'
 #' @family cell tables
 #' @export
@@ -352,21 +352,6 @@ gk_cellspec <- function(cells, measurements, dictionary = NULL, images = NULL,
   invisible(x)
 }
 
-#' @export
-print.cellspec <- function(x, ...) {
-  n_img <- length(unique(x$cells$image_id))
-  markers <- unique(x$dictionary$marker[x$dictionary$kind == "intensity"])
-  cli::cli_text(
-    "{.cls cellspec} {x$spec_version}: {format(nrow(x$cells), big.mark = ',')} {cli::qty(nrow(x$cells))}cell{?s}, ",
-    "{n_img} image{?s}, {length(markers)} marker{?s}, ",
-    "{ncol(x$measurements)} feature{?s}"
-  )
-  if (length(markers) > 0L) {
-    cli::cli_text("Markers: {.val {markers}}")
-  }
-  invisible(x)
-}
-
 # Select one value per cell and marker according to the policy (spec
 # section 10). Returns the signal matrix, an integer source code matrix
 # (1 preferred, 2 fallback, 0 unavailable) and the feature labels used.
@@ -461,7 +446,7 @@ print.cellspec <- function(x, ...) {
 #'
 #' @examples
 #' x <- gk_read_cellspec(gk_example_path("example-slide"))
-#' x
+#' dim(x$measurements)
 #' out <- file.path(tempdir(), "copy-of-example")
 #' gk_write_cellspec(x, out, overwrite = TRUE)
 #' unlink(out, recursive = TRUE)

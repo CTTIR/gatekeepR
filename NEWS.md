@@ -29,6 +29,10 @@ Version 1.1.0 was prepared but not released; its changes are included here.
 * Standardize the named v5 package logo across README, documentation pages
   and available application headers, with matching light and dark artwork.
 
+* gatekeepR no longer registers a `print()` method for `cellspec` objects.
+  The class belongs to cellspecR, whose method was replaced whenever both
+  packages were loaded.
+
 
 - Add fixed numerical threshold calls and state diagnostics with explicit parent
   eligibility, localization, missingness and non-authorizing audit outputs.

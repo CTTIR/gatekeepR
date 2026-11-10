@@ -54,7 +54,7 @@ cells <- data.frame(
 )
 m <- cbind("cell:CD3e:mean" = c(1, 50, 3), "nucleus:FOXP3:mean" = c(0, 12, 1))
 x <- gk_cellspec(cells, m)
-x
+x$dictionary
 
 }
 \seealso{
