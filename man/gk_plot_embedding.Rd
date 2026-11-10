@@ -19,6 +19,13 @@ A ggplot object.
 \description{
 Plot an embedding coloured by population or classification
 }
+\examples{
+\dontshow{if (requireNamespace("ggplot2", quietly = TRUE) && requireNamespace("uwot", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+prep <- gk_prepare(gk_simulate(n_cells = 300L, seed = 7L), gk_example_config(), quiet = TRUE)
+embedding <- gk_embed(prep, n_pcs = 3L, grid = 40L, seed = 7L)
+gk_plot_embedding(embedding)
+\dontshow{\}) # examplesIf}
+}
 \seealso{
 Other plots:
 \code{\link[=gk_plot_density]{gk_plot_density()}},

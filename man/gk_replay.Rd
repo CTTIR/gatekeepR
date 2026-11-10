@@ -15,6 +15,23 @@ A \code{gk_replayed} object with effective cells, thresholds and state calls.
 \description{
 Replay all effective review decisions
 }
+\examples{
+\dontshow{if (requireNamespace("dbscan", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+cfg <- gk_example_config()
+prep <- gk_prepare(gk_simulate(n_cells = 300L, seed = 7L), cfg, quiet = TRUE)
+thresholds <- gk_thresholds(prep, cfg, seed = 7L)
+classification <- gk_classify(prep, thresholds, cfg)
+states <- gk_state_calls(prep, thresholds, classification, cfg)
+structures <- gk_structures(classification, prep)
+review <- gk_review(classification, states, structures, thresholds, prep)
+review <- gk_dispose(review, "sim-01", bbox = c(0, 50, 0, 50),
+  disposition = "EXCLUDE", reviewer = "example-reviewer",
+  reason = "Tissue fold in the image corner")
+replayed <- gk_replay(review)
+replayed
+table(replayed$cells$disposition_effective)
+\dontshow{\}) # examplesIf}
+}
 \seealso{
 Other review:
 \code{\link[=gk_decide_structure]{gk_decide_structure()}},

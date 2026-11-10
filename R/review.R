@@ -282,6 +282,15 @@
 #'
 #' @family review
 #' @export
+#' @examplesIf requireNamespace("dbscan", quietly = TRUE)
+#' cfg <- gk_example_config()
+#' prep <- gk_prepare(gk_simulate(n_cells = 600L, seed = 7L), cfg, quiet = TRUE)
+#' thresholds <- gk_thresholds(prep, cfg, seed = 7L)
+#' classification <- gk_classify(prep, thresholds, cfg)
+#' states <- gk_state_calls(prep, thresholds, classification, cfg)
+#' structures <- gk_structures(classification, prep)
+#' review <- gk_review(classification, states, structures, thresholds, prep)
+#' review
 gk_review <- function(classification, state_calls, structures, thresholds, prepared) {
   .gk_check_class(classification, "gk_classification")
   .gk_check_class(state_calls, "gk_state_calls")
@@ -312,6 +321,19 @@ gk_review <- function(classification, state_calls, structures, thresholds, prepa
 #' @return A named list of append-only data frames.
 #' @family review
 #' @export
+#' @examplesIf requireNamespace("dbscan", quietly = TRUE)
+#' cfg <- gk_example_config()
+#' prep <- gk_prepare(gk_simulate(n_cells = 300L, seed = 7L), cfg, quiet = TRUE)
+#' thresholds <- gk_thresholds(prep, cfg, seed = 7L)
+#' classification <- gk_classify(prep, thresholds, cfg)
+#' states <- gk_state_calls(prep, thresholds, classification, cfg)
+#' structures <- gk_structures(classification, prep)
+#' review <- gk_review(classification, states, structures, thresholds, prep)
+#' review <- gk_set_cut(review, "sim-01", "CD3e", estimate = 2.8,
+#'   reviewer = "example-reviewer", reason = "Cut moved to the density valley")
+#' ledgers <- gk_ledgers(review)
+#' names(ledgers)
+#' vapply(ledgers, nrow, integer(1))
 gk_ledgers <- function(review) {
   .gk_review_check(review)
   review$ledgers
@@ -329,6 +351,18 @@ gk_ledgers <- function(review) {
 #' @return A new `gk_review` object.
 #' @family review
 #' @export
+#' @examplesIf requireNamespace("dbscan", quietly = TRUE)
+#' cfg <- gk_example_config()
+#' prep <- gk_prepare(gk_simulate(n_cells = 300L, seed = 7L), cfg, quiet = TRUE)
+#' thresholds <- gk_thresholds(prep, cfg, seed = 7L)
+#' classification <- gk_classify(prep, thresholds, cfg)
+#' states <- gk_state_calls(prep, thresholds, classification, cfg)
+#' structures <- gk_structures(classification, prep)
+#' review <- gk_review(classification, states, structures, thresholds, prep)
+#' old <- thresholds$estimate[thresholds$marker == "CD3e"]
+#' review <- gk_set_cut(review, "sim-01", "CD3e", estimate = old + 0.2,
+#'   reviewer = "example-reviewer", reason = "Cut moved to the density valley")
+#' gk_ledgers(review)$cut_log[, c("marker", "old_estimate", "new_estimate")]
 gk_set_cut <- function(review, image_id, marker, parent = NA_character_, estimate,
                        reviewer, reason) {
   .gk_review_check(review)
@@ -379,6 +413,20 @@ gk_set_cut <- function(review, image_id, marker, parent = NA_character_, estimat
 #' @return A new `gk_review` object.
 #' @family review
 #' @export
+#' @examplesIf requireNamespace("dbscan", quietly = TRUE)
+#' cfg <- gk_example_config()
+#' prep <- gk_prepare(gk_simulate(n_cells = 600L, seed = 7L), cfg, quiet = TRUE)
+#' thresholds <- gk_thresholds(prep, cfg, seed = 7L)
+#' classification <- gk_classify(prep, thresholds, cfg)
+#' states <- gk_state_calls(prep, thresholds, classification, cfg)
+#' structures <- gk_structures(classification, prep)
+#' review <- gk_review(classification, states, structures, thresholds, prep)
+#' structures$structures[, c("structure_id", "n_cells")]
+#' first <- structures$structures$structure_id[[1L]]
+#' review <- gk_decide_structure(review, "sim-01", structure_id = first,
+#'   decision = "Tumor", reviewer = "example-reviewer",
+#'   reason = "Invasive nest architecture")
+#' gk_ledgers(review)$structure_log[, c("structure_id", "decision", "n_affected_at_creation")]
 gk_decide_structure <- function(review, image_id, structure_id = NULL, bbox = NULL,
                                  decision = c("Tumor", "Benign", "Unresolved"),
                                  reviewer, reason) {
@@ -426,6 +474,18 @@ gk_decide_structure <- function(review, image_id, structure_id = NULL, bbox = NU
 #' @return A new `gk_review` object.
 #' @family review
 #' @export
+#' @examplesIf requireNamespace("dbscan", quietly = TRUE)
+#' cfg <- gk_example_config()
+#' prep <- gk_prepare(gk_simulate(n_cells = 300L, seed = 7L), cfg, quiet = TRUE)
+#' thresholds <- gk_thresholds(prep, cfg, seed = 7L)
+#' classification <- gk_classify(prep, thresholds, cfg)
+#' states <- gk_state_calls(prep, thresholds, classification, cfg)
+#' structures <- gk_structures(classification, prep)
+#' review <- gk_review(classification, states, structures, thresholds, prep)
+#' review <- gk_dispose(review, "sim-01", bbox = c(0, 50, 0, 50),
+#'   disposition = "EXCLUDE", reviewer = "example-reviewer",
+#'   reason = "Tissue fold in the image corner")
+#' gk_ledgers(review)$disposition_log[, c("mode", "disposition", "n_affected_at_creation")]
 gk_dispose <- function(review, image_id, cell_id = NULL, bbox = NULL,
                        disposition = c("EXCLUDE", "DELETE", "RESTORE"),
                        reviewer, reason) {
@@ -472,6 +532,18 @@ gk_dispose <- function(review, image_id, cell_id = NULL, bbox = NULL,
 #' @return A new `gk_review` object.
 #' @family review
 #' @export
+#' @examplesIf requireNamespace("dbscan", quietly = TRUE)
+#' cfg <- gk_example_config()
+#' prep <- gk_prepare(gk_simulate(n_cells = 300L, seed = 7L), cfg, quiet = TRUE)
+#' thresholds <- gk_thresholds(prep, cfg, seed = 7L)
+#' classification <- gk_classify(prep, thresholds, cfg)
+#' states <- gk_state_calls(prep, thresholds, classification, cfg)
+#' structures <- gk_structures(classification, prep)
+#' review <- gk_review(classification, states, structures, thresholds, prep)
+#' review <- gk_set_state(review, "sim-01", marker = "Ki67", parent = "Tumor",
+#'   action = "SET_CUT", estimate = 1.5, reviewer = "example-reviewer",
+#'   reason = "Cut placed after visual review of Ki67")
+#' gk_ledgers(review)$state_log[, c("marker", "parent", "action", "new_estimate")]
 gk_set_state <- function(review, image_id, marker, parent,
                          action = c("ENABLE", "DISABLE", "SET_CUT"), estimate = NULL,
                          reviewer, reason) {
@@ -571,6 +643,20 @@ gk_set_state <- function(review, image_id, marker, parent,
 #' @return A `gk_replayed` object with effective cells, thresholds and state calls.
 #' @family review
 #' @export
+#' @examplesIf requireNamespace("dbscan", quietly = TRUE)
+#' cfg <- gk_example_config()
+#' prep <- gk_prepare(gk_simulate(n_cells = 300L, seed = 7L), cfg, quiet = TRUE)
+#' thresholds <- gk_thresholds(prep, cfg, seed = 7L)
+#' classification <- gk_classify(prep, thresholds, cfg)
+#' states <- gk_state_calls(prep, thresholds, classification, cfg)
+#' structures <- gk_structures(classification, prep)
+#' review <- gk_review(classification, states, structures, thresholds, prep)
+#' review <- gk_dispose(review, "sim-01", bbox = c(0, 50, 0, 50),
+#'   disposition = "EXCLUDE", reviewer = "example-reviewer",
+#'   reason = "Tissue fold in the image corner")
+#' replayed <- gk_replay(review)
+#' replayed
+#' table(replayed$cells$disposition_effective)
 gk_replay <- function(review) {
   .gk_review_check(review)
   .gk_review_validate_base(review)
@@ -718,6 +804,23 @@ print.gk_replayed <- function(x, ...) {
 #' @return A new `gk_review` object.
 #' @family review
 #' @export
+#' @examplesIf requireNamespace("dbscan", quietly = TRUE)
+#' cfg <- gk_example_config()
+#' prep <- gk_prepare(gk_simulate(n_cells = 300L, seed = 7L), cfg, quiet = TRUE)
+#' thresholds <- gk_thresholds(prep, cfg, seed = 7L)
+#' classification <- gk_classify(prep, thresholds, cfg)
+#' states <- gk_state_calls(prep, thresholds, classification, cfg)
+#' structures <- gk_structures(classification, prep)
+#' review <- gk_review(classification, states, structures, thresholds, prep)
+#' cuts <- tempfile(fileext = ".tsv")
+#' utils::write.table(
+#'   data.frame(image_id = "sim-01", marker = c("CD3e", "CD8"), estimate = c(2.7, 2.6)),
+#'   cuts, sep = "\t", row.names = FALSE, quote = FALSE
+#' )
+#' review <- gk_import_cuts(review, cuts, reviewer = "example-reviewer",
+#'   reason = "Cuts agreed in the panel review")
+#' gk_ledgers(review)$cut_log[, c("marker", "old_estimate", "new_estimate")]
+#' unlink(cuts)
 gk_import_cuts <- function(review, path, reviewer, reason) {
   .gk_review_check(review)
   .gk_check_file_exists(path)
@@ -754,6 +857,25 @@ gk_import_cuts <- function(review, path, reviewer, reason) {
 #' @return A new `gk_review` object with `backup_path` attribute.
 #' @family review
 #' @export
+#' @examplesIf requireNamespace("dbscan", quietly = TRUE)
+#' cfg <- gk_example_config()
+#' prep <- gk_prepare(gk_simulate(n_cells = 300L, seed = 7L), cfg, quiet = TRUE)
+#' thresholds <- gk_thresholds(prep, cfg, seed = 7L)
+#' classification <- gk_classify(prep, thresholds, cfg)
+#' states <- gk_state_calls(prep, thresholds, classification, cfg)
+#' structures <- gk_structures(classification, prep)
+#' review <- gk_review(classification, states, structures, thresholds, prep)
+#' root <- tempfile("gatekeepR-example-")
+#' dir.create(root)
+#' agreed <- gk_set_cut(review, "sim-01", "CD3e", estimate = 2.8,
+#'   reviewer = "reviewer-a", reason = "Cut agreed in the panel review")
+#' gk_save_review(agreed, file.path(root, "agreed"))
+#' current <- gk_set_cut(review, "sim-01", "CD8", estimate = 2.5,
+#'   reviewer = "reviewer-b", reason = "Provisional cut")
+#' replaced <- gk_replace_review(current, file.path(root, "agreed"),
+#'   scope = "cuts", confirm = TRUE, backup_dir = file.path(root, "backup"))
+#' gk_ledgers(replaced)$cut_log[, c("reviewer", "marker", "new_estimate")]
+#' unlink(root, recursive = TRUE)
 gk_replace_review <- function(review, snapshot_dir,
                               scope = c("cuts", "structures", "dispositions", "states", "all"),
                               confirm = FALSE, backup_dir = NULL) {
@@ -800,6 +922,20 @@ gk_replace_review <- function(review, snapshot_dir,
 #' @return A new `gk_review` object.
 #' @family review
 #' @export
+#' @examplesIf requireNamespace("dbscan", quietly = TRUE)
+#' cfg <- gk_example_config()
+#' prep <- gk_prepare(gk_simulate(n_cells = 300L, seed = 7L), cfg, quiet = TRUE)
+#' thresholds <- gk_thresholds(prep, cfg, seed = 7L)
+#' classification <- gk_classify(prep, thresholds, cfg)
+#' states <- gk_state_calls(prep, thresholds, classification, cfg)
+#' structures <- gk_structures(classification, prep)
+#' review <- gk_review(classification, states, structures, thresholds, prep)
+#' review <- gk_set_cut(review, "sim-01", "CD8", estimate = 3,
+#'   reviewer = "example-reviewer", reason = "Provisional cut")
+#' review <- gk_revert_last(review, reviewer = "example-reviewer",
+#'   reason = "Provisional cut was too strict")
+#' # Both entries remain; the second one reverts the first.
+#' gk_ledgers(review)$cut_log[, c("entry_id", "reverts", "new_estimate")]
 gk_revert_last <- function(review, reviewer, reason) {
   .gk_review_check(review)
   if (isTRUE(review$locked)) .gk_abort("Locked reviews cannot be changed.", class = "locked")

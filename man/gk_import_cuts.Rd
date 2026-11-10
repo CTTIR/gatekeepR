@@ -22,6 +22,26 @@ A new \code{gk_review} object.
 \description{
 Import identity-marker cuts without replacing other ledgers
 }
+\examples{
+\dontshow{if (requireNamespace("dbscan", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+cfg <- gk_example_config()
+prep <- gk_prepare(gk_simulate(n_cells = 300L, seed = 7L), cfg, quiet = TRUE)
+thresholds <- gk_thresholds(prep, cfg, seed = 7L)
+classification <- gk_classify(prep, thresholds, cfg)
+states <- gk_state_calls(prep, thresholds, classification, cfg)
+structures <- gk_structures(classification, prep)
+review <- gk_review(classification, states, structures, thresholds, prep)
+cuts <- tempfile(fileext = ".tsv")
+utils::write.table(
+  data.frame(image_id = "sim-01", marker = c("CD3e", "CD8"), estimate = c(2.7, 2.6)),
+  cuts, sep = "\t", row.names = FALSE, quote = FALSE
+)
+review <- gk_import_cuts(review, cuts, reviewer = "example-reviewer",
+  reason = "Cuts agreed in the panel review")
+gk_ledgers(review)$cut_log[, c("marker", "old_estimate", "new_estimate")]
+unlink(cuts)
+\dontshow{\}) # examplesIf}
+}
 \seealso{
 Other review:
 \code{\link[=gk_decide_structure]{gk_decide_structure()}},

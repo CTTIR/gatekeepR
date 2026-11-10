@@ -22,6 +22,23 @@ Loading is serialized with saving by the sibling operation lock described in
 \code{\link[=gk_save_review]{gk_save_review()}}. Explicit takeover applies to session ownership; it cannot
 interrupt a save or load currently holding the operating-system lock.
 }
+\examples{
+\dontshow{if (requireNamespace("dbscan", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+cfg <- gk_example_config()
+prep <- gk_prepare(gk_simulate(n_cells = 300L, seed = 7L), cfg, quiet = TRUE)
+thresholds <- gk_thresholds(prep, cfg, seed = 7L)
+classification <- gk_classify(prep, thresholds, cfg)
+states <- gk_state_calls(prep, thresholds, classification, cfg)
+structures <- gk_structures(classification, prep)
+review <- gk_review(classification, states, structures, thresholds, prep)
+root <- tempfile("gatekeepR-example-")
+dir.create(root)
+gk_save_review(review, file.path(root, "review"))
+loaded <- gk_load_review(file.path(root, "review"))
+loaded
+unlink(root, recursive = TRUE)
+\dontshow{\}) # examplesIf}
+}
 \seealso{
 Other review:
 \code{\link[=gk_decide_structure]{gk_decide_structure()}},

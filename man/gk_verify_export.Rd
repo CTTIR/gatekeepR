@@ -36,6 +36,25 @@ this verification contract. No export files are modified.
 Hashes are not signatures. Keep the full review ID independently and supply
 \code{expected_review_id} when verification must detect a replaced whole export.
 }
+\examples{
+\dontshow{if (requireNamespace("dbscan", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+cfg <- gk_example_config()
+prep <- gk_prepare(gk_simulate(n_cells = 300L, seed = 7L), cfg, quiet = TRUE)
+thresholds <- gk_thresholds(prep, cfg, seed = 7L)
+classification <- gk_classify(prep, thresholds, cfg)
+states <- gk_state_calls(prep, thresholds, classification, cfg)
+structures <- gk_structures(classification, prep)
+review <- gk_review(classification, states, structures, thresholds, prep)
+snapshot <- gk_lock(review, reviewer = "example-reviewer", status = "PENDING")
+\donttest{
+export_dir <- tempfile("gatekeepR-export-")
+gk_export(snapshot, export_dir)
+checks <- gk_verify_export(export_dir, expected_review_id = snapshot$review_id_full)
+all(checks$ok)
+unlink(export_dir, recursive = TRUE)
+}
+\dontshow{\}) # examplesIf}
+}
 \seealso{
 Other export:
 \code{\link[=gk_export]{gk_export()}},

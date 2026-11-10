@@ -29,6 +29,17 @@
 #' @return An object of class `gk_snapshot`.
 #' @family export
 #' @export
+#' @examplesIf requireNamespace("dbscan", quietly = TRUE)
+#' cfg <- gk_example_config()
+#' prep <- gk_prepare(gk_simulate(n_cells = 300L, seed = 7L), cfg, quiet = TRUE)
+#' thresholds <- gk_thresholds(prep, cfg, seed = 7L)
+#' classification <- gk_classify(prep, thresholds, cfg)
+#' states <- gk_state_calls(prep, thresholds, classification, cfg)
+#' structures <- gk_structures(classification, prep)
+#' review <- gk_review(classification, states, structures, thresholds, prep)
+#' snapshot <- gk_lock(review, reviewer = "example-reviewer", status = "PENDING")
+#' snapshot
+#' snapshot$review_id
 gk_lock <- function(review, reviewer, status = c("PENDING", "REVIEWED")) {
   .gk_review_check(review)
   .gk_check_reviewer(reviewer)
@@ -79,6 +90,21 @@ gk_lock <- function(review, reviewer, status = c("PENDING", "REVIEWED")) {
 #' @return The destination directory invisibly.
 #' @family export
 #' @export
+#' @examplesIf requireNamespace("dbscan", quietly = TRUE)
+#' cfg <- gk_example_config()
+#' prep <- gk_prepare(gk_simulate(n_cells = 300L, seed = 7L), cfg, quiet = TRUE)
+#' thresholds <- gk_thresholds(prep, cfg, seed = 7L)
+#' classification <- gk_classify(prep, thresholds, cfg)
+#' states <- gk_state_calls(prep, thresholds, classification, cfg)
+#' structures <- gk_structures(classification, prep)
+#' review <- gk_review(classification, states, structures, thresholds, prep)
+#' snapshot <- gk_lock(review, reviewer = "example-reviewer", status = "PENDING")
+#' \donttest{
+#' export_dir <- tempfile("gatekeepR-export-")
+#' gk_export(snapshot, export_dir)
+#' list.files(export_dir)
+#' unlink(export_dir, recursive = TRUE)
+#' }
 gk_export <- function(snapshot, dir, overwrite = FALSE) {
   .gk_check_class(snapshot, "gk_snapshot")
   .gk_check_string(dir)
@@ -219,6 +245,22 @@ gk_export <- function(snapshot, dir, overwrite = FALSE) {
 #' @return A check data frame with `check`, `ok` and `details`.
 #' @family export
 #' @export
+#' @examplesIf requireNamespace("dbscan", quietly = TRUE)
+#' cfg <- gk_example_config()
+#' prep <- gk_prepare(gk_simulate(n_cells = 300L, seed = 7L), cfg, quiet = TRUE)
+#' thresholds <- gk_thresholds(prep, cfg, seed = 7L)
+#' classification <- gk_classify(prep, thresholds, cfg)
+#' states <- gk_state_calls(prep, thresholds, classification, cfg)
+#' structures <- gk_structures(classification, prep)
+#' review <- gk_review(classification, states, structures, thresholds, prep)
+#' snapshot <- gk_lock(review, reviewer = "example-reviewer", status = "PENDING")
+#' \donttest{
+#' export_dir <- tempfile("gatekeepR-export-")
+#' gk_export(snapshot, export_dir)
+#' checks <- gk_verify_export(export_dir, expected_review_id = snapshot$review_id_full)
+#' all(checks$ok)
+#' unlink(export_dir, recursive = TRUE)
+#' }
 gk_verify_export <- function(dir, cellspec_dir = NULL, strict = TRUE, expected_review_id = NULL) {
   .gk_check_dir_exists(dir)
   .gk_check_flag(strict)
@@ -242,6 +284,23 @@ gk_verify_export <- function(dir, cellspec_dir = NULL, strict = TRUE, expected_r
 #' @return A `gk_export` list containing snapshot, configuration and tables.
 #' @family export
 #' @export
+#' @examplesIf requireNamespace("dbscan", quietly = TRUE)
+#' cfg <- gk_example_config()
+#' prep <- gk_prepare(gk_simulate(n_cells = 300L, seed = 7L), cfg, quiet = TRUE)
+#' thresholds <- gk_thresholds(prep, cfg, seed = 7L)
+#' classification <- gk_classify(prep, thresholds, cfg)
+#' states <- gk_state_calls(prep, thresholds, classification, cfg)
+#' structures <- gk_structures(classification, prep)
+#' review <- gk_review(classification, states, structures, thresholds, prep)
+#' snapshot <- gk_lock(review, reviewer = "example-reviewer", status = "PENDING")
+#' \donttest{
+#' export_dir <- tempfile("gatekeepR-export-")
+#' gk_export(snapshot, export_dir)
+#' export <- gk_read_export(export_dir, expected_review_id = snapshot$review_id_full)
+#' names(export)
+#' head(export$cells[, c("cell_id", "cell_type")])
+#' unlink(export_dir, recursive = TRUE)
+#' }
 gk_read_export <- function(dir, verify = TRUE, expected_review_id = NULL) {
   .gk_check_dir_exists(dir)
   .gk_check_flag(verify)

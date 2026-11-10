@@ -22,6 +22,20 @@ outputs, ledgers, correction model, reviewer and status. It is a content hash,
 not a signature or proof of a reviewer's identity. REVIEWED records the human
 reviewer's assertion; it does not certify scientific or clinical validity.
 }
+\examples{
+\dontshow{if (requireNamespace("dbscan", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+cfg <- gk_example_config()
+prep <- gk_prepare(gk_simulate(n_cells = 300L, seed = 7L), cfg, quiet = TRUE)
+thresholds <- gk_thresholds(prep, cfg, seed = 7L)
+classification <- gk_classify(prep, thresholds, cfg)
+states <- gk_state_calls(prep, thresholds, classification, cfg)
+structures <- gk_structures(classification, prep)
+review <- gk_review(classification, states, structures, thresholds, prep)
+snapshot <- gk_lock(review, reviewer = "example-reviewer", status = "PENDING")
+snapshot
+snapshot$review_id
+\dontshow{\}) # examplesIf}
+}
 \seealso{
 Other export:
 \code{\link[=gk_export]{gk_export()}},

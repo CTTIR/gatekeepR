@@ -62,4 +62,13 @@ R processes are additionally protected by the checkpoint ownership rules in
 \code{\link[=gk_save_review]{gk_save_review()}}. The download is a gzip-compressed tar archive containing
 a \code{review} directory that can be checked with \code{\link[=gk_verify_export]{gk_verify_export()}}.
 }
+\examples{
+if (interactive()) {
+  gk_app(
+    cellspec = gk_simulate(n_cells = 600L, seed = 7L),
+    config = gk_example_config(),
+    reviewer = "example-reviewer"
+  )
+}
+}
 \concept{app}

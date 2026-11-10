@@ -34,6 +34,14 @@
 #' @return A shiny.appobj.
 #' @family app
 #' @export
+#' @examples
+#' if (interactive()) {
+#'   gk_app(
+#'     cellspec = gk_simulate(n_cells = 600L, seed = 7L),
+#'     config = gk_example_config(),
+#'     reviewer = "example-reviewer"
+#'   )
+#' }
 gk_app <- function(review = NULL, cellspec = NULL, config = NULL, workdir = NULL,
                    export = NULL, reviewer = NULL, max_upload_mb = 2048,
                    allow_local_paths = FALSE, max_plot_points = 50000L, ...) {

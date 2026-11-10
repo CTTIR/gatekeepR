@@ -17,6 +17,14 @@ A ggplot object.
 \description{
 Plot thresholds for one image
 }
+\examples{
+\dontshow{if (requireNamespace("ggplot2", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+cfg <- gk_example_config()
+prep <- gk_prepare(gk_simulate(n_cells = 300L, seed = 7L), cfg, quiet = TRUE)
+thresholds <- gk_thresholds(prep, cfg, seed = 7L)
+gk_plot_thresholds(thresholds, image_id = "sim-01")
+\dontshow{\}) # examplesIf}
+}
 \seealso{
 Other plots:
 \code{\link[=gk_plot_density]{gk_plot_density()}},

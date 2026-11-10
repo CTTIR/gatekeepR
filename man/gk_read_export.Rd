@@ -20,6 +20,26 @@ A \code{gk_export} list containing snapshot, configuration and tables.
 \description{
 Read a verified export
 }
+\examples{
+\dontshow{if (requireNamespace("dbscan", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+cfg <- gk_example_config()
+prep <- gk_prepare(gk_simulate(n_cells = 300L, seed = 7L), cfg, quiet = TRUE)
+thresholds <- gk_thresholds(prep, cfg, seed = 7L)
+classification <- gk_classify(prep, thresholds, cfg)
+states <- gk_state_calls(prep, thresholds, classification, cfg)
+structures <- gk_structures(classification, prep)
+review <- gk_review(classification, states, structures, thresholds, prep)
+snapshot <- gk_lock(review, reviewer = "example-reviewer", status = "PENDING")
+\donttest{
+export_dir <- tempfile("gatekeepR-export-")
+gk_export(snapshot, export_dir)
+export <- gk_read_export(export_dir, expected_review_id = snapshot$review_id_full)
+names(export)
+head(export$cells[, c("cell_id", "cell_type")])
+unlink(export_dir, recursive = TRUE)
+}
+\dontshow{\}) # examplesIf}
+}
 \seealso{
 Other export:
 \code{\link[=gk_export]{gk_export()}},

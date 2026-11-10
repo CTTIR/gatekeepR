@@ -24,6 +24,23 @@ The appended row references the target action. Replay restores the
 state before that action, including earlier overlapping selections. Undoing
 an undo reactivates its target. No existing ledger row is removed.
 }
+\examples{
+\dontshow{if (requireNamespace("dbscan", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+cfg <- gk_example_config()
+prep <- gk_prepare(gk_simulate(n_cells = 300L, seed = 7L), cfg, quiet = TRUE)
+thresholds <- gk_thresholds(prep, cfg, seed = 7L)
+classification <- gk_classify(prep, thresholds, cfg)
+states <- gk_state_calls(prep, thresholds, classification, cfg)
+structures <- gk_structures(classification, prep)
+review <- gk_review(classification, states, structures, thresholds, prep)
+review <- gk_set_cut(review, "sim-01", "CD8", estimate = 3,
+  reviewer = "example-reviewer", reason = "Provisional cut")
+review <- gk_revert_last(review, reviewer = "example-reviewer",
+  reason = "Provisional cut was too strict")
+# Both entries remain; the second one reverts the first.
+gk_ledgers(review)$cut_log[, c("entry_id", "reverts", "new_estimate")]
+\dontshow{\}) # examplesIf}
+}
 \seealso{
 Other review:
 \code{\link[=gk_decide_structure]{gk_decide_structure()}},

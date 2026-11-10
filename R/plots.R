@@ -23,6 +23,11 @@
 #' @return A ggplot object.
 #' @family plots
 #' @export
+#' @examplesIf requireNamespace("ggplot2", quietly = TRUE)
+#' cfg <- gk_example_config()
+#' prep <- gk_prepare(gk_simulate(n_cells = 300L, seed = 7L), cfg, quiet = TRUE)
+#' thresholds <- gk_thresholds(prep, cfg, seed = 7L)
+#' gk_plot_density(thresholds, marker = "CD3e", image_id = "sim-01")
 gk_plot_density <- function(thresholds, marker, image_id, parent = NA_character_) {
   .gk_plot_require()
   .gk_check_class(thresholds, "gk_thresholds")
@@ -71,6 +76,10 @@ gk_plot_density <- function(thresholds, marker, image_id, parent = NA_character_
 #' @return A ggplot object.
 #' @family plots
 #' @export
+#' @examplesIf requireNamespace("ggplot2", quietly = TRUE) && requireNamespace("uwot", quietly = TRUE)
+#' prep <- gk_prepare(gk_simulate(n_cells = 300L, seed = 7L), gk_example_config(), quiet = TRUE)
+#' embedding <- gk_embed(prep, n_pcs = 3L, grid = 40L, seed = 7L)
+#' gk_plot_embedding(embedding)
 gk_plot_embedding <- function(embedding, classification = NULL, colour_by = "population") {
   .gk_plot_require()
   .gk_check_class(embedding, "gk_embedding")
@@ -104,6 +113,12 @@ gk_plot_embedding <- function(embedding, classification = NULL, colour_by = "pop
 #' @return A ggplot object.
 #' @family plots
 #' @export
+#' @examplesIf requireNamespace("ggplot2", quietly = TRUE)
+#' cfg <- gk_example_config()
+#' prep <- gk_prepare(gk_simulate(n_cells = 300L, seed = 7L), cfg, quiet = TRUE)
+#' thresholds <- gk_thresholds(prep, cfg, seed = 7L)
+#' classification <- gk_classify(prep, thresholds, cfg)
+#' gk_plot_map(classification, image_id = "sim-01")
 gk_plot_map <- function(x, image_id, colour_by = "cell_type", layers = NULL) {
   .gk_plot_require()
   .gk_check_string(image_id)
@@ -134,6 +149,12 @@ gk_plot_map <- function(x, image_id, colour_by = "cell_type", layers = NULL) {
 #' @return A ggplot object.
 #' @family plots
 #' @export
+#' @examplesIf requireNamespace("ggplot2", quietly = TRUE)
+#' cfg <- gk_example_config()
+#' prep <- gk_prepare(gk_simulate(n_cells = 300L, seed = 7L), cfg, quiet = TRUE)
+#' thresholds <- gk_thresholds(prep, cfg, seed = 7L)
+#' classification <- gk_classify(prep, thresholds, cfg)
+#' gk_plot_dotplot(prep, classification, thresholds)
 gk_plot_dotplot <- function(prepared, classification, thresholds) {
   .gk_plot_require()
   .gk_check_class(prepared, "gk_prepared")
@@ -168,6 +189,11 @@ gk_plot_dotplot <- function(prepared, classification, thresholds) {
 #' @return A ggplot object.
 #' @family plots
 #' @export
+#' @examplesIf requireNamespace("ggplot2", quietly = TRUE)
+#' cfg <- gk_example_config()
+#' prep <- gk_prepare(gk_simulate(n_cells = 300L, seed = 7L), cfg, quiet = TRUE)
+#' thresholds <- gk_thresholds(prep, cfg, seed = 7L)
+#' gk_plot_thresholds(thresholds, image_id = "sim-01")
 gk_plot_thresholds <- function(thresholds, image_id) {
   .gk_plot_require(); .gk_check_class(thresholds, "gk_thresholds"); .gk_check_string(image_id)
   dat <- thresholds[thresholds$image_id == image_id, , drop = FALSE]
@@ -181,6 +207,13 @@ gk_plot_thresholds <- function(thresholds, image_id) {
 #' @return A ggplot object.
 #' @family plots
 #' @export
+#' @examplesIf requireNamespace("ggplot2", quietly = TRUE)
+#' cfg <- gk_example_config()
+#' prep <- gk_prepare(gk_simulate(n_cells = 300L, seed = 7L), cfg, quiet = TRUE)
+#' thresholds <- gk_thresholds(prep, cfg, seed = 7L)
+#' classification <- gk_classify(prep, thresholds, cfg)
+#' states <- gk_state_calls(prep, thresholds, classification, cfg)
+#' gk_plot_states(states, image_id = "sim-01")
 gk_plot_states <- function(state_calls, image_id) {
   .gk_plot_require(); .gk_check_class(state_calls, "gk_state_calls"); .gk_check_string(image_id)
   dat <- state_calls$calls[state_calls$calls$image_id == image_id, , drop = FALSE]
@@ -195,6 +228,12 @@ gk_plot_states <- function(state_calls, image_id) {
 #' @return A patchwork object when patchwork is installed, otherwise the map.
 #' @family plots
 #' @export
+#' @examplesIf requireNamespace("ggplot2", quietly = TRUE)
+#' cfg <- gk_example_config()
+#' prep <- gk_prepare(gk_simulate(n_cells = 300L, seed = 7L), cfg, quiet = TRUE)
+#' thresholds <- gk_thresholds(prep, cfg, seed = 7L)
+#' classification <- gk_classify(prep, thresholds, cfg)
+#' gk_plot_overview(classification, image_id = "sim-01")
 gk_plot_overview <- function(x, image_id) {
   .gk_plot_require()
   map <- gk_plot_map(x, image_id)

@@ -33,6 +33,22 @@ checkpoint before further editing, or copy the returned path's
 \code{checkpoint_revision} attribute to \code{review$checkpoint_revision}.
 Explicit overwrites with reviews that were never loaded remain supported.
 }
+\examples{
+\dontshow{if (requireNamespace("dbscan", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+cfg <- gk_example_config()
+prep <- gk_prepare(gk_simulate(n_cells = 300L, seed = 7L), cfg, quiet = TRUE)
+thresholds <- gk_thresholds(prep, cfg, seed = 7L)
+classification <- gk_classify(prep, thresholds, cfg)
+states <- gk_state_calls(prep, thresholds, classification, cfg)
+structures <- gk_structures(classification, prep)
+review <- gk_review(classification, states, structures, thresholds, prep)
+root <- tempfile("gatekeepR-example-")
+dir.create(root)
+path <- gk_save_review(review, file.path(root, "review"))
+list.files(path)
+unlink(root, recursive = TRUE)
+\dontshow{\}) # examplesIf}
+}
 \seealso{
 Other review:
 \code{\link[=gk_decide_structure]{gk_decide_structure()}},

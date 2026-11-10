@@ -15,6 +15,22 @@ A named list of append-only data frames.
 \description{
 Return the four review ledgers
 }
+\examples{
+\dontshow{if (requireNamespace("dbscan", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+cfg <- gk_example_config()
+prep <- gk_prepare(gk_simulate(n_cells = 300L, seed = 7L), cfg, quiet = TRUE)
+thresholds <- gk_thresholds(prep, cfg, seed = 7L)
+classification <- gk_classify(prep, thresholds, cfg)
+states <- gk_state_calls(prep, thresholds, classification, cfg)
+structures <- gk_structures(classification, prep)
+review <- gk_review(classification, states, structures, thresholds, prep)
+review <- gk_set_cut(review, "sim-01", "CD3e", estimate = 2.8,
+  reviewer = "example-reviewer", reason = "Cut moved to the density valley")
+ledgers <- gk_ledgers(review)
+names(ledgers)
+vapply(ledgers, nrow, integer(1))
+\dontshow{\}) # examplesIf}
+}
 \seealso{
 Other review:
 \code{\link[=gk_decide_structure]{gk_decide_structure()}},

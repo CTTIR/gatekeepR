@@ -144,6 +144,19 @@
 #' @return The saved directory invisibly, with a `checkpoint_revision` attribute.
 #' @family review
 #' @export
+#' @examplesIf requireNamespace("dbscan", quietly = TRUE)
+#' cfg <- gk_example_config()
+#' prep <- gk_prepare(gk_simulate(n_cells = 300L, seed = 7L), cfg, quiet = TRUE)
+#' thresholds <- gk_thresholds(prep, cfg, seed = 7L)
+#' classification <- gk_classify(prep, thresholds, cfg)
+#' states <- gk_state_calls(prep, thresholds, classification, cfg)
+#' structures <- gk_structures(classification, prep)
+#' review <- gk_review(classification, states, structures, thresholds, prep)
+#' root <- tempfile("gatekeepR-example-")
+#' dir.create(root)
+#' path <- gk_save_review(review, file.path(root, "review"))
+#' list.files(path)
+#' unlink(root, recursive = TRUE)
 gk_save_review <- function(review, dir, overwrite = FALSE) {
   .gk_review_check(review)
   .gk_review_validate_base(review)
@@ -212,6 +225,20 @@ gk_save_review <- function(review, dir, overwrite = FALSE) {
 #' @return A `gk_review` object.
 #' @family review
 #' @export
+#' @examplesIf requireNamespace("dbscan", quietly = TRUE)
+#' cfg <- gk_example_config()
+#' prep <- gk_prepare(gk_simulate(n_cells = 300L, seed = 7L), cfg, quiet = TRUE)
+#' thresholds <- gk_thresholds(prep, cfg, seed = 7L)
+#' classification <- gk_classify(prep, thresholds, cfg)
+#' states <- gk_state_calls(prep, thresholds, classification, cfg)
+#' structures <- gk_structures(classification, prep)
+#' review <- gk_review(classification, states, structures, thresholds, prep)
+#' root <- tempfile("gatekeepR-example-")
+#' dir.create(root)
+#' gk_save_review(review, file.path(root, "review"))
+#' loaded <- gk_load_review(file.path(root, "review"))
+#' loaded
+#' unlink(root, recursive = TRUE)
 gk_load_review <- function(dir, takeover = FALSE) {
   .gk_check_string(dir)
   .gk_check_flag(takeover)

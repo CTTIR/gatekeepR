@@ -35,6 +35,21 @@ A new \code{gk_review} object.
 \description{
 Set an identity or state threshold in the review ledger
 }
+\examples{
+\dontshow{if (requireNamespace("dbscan", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+cfg <- gk_example_config()
+prep <- gk_prepare(gk_simulate(n_cells = 300L, seed = 7L), cfg, quiet = TRUE)
+thresholds <- gk_thresholds(prep, cfg, seed = 7L)
+classification <- gk_classify(prep, thresholds, cfg)
+states <- gk_state_calls(prep, thresholds, classification, cfg)
+structures <- gk_structures(classification, prep)
+review <- gk_review(classification, states, structures, thresholds, prep)
+old <- thresholds$estimate[thresholds$marker == "CD3e"]
+review <- gk_set_cut(review, "sim-01", "CD3e", estimate = old + 0.2,
+  reviewer = "example-reviewer", reason = "Cut moved to the density valley")
+gk_ledgers(review)$cut_log[, c("marker", "old_estimate", "new_estimate")]
+\dontshow{\}) # examplesIf}
+}
 \seealso{
 Other review:
 \code{\link[=gk_decide_structure]{gk_decide_structure()}},

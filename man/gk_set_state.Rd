@@ -38,6 +38,21 @@ A new \code{gk_review} object.
 \description{
 Enable, disable or set a parent-specific state call
 }
+\examples{
+\dontshow{if (requireNamespace("dbscan", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+cfg <- gk_example_config()
+prep <- gk_prepare(gk_simulate(n_cells = 300L, seed = 7L), cfg, quiet = TRUE)
+thresholds <- gk_thresholds(prep, cfg, seed = 7L)
+classification <- gk_classify(prep, thresholds, cfg)
+states <- gk_state_calls(prep, thresholds, classification, cfg)
+structures <- gk_structures(classification, prep)
+review <- gk_review(classification, states, structures, thresholds, prep)
+review <- gk_set_state(review, "sim-01", marker = "Ki67", parent = "Tumor",
+  action = "SET_CUT", estimate = 1.5, reviewer = "example-reviewer",
+  reason = "Cut placed after visual review of Ki67")
+gk_ledgers(review)$state_log[, c("marker", "parent", "action", "new_estimate")]
+\dontshow{\}) # examplesIf}
+}
 \seealso{
 Other review:
 \code{\link[=gk_decide_structure]{gk_decide_structure()}},
