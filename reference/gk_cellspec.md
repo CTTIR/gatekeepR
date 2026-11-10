@@ -73,7 +73,11 @@ cells <- data.frame(
 )
 m <- cbind("cell:CD3e:mean" = c(1, 50, 3), "nucleus:FOXP3:mean" = c(0, 12, 1))
 x <- gk_cellspec(cells, m)
-x
-#> <cellspec> 1.0.0: 3 cells, 1 image, 2 markers, 2 features
-#> Markers: "CD3e" and "FOXP3"
+x$dictionary
+#>           feature_id      kind marker compartment statistic unit
+#> 1     cell:CD3e:mean intensity   CD3e        cell      mean a.u.
+#> 2 nucleus:FOXP3:mean intensity  FOXP3     nucleus      mean a.u.
+#>          source_name
+#> 1     cell:CD3e:mean
+#> 2 nucleus:FOXP3:mean
 ```

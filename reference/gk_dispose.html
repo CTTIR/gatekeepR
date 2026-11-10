@@ -116,6 +116,24 @@
 <code><a href="gk_set_state.html">gk_set_state()</a></code></p></div>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">cfg</span> <span class="op">&lt;-</span> <span class="fu"><a href="gk_example_config.html">gk_example_config</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">prep</span> <span class="op">&lt;-</span> <span class="fu"><a href="gk_prepare.html">gk_prepare</a></span><span class="op">(</span><span class="fu"><a href="gk_simulate.html">gk_simulate</a></span><span class="op">(</span>n_cells <span class="op">=</span> <span class="fl">300L</span>, seed <span class="op">=</span> <span class="fl">7L</span><span class="op">)</span>, <span class="va">cfg</span>, quiet <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">thresholds</span> <span class="op">&lt;-</span> <span class="fu"><a href="gk_thresholds.html">gk_thresholds</a></span><span class="op">(</span><span class="va">prep</span>, <span class="va">cfg</span>, seed <span class="op">=</span> <span class="fl">7L</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">classification</span> <span class="op">&lt;-</span> <span class="fu"><a href="gk_classify.html">gk_classify</a></span><span class="op">(</span><span class="va">prep</span>, <span class="va">thresholds</span>, <span class="va">cfg</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>4 hierarchy rules disabled because required markers are not callable.</span>
+<span class="r-in"><span><span class="va">states</span> <span class="op">&lt;-</span> <span class="fu"><a href="gk_state_calls.html">gk_state_calls</a></span><span class="op">(</span><span class="va">prep</span>, <span class="va">thresholds</span>, <span class="va">classification</span>, <span class="va">cfg</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">structures</span> <span class="op">&lt;-</span> <span class="fu"><a href="gk_structures.html">gk_structures</a></span><span class="op">(</span><span class="va">classification</span>, <span class="va">prep</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">review</span> <span class="op">&lt;-</span> <span class="fu"><a href="gk_review.html">gk_review</a></span><span class="op">(</span><span class="va">classification</span>, <span class="va">states</span>, <span class="va">structures</span>, <span class="va">thresholds</span>, <span class="va">prep</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">review</span> <span class="op">&lt;-</span> <span class="fu">gk_dispose</span><span class="op">(</span><span class="va">review</span>, <span class="st">"sim-01"</span>, bbox <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">50</span>, <span class="fl">0</span>, <span class="fl">50</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  disposition <span class="op">=</span> <span class="st">"EXCLUDE"</span>, reviewer <span class="op">=</span> <span class="st">"example-reviewer"</span>,</span></span>
+<span class="r-in"><span>  reason <span class="op">=</span> <span class="st">"Tissue fold in the image corner"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="gk_ledgers.html">gk_ledgers</a></span><span class="op">(</span><span class="va">review</span><span class="op">)</span><span class="op">$</span><span class="va">disposition_log</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mode"</span>, <span class="st">"disposition"</span>, <span class="st">"n_affected_at_creation"</span><span class="op">)</span><span class="op">]</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   mode disposition n_affected_at_creation</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 BBOX     EXCLUDE                      7</span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 

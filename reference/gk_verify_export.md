@@ -52,3 +52,25 @@ whole export.
 
 Other export: [`gk_export()`](gk_export.md), [`gk_lock()`](gk_lock.md),
 [`gk_read_export()`](gk_read_export.md)
+
+## Examples
+
+``` r
+cfg <- gk_example_config()
+prep <- gk_prepare(gk_simulate(n_cells = 300L, seed = 7L), cfg, quiet = TRUE)
+thresholds <- gk_thresholds(prep, cfg, seed = 7L)
+classification <- gk_classify(prep, thresholds, cfg)
+#> Warning: 4 hierarchy rules disabled because required markers are not callable.
+states <- gk_state_calls(prep, thresholds, classification, cfg)
+structures <- gk_structures(classification, prep)
+review <- gk_review(classification, states, structures, thresholds, prep)
+snapshot <- gk_lock(review, reviewer = "example-reviewer", status = "PENDING")
+# \donttest{
+export_dir <- tempfile("gatekeepR-export-")
+gk_export(snapshot, export_dir)
+checks <- gk_verify_export(export_dir, expected_review_id = snapshot$review_id_full)
+all(checks$ok)
+#> [1] TRUE
+unlink(export_dir, recursive = TRUE)
+# }
+```

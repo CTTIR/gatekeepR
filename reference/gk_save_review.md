@@ -54,3 +54,23 @@ Other review: [`gk_decide_structure()`](gk_decide_structure.md),
 [`gk_replay()`](gk_replay.md), [`gk_revert_last()`](gk_revert_last.md),
 [`gk_review()`](gk_review.md), [`gk_set_cut()`](gk_set_cut.md),
 [`gk_set_state()`](gk_set_state.md)
+
+## Examples
+
+``` r
+cfg <- gk_example_config()
+prep <- gk_prepare(gk_simulate(n_cells = 300L, seed = 7L), cfg, quiet = TRUE)
+thresholds <- gk_thresholds(prep, cfg, seed = 7L)
+classification <- gk_classify(prep, thresholds, cfg)
+#> Warning: 4 hierarchy rules disabled because required markers are not callable.
+states <- gk_state_calls(prep, thresholds, classification, cfg)
+structures <- gk_structures(classification, prep)
+review <- gk_review(classification, states, structures, thresholds, prep)
+root <- tempfile("gatekeepR-example-")
+dir.create(root)
+path <- gk_save_review(review, file.path(root, "review"))
+list.files(path)
+#> [1] "DONE"            "MANIFEST.sha256" "config.json"     "ledgers"        
+#> [5] "metadata.json"   "review.rds"     
+unlink(root, recursive = TRUE)
+```

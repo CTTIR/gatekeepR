@@ -74,14 +74,8 @@ Other cell tables: [`gk_cellspec()`](gk_cellspec.md)
 
 ``` r
 x <- gk_read_cellspec(gk_example_path("example-slide"))
-x
-#> <cellspec> spec 1.0.0
-#>   cells     8,000 in 1 image (1 sample)
-#>   features  20: 20 intensity
-#>   markers   12: CD20, CD21, CD31, CD3e, CD45, CD4, CD68, CD8, FOXP3, Ki67, Pa...
-#>   pixel     0.5 um/px
-#>   adjacency none
-#>   source    unknown (gatekeepR::gk_simulate 0.0.0.9000)
+dim(x$measurements)
+#> [1] 8000   20
 out <- file.path(tempdir(), "copy-of-example")
 gk_write_cellspec(x, out, overwrite = TRUE)
 unlink(out, recursive = TRUE)

@@ -34,3 +34,11 @@ Other plots: [`gk_plot_density()`](gk_plot_density.md),
 [`gk_plot_overview()`](gk_plot_overview.md),
 [`gk_plot_states()`](gk_plot_states.md),
 [`gk_plot_thresholds()`](gk_plot_thresholds.md)
+
+## Examples
+
+``` r
+prep <- gk_prepare(gk_simulate(n_cells = 300L, seed = 7L), gk_example_config(), quiet = TRUE)
+embedding <- gk_embed(prep, n_pcs = 3L, grid = 40L, seed = 7L)
+gk_plot_embedding(embedding)
+```

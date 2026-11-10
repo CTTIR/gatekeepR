@@ -51,6 +51,11 @@ here.
   pages and available application headers, with matching light and dark
   artwork.
 
+- gatekeepR no longer registers a
+  [`print()`](https://rdrr.io/r/base/print.html) method for `cellspec`
+  objects. The class belongs to cellspecR, whose method was replaced
+  whenever both packages were loaded.
+
 - Add fixed numerical threshold calls and state diagnostics with
   explicit parent eligibility, localization, missingness and
   non-authorizing audit outputs.

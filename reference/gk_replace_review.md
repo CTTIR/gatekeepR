@@ -58,3 +58,29 @@ Other review: [`gk_decide_structure()`](gk_decide_structure.md),
 [`gk_revert_last()`](gk_revert_last.md), [`gk_review()`](gk_review.md),
 [`gk_save_review()`](gk_save_review.md),
 [`gk_set_cut()`](gk_set_cut.md), [`gk_set_state()`](gk_set_state.md)
+
+## Examples
+
+``` r
+cfg <- gk_example_config()
+prep <- gk_prepare(gk_simulate(n_cells = 300L, seed = 7L), cfg, quiet = TRUE)
+thresholds <- gk_thresholds(prep, cfg, seed = 7L)
+classification <- gk_classify(prep, thresholds, cfg)
+#> Warning: 4 hierarchy rules disabled because required markers are not callable.
+states <- gk_state_calls(prep, thresholds, classification, cfg)
+structures <- gk_structures(classification, prep)
+review <- gk_review(classification, states, structures, thresholds, prep)
+root <- tempfile("gatekeepR-example-")
+dir.create(root)
+agreed <- gk_set_cut(review, "sim-01", "CD3e", estimate = 2.8,
+  reviewer = "reviewer-a", reason = "Cut agreed in the panel review")
+gk_save_review(agreed, file.path(root, "agreed"))
+current <- gk_set_cut(review, "sim-01", "CD8", estimate = 2.5,
+  reviewer = "reviewer-b", reason = "Provisional cut")
+replaced <- gk_replace_review(current, file.path(root, "agreed"),
+  scope = "cuts", confirm = TRUE, backup_dir = file.path(root, "backup"))
+gk_ledgers(replaced)$cut_log[, c("reviewer", "marker", "new_estimate")]
+#>     reviewer marker new_estimate
+#> 1 reviewer-a   CD3e          2.8
+unlink(root, recursive = TRUE)
+```

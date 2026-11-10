@@ -85,3 +85,15 @@ it. Separate R processes are additionally protected by the checkpoint
 ownership rules in [`gk_save_review()`](gk_save_review.md). The download
 is a gzip-compressed tar archive containing a `review` directory that
 can be checked with [`gk_verify_export()`](gk_verify_export.md).
+
+## Examples
+
+``` r
+if (interactive()) {
+  gk_app(
+    cellspec = gk_simulate(n_cells = 600L, seed = 7L),
+    config = gk_example_config(),
+    reviewer = "example-reviewer"
+  )
+}
+```
