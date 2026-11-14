@@ -49,7 +49,9 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.2.0" id="gatekeepr-120">gatekeepR 1.2.0<a class="anchor" aria-label="anchor" href="#gatekeepr-120"></a></h2>
 <p>Version 1.1.0 was prepared but not released; its changes are included here.</p>
-<ul><li><p>Detect native symbolic links, dangling links and Windows junctions without relying on the Windows <code><a href="https://rdrr.io/r/base/Sys.readlink.html" class="external-link">Sys.readlink()</a></code> stub; retain manifest and overwrite boundaries across platforms.</p></li>
+<ul><li><p>Exclude background cells when calculating density-basin centres, keeping centres finite and allowing small basins to merge without an indexing error. Background cells remain unassigned.</p></li>
+<li><p>Declare uwot 0.1.15 as the minimum version for its seeded embedding API.</p></li>
+<li><p>Detect native symbolic links, dangling links and Windows junctions without relying on the Windows <code><a href="https://rdrr.io/r/base/Sys.readlink.html" class="external-link">Sys.readlink()</a></code> stub; retain manifest and overwrite boundaries across platforms.</p></li>
 <li><p>Preserve unavailable marker measurements through correction and state calling; honour configured methods/support and validate ordered source and score bindings.</p></li>
 <li><p>Correct mixture overlap diagnostics and isolate cells by image and cell ID.</p></li>
 <li><p>Replay identity/state cuts, enablement and undo through the shared classifier. Validate checkpoint contents and detect stale concurrent sessions.</p></li>
