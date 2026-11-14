@@ -46,7 +46,7 @@ Suggests:
     pkgload,
     rmarkdown,
     shiny,
-    testthat (>= 3.0.0),
+    testthat (>= 3.1.7),
     uwot (>= 0.1.15),
     withr
 Additional_repositories: https://cttir.r-universe.dev
