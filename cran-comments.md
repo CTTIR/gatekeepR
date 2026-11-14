@@ -5,18 +5,20 @@ This is a new submission (gatekeepR 1.2.0).
 ## Test environments
 
 * local macOS (aarch64-apple-darwin), R 4.6.1:
-  `R CMD check --as-cran --no-manual` on the built tarball. The PDF manual
-  was built locally with TinyTeX (TeX Live 2026) via `R CMD Rd2pdf` without
-  errors; the check run itself used `--no-manual`. The
-  optional Bioconductor package 'EBImage' could not be installed locally
-  (its dependency 'fftwtools' needs the FFTW system library), so this run
-  used `_R_CHECK_FORCE_SUGGESTS_=false`; the EBImage tests are skipped when
-  it is not installed. cellspecR 1.2.0 was installed from the CTTIR
-  R-universe.
-* GitHub Actions (r-lib/actions v2, `--as-cran`, all Suggests installed):
+  `R CMD check --as-cran` on the built tarball on 14 November 2026, with all
+  suggested packages available. PDF and HTML manuals, examples and rebuilt
+  vignettes passed; TinyTeX and HTML Tidy 5.8.0 were used. The optional
+  Bioconductor backend was exercised with EBImage 4.54.0, fftwtools 0.9-11
+  and a privately built FFTW 3.3.11. The canonical adapter used cellspecR
+  1.2.0 (source commit `ac2a3aac`).
+* GitHub Actions baseline (public commit `76d8cf4`, r-lib/actions v2,
+  `--as-cran`, all Suggests installed):
   * macos-latest (R release)
   * windows-latest (R release)
   * ubuntu-latest (R devel, release, oldrel-1)
+
+Hosted checks on the maintenance candidate must be verified after publication;
+the baseline platform results do not qualify the changed source.
 
 ## R CMD check results
 
@@ -37,12 +39,16 @@ This is a new submission (gatekeepR 1.2.0).
 
 ## Additional notes
 
-* 'EBImage' (Bioconductor) is suggested for one optional threshold method and
+* 'EBImage' (Bioconductor) is suggested for the optional density-basin backend and
   is used conditionally.
+* Test coverage with the optional backend installed is 96.65%, above the
+  unchanged 95% regression floor.
 * Examples, tests and vignettes use only simulated, study-neutral data, write
   only to `tempdir()` and do not access the network. The 'shiny' review
   application is only launched on request.
 
 ## Downstream dependencies
 
-There are currently no downstream dependencies on CRAN.
+The CRAN source index checked on 14 November 2026 contained no gatekeepR release
+and no reverse dependencies. Development consumers in the phenoloom suite are
+qualified separately through their integration checks.

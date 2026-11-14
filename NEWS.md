@@ -2,6 +2,10 @@
 
 Version 1.1.0 was prepared but not released; its changes are included here.
 
+* Exclude background cells when calculating density-basin centres, keeping
+  centres finite and allowing small basins to merge without an indexing error.
+  Background cells remain unassigned.
+* Declare uwot 0.1.15 as the minimum version for its seeded embedding API.
 * Detect native symbolic links, dangling links and Windows junctions without
   relying on the Windows `Sys.readlink()` stub; retain manifest and overwrite
   boundaries across platforms.

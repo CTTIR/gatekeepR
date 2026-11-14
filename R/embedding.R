@@ -110,7 +110,7 @@
   }
   centres <- if (length(keep) > 0L) {
     t(vapply(keep, function(id) {
-      colMeans(umap[raw == id, , drop = FALSE])
+      colMeans(umap[which(raw == id), , drop = FALSE])
     }, numeric(2)))
   } else {
     matrix(numeric(), ncol = 2L)

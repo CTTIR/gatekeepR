@@ -47,7 +47,7 @@ Suggests:
     rmarkdown,
     shiny,
     testthat (>= 3.0.0),
-    uwot,
+    uwot (>= 0.1.15),
     withr
 Additional_repositories: https://cttir.r-universe.dev
 Config/testthat/edition: 3

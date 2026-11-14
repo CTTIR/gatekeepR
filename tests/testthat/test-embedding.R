@@ -1,3 +1,29 @@
+test_that("background cells do not contaminate retained basin centres", {
+  points <- rbind(c(0, 0), c(0.2, 0), c(1, 0), c(1, 1))
+  kde <- list(x = c(0, 1), y = c(0, 1))
+  basins <- list(labels = matrix(c(1L, 2L, NA_integer_, NA_integer_), 2L))
+  uncertain <- .gk_assign_basins(points, kde, basins, "uncertain", 2L, 0)
+  merged <- .gk_assign_basins(points, kde, basins, "merge", 2L, 0)
+
+  expect_equal(uncertain$centres, matrix(c(0.1, 0), nrow = 1L))
+  expect_identical(uncertain$population, c(1L, 1L, NA_integer_, NA_integer_))
+  expect_identical(merged$centres, uncertain$centres)
+  expect_identical(merged$population, c(1L, 1L, 1L, NA_integer_))
+  expect_identical(merged$small_basins, 3L)
+
+  # EBImage represents background by zero instead of NA.
+  basins$labels[is.na(basins$labels)] <- 0L
+  zero_background <- .gk_assign_basins(points, kde, basins, "merge", 2L, 0)
+  expect_identical(zero_background, merged)
+
+  two_centres <- rbind(c(0, 0), c(0.2, 0), c(2, 0), c(2.2, 0), c(1.8, 1), c(0, 1))
+  grid <- list(x = c(0, 1, 2), y = c(0, 1))
+  labels <- list(labels = matrix(c(1L, NA_integer_, 2L, NA_integer_, 3L, NA_integer_), 3L))
+  nearest <- .gk_assign_basins(two_centres, grid, labels, "merge", 2L, 0)
+  expect_equal(nearest$centres, rbind(c(0.1, 0), c(2.1, 0)))
+  expect_identical(nearest$population, c(1L, 1L, 2L, 2L, 2L, NA_integer_))
+})
+
 test_that("embedding is reproducible and keeps basin uncertainty explicit", {
   skip_if_not_installed("uwot")
   prep <- gk_example_prepared()
