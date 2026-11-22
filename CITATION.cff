@@ -2,6 +2,7 @@ cff-version: 1.2.0
 message: "Please cite this software when using it in research."
 title: "gatekeepR: Reviewable Marker Gating and Phenotyping for Multiplexed Imaging"
 version: 1.2.0
+doi: 10.5281/zenodo.24426372
 authors:
   - family-names: Heller
     given-names: "R."
@@ -11,3 +12,7 @@ license: MIT
 abstract: >-
   Reviewable marker gating and phenotyping for multiplexed imaging with
   explicit callability, append-only review ledgers and verifiable exports.
+identifiers:
+- type: doi
+  value: 10.5281/zenodo.24426372
+  description: Zenodo DOI (reserved; resolves once the record is published)
