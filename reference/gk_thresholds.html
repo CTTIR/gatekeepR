@@ -119,10 +119,17 @@ attribute containing density and pool data for plotting.</p>
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">prep</span> <span class="op">&lt;-</span> <span class="fu"><a href="gk_prepare.html">gk_prepare</a></span><span class="op">(</span><span class="fu"><a href="gk_example_path.html">gk_example_path</a></span><span class="op">(</span><span class="st">"example-slide"</span><span class="op">)</span>, <span class="fu"><a href="gk_example_config.html">gk_example_config</a></span><span class="op">(</span><span class="op">)</span>, quiet <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">thresholds</span> <span class="op">&lt;-</span> <span class="fu">gk_thresholds</span><span class="op">(</span><span class="va">prep</span>, <span class="fu"><a href="gk_example_config.html">gk_example_config</a></span><span class="op">(</span><span class="op">)</span>, seed <span class="op">=</span> <span class="fl">1L</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">thresholds</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"marker"</span>, <span class="st">"status"</span>, <span class="st">"estimate"</span><span class="op">)</span><span class="op">]</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">&lt;gk_thresholds&gt;</span>: 9 image x marker results</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Statuses: <span style="color: #0000BB;">"CALLABLE = 8; NOT_CALLABLE_ABSENT = 1"</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Evidence records: 0</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">thresholds</span><span class="op">)</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"marker"</span>, <span class="st">"status"</span>, <span class="st">"estimate"</span><span class="op">)</span><span class="op">]</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   marker              status estimate</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  PanCK            CALLABLE 3.034374</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2   CD45            CALLABLE 2.664852</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3   CD3e            CALLABLE 2.644628</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4    CD4            CALLABLE 2.610945</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5    CD8            CALLABLE 2.617559</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6   CD20            CALLABLE 2.737569</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7   CD68            CALLABLE 3.035048</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8   CD31            CALLABLE 2.825408</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9   CD21 NOT_CALLABLE_ABSENT       NA</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

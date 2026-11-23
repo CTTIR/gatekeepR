@@ -1,6 +1,12 @@
 # Plot state calls for one image
 
-Plot state calls for one image
+Histograms of the state-marker score for the cells of each parent set,
+one panel per marker and parent. Cells outside the parent set are not
+drawn, because a state call only applies within its parent. The dashed
+line marks the state threshold. Cells without a state threshold or
+without an evaluable measurement are shown as "Not called" rather than
+as negative. A cell above the threshold stays negative when it fails the
+marker's localisation rule.
 
 ## Usage
 
@@ -21,6 +27,18 @@ gk_plot_states(state_calls, image_id)
 ## Value
 
 A ggplot object.
+
+## Details
+
+All plot helpers use
+[`ggplot2::theme_minimal()`](https://ggplot2.tidyverse.org/reference/ggtheme.html)
+and colours that remain distinguishable with colour vision deficiency:
+Okabe-Ito for up to nine classes and viridis for numbers. With ten or
+more classes no qualitative palette is colour-blind safe; the plots then
+use palettes with distinct neighbours (Tableau 10, Polychrome 36), which
+are best combined with facets or direct labels. All helpers return
+ordinary ggplot objects, so a theme or scale added by the caller
+replaces these defaults.
 
 ## See also
 

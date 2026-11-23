@@ -8,7 +8,7 @@ List the available methods with:
 
 ``` r
 
-gk_threshold_methods()
+gk_threshold_methods()[, c("method", "role_allowed")]
 #>                method                          role_allowed
 #> 1              manual identity, conditional_identity, state
 #> 2              valley identity, conditional_identity, state
@@ -16,38 +16,76 @@ gk_threshold_methods()
 #> 4             mixture identity, conditional_identity, state
 #> 5 population_crossing        identity, conditional_identity
 #> 6     parent_crossing                                 state
-#>                                                                                                                       arguments
-#> 1                                                                                                            value = <required>
-#> 2       min_relative_height = 0.03; grid_n = 4096; lower_quantile = 0.001; upper_quantile = 0.999; min_depth = 0.1; min_n = 100
-#> 3                                peak_fraction = 0.1; grid_n = 4096; fallback_quantile = 0.99; min_tail_excess = 2; min_n = 100
-#> 4                                                                   max_overlap = 0.2; max_iter = 500; tol = 1e-08; min_n = 100
-#> 5 rule = max_crossing_q99; positive_z = 0.5; negative_z = 0; max_per_population = 1000; n_grid = 2048; negative_quantile = 0.99
-#> 6                                                                                               reference = rest; n_grid = 2048
-#>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        description
-#> 1                                                                                                                                                                                                                                                                                                                                                                                                                                         Fixed cut from the configuration (`value`). Used as given; the status records that no estimate was made.
-#> 2                                                                                                                                                                                                                                                                 Lowest density point between the two highest density modes (modes at least `min_relative_height` of the maximum; density on the `lower_quantile`-`upper_quantile` range). The valley must lie at least `min_depth` below the lower mode, otherwise the marker has no separation.
-#> 3                                                                                                                                                                                                                                            First grid point after the main density peak with density at most `peak_fraction` of the peak height (fallback: `fallback_quantile`). The right tail above the cut must hold at least `min_tail_excess` times the mass of the mirrored left tail, so a symmetric unimodal distribution is not called.
-#> 4                                                                                                                                                                                                                                                               Two-component Gaussian mixture fitted by EM; the cut is where the posterior probability of the upper component is 0.5. Not callable when one component fits better (BIC) or when the components overlap by more than `max_overlap` (misclassified share of the smaller component).
-#> 5 Populations from gk_embed(). Populations whose mean score is more than `positive_z` SD above the population average form the positive pool, below `negative_z` the negative pool; up to `max_per_population` cells per population are sampled. Cut: first density crossing after the negative-pool peak (`rule = "crossing"`) or the larger of that crossing and the negative-pool quantile (`"max_crossing_q99"`). Requires an AUC of at least `min_auc`; the AUC describes the separation of internally selected pools and is not an accuracy.
-#> 6                                                                                                                                                                                                                                                     State markers: positive pool = cells of the parent set, reference pool = `reference` ("rest": analysed cells outside the parent set, or a named parent set). Cut: first density crossing after the reference peak. Requires AUC >= `min_auc` and a parent median above the reference median.
 ```
 
-The density valley, density tail, Gaussian mixture, embedding crossing,
-and parent-specific crossing methods can be selected in a batch run. A
-method may return an explicit insufficient-support or non-finite status;
-callers should inspect status and callability before treating a marker
-as usable.
+The `arguments` and `description` columns of the same table list the
+settings of each method with their defaults and state what the method
+does.
+
+Each marker names its method in the panel (`threshold_method` and
+`threshold_args` in [`gk_panel()`](../reference/gk_panel.md)), so a
+batch run and the review application estimate the same thing.
+[`gk_thresholds()`](../reference/gk_thresholds.md) then returns one row
+per image and marker. A method may return an explicit not-callable
+status instead of a cut; inspect the status before treating a marker as
+usable.
 
 ``` r
 
-thresholds <- gk_thresholds(
-  corrected,
-  method = "density_valley",
-  marker = "marker_a"
-)
-gk_callability(thresholds)
-gk_plot_thresholds(thresholds)
+cfg <- gk_example_config()
+prep <- gk_prepare(gk_simulate(n_cells = 300L, seed = 7L), cfg, quiet = TRUE)
+thresholds <- gk_thresholds(prep, cfg, seed = 7L)
+as.data.frame(thresholds)[, c("marker", "method", "status", "estimate")]
+#>   marker  method                    status estimate
+#> 1  PanCK mixture                  CALLABLE 3.042256
+#> 2   CD45 mixture                  CALLABLE 2.775582
+#> 3   CD3e mixture                  CALLABLE 2.687402
+#> 4    CD4 mixture                  CALLABLE 2.698194
+#> 5    CD8 mixture                  CALLABLE 2.871802
+#> 6   CD20 mixture NOT_CALLABLE_UNDERPOWERED       NA
+#> 7   CD68 mixture                  CALLABLE 3.049520
+#> 8   CD31 mixture NOT_CALLABLE_UNDERPOWERED       NA
+#> 9   CD21 mixture       NOT_CALLABLE_ABSENT       NA
 ```
+
+The same table can be drawn. Markers without an estimate keep their row
+and state why they have no cut; the density view shows the evidence
+behind one estimate.
+
+``` r
+
+image_id <- prep$cells$image_id[[1L]]
+gk_plot_thresholds(thresholds, image_id = image_id)
+```
+
+![Dot chart of the threshold estimate of each marker on one simulated
+image, coloured by status; markers that are not callable show their
+status as text instead of a
+point.](thresholds_files/figure-html/threshold-plots-1.png)
+
+``` r
+
+gk_plot_density(thresholds, marker = "CD3e", image_id = image_id)
+```
+
+![Density curves of the CD3e score for all cells, the negative pool and
+the positive pool, with a dashed vertical line at the estimated
+threshold between the two
+modes.](thresholds_files/figure-html/threshold-plots-2.png)
+
+## Clipped scores and the mixture method
+
+`gk_correct(method = "robust_z")` clips scores to the range from -5 to
+5. A strongly stained marker then has many cells tied at 5. A Gaussian
+component cannot describe such a point mass: the fit would shrink onto
+the tied values and place the cut next to the bound, so that clearly
+positive cells below the bound are called negative. The `mixture` method
+therefore returns `NOT_CALLABLE_NO_SEPARATION` when at least nine in ten
+cells of a pool are tied at the bound of the score range and the cut
+lands next to that bound. Tied scores alone, for example at a floor of
+zero, do not block a fit whose cut stays between the two modes. Use the
+`valley` or `tail` method for such a marker, or estimate on uncorrected
+scores.
 
 Manual corrections can replace an estimate through the review ledger.
 The original estimate remains in the ledger, allowing the final result

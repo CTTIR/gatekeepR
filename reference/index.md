@@ -1,60 +1,142 @@
 # Package index
 
-## Gating and review
+## Configuration
 
-- [`gk_app()`](gk_app.md) : Launch the gatekeepR review application
-- [`gk_apply_candidate_rules()`](gk_apply_candidate_rules.md)
-  **\[experimental\]** : Evaluate declarative rules on ternary candidate
-  calls
-- [`gk_callability()`](gk_callability.md) **\[experimental\]** :
-  Callability of markers per image
-- [`gk_cellspec()`](gk_cellspec.md) **\[experimental\]** : Build a cell
-  table in the cellspec 1.0 format
-- [`gk_classify()`](gk_classify.md) **\[experimental\]** : Classify
-  cells with the configured ordered hierarchy
+Declare the marker panel, the phenotype hierarchy and the support rules
+as data.
+
 - [`gk_config()`](gk_config.md) **\[experimental\]** : Assemble a gating
   configuration
+- [`gk_panel()`](gk_panel.md) **\[experimental\]** : Declare a marker
+  panel
+- [`gk_hierarchy()`](gk_hierarchy.md) **\[experimental\]** : Declare a
+  phenotype hierarchy
+- [`gk_rule()`](hierarchy-elements.md)
+  [`gk_flag()`](hierarchy-elements.md)
+  [`gk_refinement()`](hierarchy-elements.md)
+  [`gk_override()`](hierarchy-elements.md) **\[experimental\]** :
+  Hierarchy rules, flags, refinements and overrides
+- [`gk_signal_policy()`](gk_signal_policy.md) **\[experimental\]** :
+  Declare which measurement represents each marker
+- [`gk_min_support()`](gk_min_support.md) **\[experimental\]** :
+  Callability rules for a marker
+- [`gk_validate_config()`](gk_validate_config.md) **\[experimental\]** :
+  Validate a gating configuration
 - [`gk_config_hash()`](gk_config_hash.md) **\[experimental\]** :
   Canonical hash of a configuration
-- [`gk_correct()`](gk_correct.md) **\[experimental\]** : Correct
-  prepared marker scores
-- [`gk_decide_structure()`](gk_decide_structure.md) : Decide one
-  structure or bounding box
-- [`gk_dispose()`](gk_dispose.md) : Set a cell disposition
-- [`gk_embed()`](gk_embed.md) **\[experimental\]** : Compute a
-  reproducible marker embedding and density populations
+- [`gk_write_config()`](gk_write_config.md)
+  [`gk_read_config()`](gk_write_config.md) **\[experimental\]** : Read
+  and write configuration files
 - [`gk_example_config()`](gk_example_config.md) **\[experimental\]** :
   Example configuration for a generic tumour-immune panel
+
+## Cell tables and example data
+
+Read, build and write cell tables; simulated and shipped example data.
+
+- [`gk_cellspec()`](gk_cellspec.md) **\[experimental\]** : Build a cell
+  table in the cellspec 1.0 format
+- [`gk_write_cellspec()`](gk_write_cellspec.md)
+  [`gk_read_cellspec()`](gk_write_cellspec.md) **\[experimental\]** :
+  Read and write cellspec directories
+- [`gk_simulate()`](gk_simulate.md) **\[experimental\]** : Simulate a
+  multiplexed tissue slide
 - [`gk_example_path()`](gk_example_path.md) **\[experimental\]** : Paths
   to bundled example data
-- [`gk_export()`](gk_export.md) : Write a locked review export
+
+## Preparation and correction
+
+Check per image whether a marker can be called, and correct the scores.
+
+- [`gk_prepare()`](gk_prepare.md) **\[experimental\]** : Prepare marker
+  signals for gating
+- [`gk_callability()`](gk_callability.md) **\[experimental\]** :
+  Callability of markers per image
+- [`gk_correct()`](gk_correct.md) **\[experimental\]** : Correct
+  prepared marker scores
 - [`gk_fit_residual_model()`](gk_fit_residual_model.md)
   [`gk_apply_residual_model()`](gk_fit_residual_model.md)
   **\[experimental\]** : Freeze and apply a fitted residual score space
+- [`gk_import_residual_model()`](gk_import_residual_model.md)
+  **\[experimental\]** : Import externally frozen residual parameters
+  without fitting
+
+## Thresholds
+
+Estimate thresholds with documented methods, or apply fixed numerical
+cuts.
+
+- [`gk_thresholds()`](gk_thresholds.md) **\[experimental\]** : Estimate
+  per-image marker thresholds
+- [`gk_threshold_methods()`](gk_threshold_methods.md)
+  **\[experimental\]** : Threshold methods available in gatekeepR
+- [`gk_embed()`](gk_embed.md) **\[experimental\]** : Compute a
+  reproducible marker embedding and density populations
+- [`gk_fixed_threshold_calls()`](gk_fixed_threshold_calls.md)
+  **\[experimental\]** : Apply fixed score thresholds without
+  raw-support assessment
 - [`gk_fixed_signal_calls()`](gk_fixed_signal_calls.md)
   **\[experimental\]** : Apply fixed cutoffs with explicit raw-support
   availability
 - [`gk_fixed_state_diagnostics()`](gk_fixed_state_diagnostics.md)
   **\[experimental\]** : Diagnose fixed state thresholds with explicit
   parent and localization scope
-- [`gk_fixed_threshold_calls()`](gk_fixed_threshold_calls.md)
-  **\[experimental\]** : Apply fixed score thresholds without
-  raw-support assessment
-- [`gk_hierarchy()`](gk_hierarchy.md) **\[experimental\]** : Declare a
-  phenotype hierarchy
+- [`gk_apply_candidate_rules()`](gk_apply_candidate_rules.md)
+  **\[experimental\]** : Evaluate declarative rules on ternary candidate
+  calls
+
+## Classification
+
+Apply the hierarchy, call marker states within parent sets and group
+structures.
+
+- [`gk_classify()`](gk_classify.md) **\[experimental\]** : Classify
+  cells with the configured ordered hierarchy
+- [`gk_state_calls()`](gk_state_calls.md) **\[experimental\]** : Call
+  state markers within configured parent sets
+- [`gk_structures()`](gk_structures.md) **\[experimental\]** : Find
+  epithelial structures for review
+
+## Review
+
+Record reviewer decisions in append-only ledgers and replay them.
+
+- [`gk_review()`](gk_review.md) **\[experimental\]** : Create an
+  editable review state
+- [`gk_set_cut()`](gk_set_cut.md) : Set an identity or state threshold
+  in the review ledger
+- [`gk_set_state()`](gk_set_state.md) : Enable, disable or set a
+  parent-specific state call
+- [`gk_decide_structure()`](gk_decide_structure.md) : Decide one
+  structure or bounding box
+- [`gk_dispose()`](gk_dispose.md) : Set a cell disposition
+- [`gk_revert_last()`](gk_revert_last.md) : Undo the most recent review
+  action without deleting history
 - [`gk_import_cuts()`](gk_import_cuts.md) : Import identity-marker cuts
   without replacing other ledgers
-- [`gk_import_residual_model()`](gk_import_residual_model.md)
-  **\[experimental\]** : Import externally frozen residual parameters
-  without fitting
+- [`gk_replace_review()`](gk_replace_review.md) : Replace selected
+  review ledgers from a saved checkpoint
 - [`gk_ledgers()`](gk_ledgers.md) : Return the four review ledgers
+- [`gk_replay()`](gk_replay.md) : Replay all effective review decisions
+- [`gk_save_review()`](gk_save_review.md) **\[experimental\]** : Save a
+  review checkpoint atomically
 - [`gk_load_review()`](gk_load_review.md) **\[experimental\]** : Load a
   review checkpoint and acquire its single-writer lock
+
+## Snapshot and export
+
+Lock a review into a content-addressed export and verify it.
+
 - [`gk_lock()`](gk_lock.md) : Lock a review into an immutable snapshot
-- [`gk_min_support()`](gk_min_support.md) **\[experimental\]** :
-  Callability rules for a marker
-- [`gk_panel()`](gk_panel.md) **\[experimental\]** : Declare a marker
-  panel
+- [`gk_export()`](gk_export.md) : Write a locked review export
+- [`gk_read_export()`](gk_read_export.md) : Read a verified export
+- [`gk_verify_export()`](gk_verify_export.md) : Verify content identity,
+  replay and reconciliation invariants
+
+## Plots
+
+ggplot2 views of thresholds, calls and cell positions.
+
 - [`gk_plot_density()`](gk_plot_density.md) : Plot a threshold density
   and its evidence pools
 - [`gk_plot_dotplot()`](gk_plot_dotplot.md) : Plot marker means by
@@ -68,46 +150,9 @@
   image
 - [`gk_plot_thresholds()`](gk_plot_thresholds.md) : Plot thresholds for
   one image
-- [`gk_prepare()`](gk_prepare.md) **\[experimental\]** : Prepare marker
-  signals for gating
-- [`gk_read_export()`](gk_read_export.md) : Read a verified export
-- [`gk_replace_review()`](gk_replace_review.md) : Replace selected
-  review ledgers from a saved checkpoint
-- [`gk_replay()`](gk_replay.md) : Replay all effective review decisions
-- [`gk_revert_last()`](gk_revert_last.md) : Undo the most recent review
-  action without deleting history
-- [`gk_review()`](gk_review.md) **\[experimental\]** : Create an
-  editable review state
-- [`gk_save_review()`](gk_save_review.md) **\[experimental\]** : Save a
-  review checkpoint atomically
-- [`gk_set_cut()`](gk_set_cut.md) : Set an identity or state threshold
-  in the review ledger
-- [`gk_set_state()`](gk_set_state.md) : Enable, disable or set a
-  parent-specific state call
-- [`gk_signal_policy()`](gk_signal_policy.md) **\[experimental\]** :
-  Declare which measurement represents each marker
-- [`gk_simulate()`](gk_simulate.md) **\[experimental\]** : Simulate a
-  multiplexed tissue slide
-- [`gk_state_calls()`](gk_state_calls.md) **\[experimental\]** : Call
-  state markers within configured parent sets
-- [`gk_structures()`](gk_structures.md) **\[experimental\]** : Find
-  epithelial structures for review
-- [`gk_threshold_methods()`](gk_threshold_methods.md)
-  **\[experimental\]** : Threshold methods available in gatekeepR
-- [`gk_thresholds()`](gk_thresholds.md) **\[experimental\]** : Estimate
-  per-image marker thresholds
-- [`gk_validate_config()`](gk_validate_config.md) **\[experimental\]** :
-  Validate a gating configuration
-- [`gk_verify_export()`](gk_verify_export.md) : Verify content identity,
-  replay and reconciliation invariants
-- [`gk_write_cellspec()`](gk_write_cellspec.md)
-  [`gk_read_cellspec()`](gk_write_cellspec.md) **\[experimental\]** :
-  Read and write cellspec directories
-- [`gk_write_config()`](gk_write_config.md)
-  [`gk_read_config()`](gk_write_config.md) **\[experimental\]** : Read
-  and write configuration files
-- [`gk_rule()`](hierarchy-elements.md)
-  [`gk_flag()`](hierarchy-elements.md)
-  [`gk_refinement()`](hierarchy-elements.md)
-  [`gk_override()`](hierarchy-elements.md) **\[experimental\]** :
-  Hierarchy rules, flags, refinements and overrides
+
+## Review application
+
+The Shiny application that uses the same classifier as batch code.
+
+- [`gk_app()`](gk_app.md) : Launch the gatekeepR review application

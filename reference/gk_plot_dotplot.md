@@ -29,6 +29,18 @@ gk_plot_dotplot(prepared, classification, thresholds)
 
 A ggplot object.
 
+## Details
+
+All plot helpers use
+[`ggplot2::theme_minimal()`](https://ggplot2.tidyverse.org/reference/ggtheme.html)
+and colours that remain distinguishable with colour vision deficiency:
+Okabe-Ito for up to nine classes and viridis for numbers. With ten or
+more classes no qualitative palette is colour-blind safe; the plots then
+use palettes with distinct neighbours (Tableau 10, Polychrome 36), which
+are best combined with facets or direct labels. All helpers return
+ordinary ggplot objects, so a theme or scale added by the caller
+replaces these defaults.
+
 ## See also
 
 Other plots: [`gk_plot_density()`](gk_plot_density.md),

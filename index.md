@@ -119,6 +119,13 @@ gk_export(snap, "reviews/example-01")
 gk_verify_export("reviews/example-01", expected_review_id = snap$review_id_full)
 ```
 
+`robust_z` scores are clipped to the range from -5 to 5. On the example
+slide the strongly stained markers CD8, CD20, CD68 and CD31 pile up at
+5, and the `mixture` method reports them as not callable instead of
+placing a cut next to the clip. Leave out `correction`, or give such
+markers the `valley` method in the panel, to call them (see the article
+on threshold methods).
+
 ## Installation and first use
 
 R 4.1 or later is required. Install the source archive prepared for this

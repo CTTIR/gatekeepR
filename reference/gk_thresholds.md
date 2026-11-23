@@ -60,8 +60,15 @@ Other thresholds: [`gk_embed()`](gk_embed.md),
 ``` r
 prep <- gk_prepare(gk_example_path("example-slide"), gk_example_config(), quiet = TRUE)
 thresholds <- gk_thresholds(prep, gk_example_config(), seed = 1L)
-thresholds[, c("marker", "status", "estimate")]
-#> <gk_thresholds>: 9 image x marker results
-#> • Statuses: "CALLABLE = 8; NOT_CALLABLE_ABSENT = 1"
-#> • Evidence records: 0
+as.data.frame(thresholds)[, c("marker", "status", "estimate")]
+#>   marker              status estimate
+#> 1  PanCK            CALLABLE 3.034374
+#> 2   CD45            CALLABLE 2.664852
+#> 3   CD3e            CALLABLE 2.644628
+#> 4    CD4            CALLABLE 2.610945
+#> 5    CD8            CALLABLE 2.617559
+#> 6   CD20            CALLABLE 2.737569
+#> 7   CD68            CALLABLE 3.035048
+#> 8   CD31            CALLABLE 2.825408
+#> 9   CD21 NOT_CALLABLE_ABSENT       NA
 ```

@@ -28,7 +28,20 @@ gk_plot_map(x, image_id, colour_by = "cell_type", layers = NULL)
 
 ## Value
 
-A ggplot object.
+A ggplot object. Axes are the centroid coordinates in the units of the
+source cell table, drawn with equal scaling.
+
+## Details
+
+All plot helpers use
+[`ggplot2::theme_minimal()`](https://ggplot2.tidyverse.org/reference/ggtheme.html)
+and colours that remain distinguishable with colour vision deficiency:
+Okabe-Ito for up to nine classes and viridis for numbers. With ten or
+more classes no qualitative palette is colour-blind safe; the plots then
+use palettes with distinct neighbours (Tableau 10, Polychrome 36), which
+are best combined with facets or direct labels. All helpers return
+ordinary ggplot objects, so a theme or scale added by the caller
+replaces these defaults.
 
 ## See also
 

@@ -46,9 +46,9 @@
     </div>
 
     <div class="section level2">
-      <h2 id="gating-and-review">Gating and review<a class="anchor" aria-label="anchor" href="#gating-and-review"></a></h2>
+      <h2 id="configuration">Configuration<a class="anchor" aria-label="anchor" href="#configuration"></a></h2>
 
-
+      <div class="section-desc"><p>Declare the marker panel, the phenotype hierarchy and the support rules as data.</p></div>
 
       <dl></dl></div><div class="section level2">
 
@@ -57,45 +57,52 @@
 
       <dl><dt>
 
-          <code><a href="gk_app.html">gk_app()</a></code>
-
-        </dt>
-        <dd>Launch the gatekeepR review application</dd>
-
-        <dt>
-
-          <code><a href="gk_apply_candidate_rules.html">gk_apply_candidate_rules()</a></code>
-          <span class="badge lifecycle lifecycle-experimental">experimental</span>
-        </dt>
-        <dd>Evaluate declarative rules on ternary candidate calls</dd>
-
-        <dt>
-
-          <code><a href="gk_callability.html">gk_callability()</a></code>
-          <span class="badge lifecycle lifecycle-experimental">experimental</span>
-        </dt>
-        <dd>Callability of markers per image</dd>
-
-        <dt>
-
-          <code><a href="gk_cellspec.html">gk_cellspec()</a></code>
-          <span class="badge lifecycle lifecycle-experimental">experimental</span>
-        </dt>
-        <dd>Build a cell table in the cellspec 1.0 format</dd>
-
-        <dt>
-
-          <code><a href="gk_classify.html">gk_classify()</a></code>
-          <span class="badge lifecycle lifecycle-experimental">experimental</span>
-        </dt>
-        <dd>Classify cells with the configured ordered hierarchy</dd>
-
-        <dt>
-
           <code><a href="gk_config.html">gk_config()</a></code>
           <span class="badge lifecycle lifecycle-experimental">experimental</span>
         </dt>
         <dd>Assemble a gating configuration</dd>
+
+        <dt>
+
+          <code><a href="gk_panel.html">gk_panel()</a></code>
+          <span class="badge lifecycle lifecycle-experimental">experimental</span>
+        </dt>
+        <dd>Declare a marker panel</dd>
+
+        <dt>
+
+          <code><a href="gk_hierarchy.html">gk_hierarchy()</a></code>
+          <span class="badge lifecycle lifecycle-experimental">experimental</span>
+        </dt>
+        <dd>Declare a phenotype hierarchy</dd>
+
+        <dt>
+
+          <code><a href="hierarchy-elements.html">gk_rule()</a></code> <code><a href="hierarchy-elements.html">gk_flag()</a></code> <code><a href="hierarchy-elements.html">gk_refinement()</a></code> <code><a href="hierarchy-elements.html">gk_override()</a></code>
+          <span class="badge lifecycle lifecycle-experimental">experimental</span>
+        </dt>
+        <dd>Hierarchy rules, flags, refinements and overrides</dd>
+
+        <dt>
+
+          <code><a href="gk_signal_policy.html">gk_signal_policy()</a></code>
+          <span class="badge lifecycle lifecycle-experimental">experimental</span>
+        </dt>
+        <dd>Declare which measurement represents each marker</dd>
+
+        <dt>
+
+          <code><a href="gk_min_support.html">gk_min_support()</a></code>
+          <span class="badge lifecycle lifecycle-experimental">experimental</span>
+        </dt>
+        <dd>Callability rules for a marker</dd>
+
+        <dt>
+
+          <code><a href="gk_validate_config.html">gk_validate_config()</a></code>
+          <span class="badge lifecycle lifecycle-experimental">experimental</span>
+        </dt>
+        <dd>Validate a gating configuration</dd>
 
         <dt>
 
@@ -106,6 +113,80 @@
 
         <dt>
 
+          <code><a href="gk_write_config.html">gk_write_config()</a></code> <code><a href="gk_write_config.html">gk_read_config()</a></code>
+          <span class="badge lifecycle lifecycle-experimental">experimental</span>
+        </dt>
+        <dd>Read and write configuration files</dd>
+
+        <dt>
+
+          <code><a href="gk_example_config.html">gk_example_config()</a></code>
+          <span class="badge lifecycle lifecycle-experimental">experimental</span>
+        </dt>
+        <dd>Example configuration for a generic tumour-immune panel</dd>
+      </dl></div><div class="section level2">
+      <h2 id="cell-tables-and-example-data">Cell tables and example data<a class="anchor" aria-label="anchor" href="#cell-tables-and-example-data"></a></h2>
+
+      <div class="section-desc"><p>Read, build and write cell tables; simulated and shipped example data.</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="gk_cellspec.html">gk_cellspec()</a></code>
+          <span class="badge lifecycle lifecycle-experimental">experimental</span>
+        </dt>
+        <dd>Build a cell table in the cellspec 1.0 format</dd>
+
+        <dt>
+
+          <code><a href="gk_write_cellspec.html">gk_write_cellspec()</a></code> <code><a href="gk_write_cellspec.html">gk_read_cellspec()</a></code>
+          <span class="badge lifecycle lifecycle-experimental">experimental</span>
+        </dt>
+        <dd>Read and write cellspec directories</dd>
+
+        <dt>
+
+          <code><a href="gk_simulate.html">gk_simulate()</a></code>
+          <span class="badge lifecycle lifecycle-experimental">experimental</span>
+        </dt>
+        <dd>Simulate a multiplexed tissue slide</dd>
+
+        <dt>
+
+          <code><a href="gk_example_path.html">gk_example_path()</a></code>
+          <span class="badge lifecycle lifecycle-experimental">experimental</span>
+        </dt>
+        <dd>Paths to bundled example data</dd>
+      </dl></div><div class="section level2">
+      <h2 id="preparation-and-correction">Preparation and correction<a class="anchor" aria-label="anchor" href="#preparation-and-correction"></a></h2>
+
+      <div class="section-desc"><p>Check per image whether a marker can be called, and correct the scores.</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="gk_prepare.html">gk_prepare()</a></code>
+          <span class="badge lifecycle lifecycle-experimental">experimental</span>
+        </dt>
+        <dd>Prepare marker signals for gating</dd>
+
+        <dt>
+
+          <code><a href="gk_callability.html">gk_callability()</a></code>
+          <span class="badge lifecycle lifecycle-experimental">experimental</span>
+        </dt>
+        <dd>Callability of markers per image</dd>
+
+        <dt>
+
           <code><a href="gk_correct.html">gk_correct()</a></code>
           <span class="badge lifecycle lifecycle-experimental">experimental</span>
         </dt>
@@ -113,17 +194,40 @@
 
         <dt>
 
-          <code><a href="gk_decide_structure.html">gk_decide_structure()</a></code>
-
+          <code><a href="gk_fit_residual_model.html">gk_fit_residual_model()</a></code> <code><a href="gk_fit_residual_model.html">gk_apply_residual_model()</a></code>
+          <span class="badge lifecycle lifecycle-experimental">experimental</span>
         </dt>
-        <dd>Decide one structure or bounding box</dd>
+        <dd>Freeze and apply a fitted residual score space</dd>
 
         <dt>
 
-          <code><a href="gk_dispose.html">gk_dispose()</a></code>
-
+          <code><a href="gk_import_residual_model.html">gk_import_residual_model()</a></code>
+          <span class="badge lifecycle lifecycle-experimental">experimental</span>
         </dt>
-        <dd>Set a cell disposition</dd>
+        <dd>Import externally frozen residual parameters without fitting</dd>
+      </dl></div><div class="section level2">
+      <h2 id="thresholds">Thresholds<a class="anchor" aria-label="anchor" href="#thresholds"></a></h2>
+
+      <div class="section-desc"><p>Estimate thresholds with documented methods, or apply fixed numerical cuts.</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="gk_thresholds.html">gk_thresholds()</a></code>
+          <span class="badge lifecycle lifecycle-experimental">experimental</span>
+        </dt>
+        <dd>Estimate per-image marker thresholds</dd>
+
+        <dt>
+
+          <code><a href="gk_threshold_methods.html">gk_threshold_methods()</a></code>
+          <span class="badge lifecycle lifecycle-experimental">experimental</span>
+        </dt>
+        <dd>Threshold methods available in gatekeepR</dd>
 
         <dt>
 
@@ -134,31 +238,10 @@
 
         <dt>
 
-          <code><a href="gk_example_config.html">gk_example_config()</a></code>
+          <code><a href="gk_fixed_threshold_calls.html">gk_fixed_threshold_calls()</a></code>
           <span class="badge lifecycle lifecycle-experimental">experimental</span>
         </dt>
-        <dd>Example configuration for a generic tumour-immune panel</dd>
-
-        <dt>
-
-          <code><a href="gk_example_path.html">gk_example_path()</a></code>
-          <span class="badge lifecycle lifecycle-experimental">experimental</span>
-        </dt>
-        <dd>Paths to bundled example data</dd>
-
-        <dt>
-
-          <code><a href="gk_export.html">gk_export()</a></code>
-
-        </dt>
-        <dd>Write a locked review export</dd>
-
-        <dt>
-
-          <code><a href="gk_fit_residual_model.html">gk_fit_residual_model()</a></code> <code><a href="gk_fit_residual_model.html">gk_apply_residual_model()</a></code>
-          <span class="badge lifecycle lifecycle-experimental">experimental</span>
-        </dt>
-        <dd>Freeze and apply a fitted residual score space</dd>
+        <dd>Apply fixed score thresholds without raw-support assessment</dd>
 
         <dt>
 
@@ -176,17 +259,91 @@
 
         <dt>
 
-          <code><a href="gk_fixed_threshold_calls.html">gk_fixed_threshold_calls()</a></code>
+          <code><a href="gk_apply_candidate_rules.html">gk_apply_candidate_rules()</a></code>
           <span class="badge lifecycle lifecycle-experimental">experimental</span>
         </dt>
-        <dd>Apply fixed score thresholds without raw-support assessment</dd>
+        <dd>Evaluate declarative rules on ternary candidate calls</dd>
+      </dl></div><div class="section level2">
+      <h2 id="classification">Classification<a class="anchor" aria-label="anchor" href="#classification"></a></h2>
+
+      <div class="section-desc"><p>Apply the hierarchy, call marker states within parent sets and group structures.</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="gk_classify.html">gk_classify()</a></code>
+          <span class="badge lifecycle lifecycle-experimental">experimental</span>
+        </dt>
+        <dd>Classify cells with the configured ordered hierarchy</dd>
 
         <dt>
 
-          <code><a href="gk_hierarchy.html">gk_hierarchy()</a></code>
+          <code><a href="gk_state_calls.html">gk_state_calls()</a></code>
           <span class="badge lifecycle lifecycle-experimental">experimental</span>
         </dt>
-        <dd>Declare a phenotype hierarchy</dd>
+        <dd>Call state markers within configured parent sets</dd>
+
+        <dt>
+
+          <code><a href="gk_structures.html">gk_structures()</a></code>
+          <span class="badge lifecycle lifecycle-experimental">experimental</span>
+        </dt>
+        <dd>Find epithelial structures for review</dd>
+      </dl></div><div class="section level2">
+      <h2 id="review">Review<a class="anchor" aria-label="anchor" href="#review"></a></h2>
+
+      <div class="section-desc"><p>Record reviewer decisions in append-only ledgers and replay them.</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="gk_review.html">gk_review()</a></code>
+          <span class="badge lifecycle lifecycle-experimental">experimental</span>
+        </dt>
+        <dd>Create an editable review state</dd>
+
+        <dt>
+
+          <code><a href="gk_set_cut.html">gk_set_cut()</a></code>
+
+        </dt>
+        <dd>Set an identity or state threshold in the review ledger</dd>
+
+        <dt>
+
+          <code><a href="gk_set_state.html">gk_set_state()</a></code>
+
+        </dt>
+        <dd>Enable, disable or set a parent-specific state call</dd>
+
+        <dt>
+
+          <code><a href="gk_decide_structure.html">gk_decide_structure()</a></code>
+
+        </dt>
+        <dd>Decide one structure or bounding box</dd>
+
+        <dt>
+
+          <code><a href="gk_dispose.html">gk_dispose()</a></code>
+
+        </dt>
+        <dd>Set a cell disposition</dd>
+
+        <dt>
+
+          <code><a href="gk_revert_last.html">gk_revert_last()</a></code>
+
+        </dt>
+        <dd>Undo the most recent review action without deleting history</dd>
 
         <dt>
 
@@ -197,10 +354,10 @@
 
         <dt>
 
-          <code><a href="gk_import_residual_model.html">gk_import_residual_model()</a></code>
-          <span class="badge lifecycle lifecycle-experimental">experimental</span>
+          <code><a href="gk_replace_review.html">gk_replace_review()</a></code>
+
         </dt>
-        <dd>Import externally frozen residual parameters without fitting</dd>
+        <dd>Replace selected review ledgers from a saved checkpoint</dd>
 
         <dt>
 
@@ -211,12 +368,35 @@
 
         <dt>
 
+          <code><a href="gk_replay.html">gk_replay()</a></code>
+
+        </dt>
+        <dd>Replay all effective review decisions</dd>
+
+        <dt>
+
+          <code><a href="gk_save_review.html">gk_save_review()</a></code>
+          <span class="badge lifecycle lifecycle-experimental">experimental</span>
+        </dt>
+        <dd>Save a review checkpoint atomically</dd>
+
+        <dt>
+
           <code><a href="gk_load_review.html">gk_load_review()</a></code>
           <span class="badge lifecycle lifecycle-experimental">experimental</span>
         </dt>
         <dd>Load a review checkpoint and acquire its single-writer lock</dd>
+      </dl></div><div class="section level2">
+      <h2 id="snapshot-and-export">Snapshot and export<a class="anchor" aria-label="anchor" href="#snapshot-and-export"></a></h2>
 
-        <dt>
+      <div class="section-desc"><p>Lock a review into a content-addressed export and verify it.</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
 
           <code><a href="gk_lock.html">gk_lock()</a></code>
 
@@ -225,19 +405,35 @@
 
         <dt>
 
-          <code><a href="gk_min_support.html">gk_min_support()</a></code>
-          <span class="badge lifecycle lifecycle-experimental">experimental</span>
+          <code><a href="gk_export.html">gk_export()</a></code>
+
         </dt>
-        <dd>Callability rules for a marker</dd>
+        <dd>Write a locked review export</dd>
 
         <dt>
 
-          <code><a href="gk_panel.html">gk_panel()</a></code>
-          <span class="badge lifecycle lifecycle-experimental">experimental</span>
+          <code><a href="gk_read_export.html">gk_read_export()</a></code>
+
         </dt>
-        <dd>Declare a marker panel</dd>
+        <dd>Read a verified export</dd>
 
         <dt>
+
+          <code><a href="gk_verify_export.html">gk_verify_export()</a></code>
+
+        </dt>
+        <dd>Verify content identity, replay and reconciliation invariants</dd>
+      </dl></div><div class="section level2">
+      <h2 id="plots">Plots<a class="anchor" aria-label="anchor" href="#plots"></a></h2>
+
+      <div class="section-desc"><p>ggplot2 views of thresholds, calls and cell positions.</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
 
           <code><a href="gk_plot_density.html">gk_plot_density()</a></code>
 
@@ -285,148 +481,25 @@
 
         </dt>
         <dd>Plot thresholds for one image</dd>
+      </dl></div><div class="section level2">
+      <h2 id="review-application">Review application<a class="anchor" aria-label="anchor" href="#review-application"></a></h2>
 
-        <dt>
+      <div class="section-desc"><p>The Shiny application that uses the same classifier as batch code.</p></div>
 
-          <code><a href="gk_prepare.html">gk_prepare()</a></code>
-          <span class="badge lifecycle lifecycle-experimental">experimental</span>
-        </dt>
-        <dd>Prepare marker signals for gating</dd>
+      <dl></dl></div><div class="section level2">
 
-        <dt>
 
-          <code><a href="gk_read_export.html">gk_read_export()</a></code>
 
-        </dt>
-        <dd>Read a verified export</dd>
 
-        <dt>
+      <dl><dt>
 
-          <code><a href="gk_replace_review.html">gk_replace_review()</a></code>
+          <code><a href="gk_app.html">gk_app()</a></code>
 
         </dt>
-        <dd>Replace selected review ledgers from a saved checkpoint</dd>
-
-        <dt>
-
-          <code><a href="gk_replay.html">gk_replay()</a></code>
-
-        </dt>
-        <dd>Replay all effective review decisions</dd>
-
-        <dt>
-
-          <code><a href="gk_revert_last.html">gk_revert_last()</a></code>
-
-        </dt>
-        <dd>Undo the most recent review action without deleting history</dd>
-
-        <dt>
-
-          <code><a href="gk_review.html">gk_review()</a></code>
-          <span class="badge lifecycle lifecycle-experimental">experimental</span>
-        </dt>
-        <dd>Create an editable review state</dd>
-
-        <dt>
-
-          <code><a href="gk_save_review.html">gk_save_review()</a></code>
-          <span class="badge lifecycle lifecycle-experimental">experimental</span>
-        </dt>
-        <dd>Save a review checkpoint atomically</dd>
-
-        <dt>
-
-          <code><a href="gk_set_cut.html">gk_set_cut()</a></code>
-
-        </dt>
-        <dd>Set an identity or state threshold in the review ledger</dd>
-
-        <dt>
-
-          <code><a href="gk_set_state.html">gk_set_state()</a></code>
-
-        </dt>
-        <dd>Enable, disable or set a parent-specific state call</dd>
-
-        <dt>
-
-          <code><a href="gk_signal_policy.html">gk_signal_policy()</a></code>
-          <span class="badge lifecycle lifecycle-experimental">experimental</span>
-        </dt>
-        <dd>Declare which measurement represents each marker</dd>
-
-        <dt>
-
-          <code><a href="gk_simulate.html">gk_simulate()</a></code>
-          <span class="badge lifecycle lifecycle-experimental">experimental</span>
-        </dt>
-        <dd>Simulate a multiplexed tissue slide</dd>
-
-        <dt>
-
-          <code><a href="gk_state_calls.html">gk_state_calls()</a></code>
-          <span class="badge lifecycle lifecycle-experimental">experimental</span>
-        </dt>
-        <dd>Call state markers within configured parent sets</dd>
-
-        <dt>
-
-          <code><a href="gk_structures.html">gk_structures()</a></code>
-          <span class="badge lifecycle lifecycle-experimental">experimental</span>
-        </dt>
-        <dd>Find epithelial structures for review</dd>
-
-        <dt>
-
-          <code><a href="gk_threshold_methods.html">gk_threshold_methods()</a></code>
-          <span class="badge lifecycle lifecycle-experimental">experimental</span>
-        </dt>
-        <dd>Threshold methods available in gatekeepR</dd>
-
-        <dt>
-
-          <code><a href="gk_thresholds.html">gk_thresholds()</a></code>
-          <span class="badge lifecycle lifecycle-experimental">experimental</span>
-        </dt>
-        <dd>Estimate per-image marker thresholds</dd>
-
-        <dt>
-
-          <code><a href="gk_validate_config.html">gk_validate_config()</a></code>
-          <span class="badge lifecycle lifecycle-experimental">experimental</span>
-        </dt>
-        <dd>Validate a gating configuration</dd>
-
-        <dt>
-
-          <code><a href="gk_verify_export.html">gk_verify_export()</a></code>
-
-        </dt>
-        <dd>Verify content identity, replay and reconciliation invariants</dd>
-
-        <dt>
-
-          <code><a href="gk_write_cellspec.html">gk_write_cellspec()</a></code> <code><a href="gk_write_cellspec.html">gk_read_cellspec()</a></code>
-          <span class="badge lifecycle lifecycle-experimental">experimental</span>
-        </dt>
-        <dd>Read and write cellspec directories</dd>
-
-        <dt>
-
-          <code><a href="gk_write_config.html">gk_write_config()</a></code> <code><a href="gk_write_config.html">gk_read_config()</a></code>
-          <span class="badge lifecycle lifecycle-experimental">experimental</span>
-        </dt>
-        <dd>Read and write configuration files</dd>
-
-        <dt>
-
-          <code><a href="hierarchy-elements.html">gk_rule()</a></code> <code><a href="hierarchy-elements.html">gk_flag()</a></code> <code><a href="hierarchy-elements.html">gk_refinement()</a></code> <code><a href="hierarchy-elements.html">gk_override()</a></code>
-          <span class="badge lifecycle lifecycle-experimental">experimental</span>
-        </dt>
-        <dd>Hierarchy rules, flags, refinements and overrides</dd>
+        <dd>Launch the gatekeepR review application</dd>
       </dl></div>
-  </main></div>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
+    </nav></aside></div>
 
 
     <footer><div class="pkgdown-footer-left">

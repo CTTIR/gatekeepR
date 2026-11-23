@@ -5,6 +5,64 @@
 Version 1.1.0 was prepared but not released; its changes are included
 here.
 
+- The `mixture` threshold method no longer reports a cut when a fitted
+  component collapses onto scores tied at the bound of the score range
+  (at least nine in ten cells of a pool) and the cut lands next to that
+  bound (in the last twentieth of the way from the other component).
+  Scores with a floor or a saturation value whose cut stays between the
+  two modes are not affected. Robust z-scores are clipped to \[-5, 5\];
+  a strongly stained marker then received a `CALLABLE` cut next to the
+  clip (4.98 for CD8 on the example slide), and separated positive cells
+  below it were called negative (135 of 672). Such a marker now has the
+  status `NOT_CALLABLE_NO_SEPARATION` with a detail that names the
+  cause. Use the `valley` or `tail` method for it, or estimate on
+  uncorrected scores. This changes the result for affected markers;
+  thresholds of other markers are unchanged. The get-started article now
+  estimates on uncorrected scores, on which every stained marker of the
+  simulated panel with enough cells is callable.
+
+- The threshold article runs the code it shows; its previous example
+  called [`gk_thresholds()`](../reference/gk_thresholds.md) and
+  [`gk_plot_thresholds()`](../reference/gk_plot_thresholds.md) with
+  arguments that do not exist. Vignette figures carry alternative text
+  and are skipped when ggplot2 is not installed. The reference index of
+  the site is grouped by workflow step.
+
+- `citation("gatekeepR")` takes the version from the installed package.
+
+- The plot helpers share one look:
+  [`ggplot2::theme_minimal()`](https://ggplot2.tidyverse.org/reference/ggtheme.html),
+  written-out axis and legend titles, legend keys large enough to read,
+  and colours that remain distinguishable with colour vision deficiency
+  (Okabe-Ito for up to nine classes, viridis for numbers). A theme or
+  scale added by the caller still replaces these defaults.
+
+- [`gk_plot_states()`](../reference/gk_plot_states.md) draws only the
+  cells of each parent set, marks the state threshold and shows cells
+  without a call as “Not called”. Previously every cell of the image
+  appeared in every panel and uncalled cells were coloured as negative.
+
+- [`gk_plot_thresholds()`](../reference/gk_plot_thresholds.md) writes
+  the status of a marker without an estimate into its row instead of
+  leaving the row empty.
+
+- [`gk_plot_overview()`](../reference/gk_plot_overview.md) shows the
+  number of cells per class next to the map; the map alone used to fill
+  half of the canvas.
+
+- A misspelt choice (for example `method` in
+  [`gk_correct()`](../reference/gk_correct.md), `status` in
+  [`gk_lock()`](../reference/gk_lock.md) or `disposition` in
+  [`gk_dispose()`](../reference/gk_dispose.md)) now raises an error that
+  inherits from `gatekeepr_error_input` and `gatekeepr_error`, as
+  documented for every gatekeepR error. The message is unchanged.
+
+- [`gk_plot_map()`](../reference/gk_plot_map.md),
+  [`gk_plot_thresholds()`](../reference/gk_plot_thresholds.md) and
+  [`gk_plot_states()`](../reference/gk_plot_states.md) fail with a
+  `gatekeepr_error_input` error for an image that is not in the object
+  instead of returning an empty plot.
+
 - Exclude background cells when calculating density-basin centres,
   keeping centres finite and allowing small basins to merge without an
   indexing error. Background cells remain unassigned.
