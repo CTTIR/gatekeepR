@@ -41,8 +41,11 @@ Thresholds are estimates with evidence and status, not magic constants. List
 the available methods with:
 
 ```{r methods}
-gk_threshold_methods()
+gk_threshold_methods()[, c("method", "role_allowed")]
 ```
+
+The `arguments` and `description` columns of the same table list the settings
+of each method with their defaults and state what the method does.
 
 Each marker names its method in the panel (`threshold_method` and
 `threshold_args` in `gk_panel()`), so a batch run and the review application
