@@ -433,7 +433,7 @@ gk_decide_structure <- function(review, image_id, structure_id = NULL, bbox = NU
   .gk_review_check(review)
   if (isTRUE(review$locked)) .gk_abort("Locked reviews cannot be changed.", class = "locked")
   .gk_review_image(review, image_id)
-  decision <- rlang::arg_match(decision, .gk_decisions)
+  decision <- .gk_arg_match(decision, .gk_decisions)
   .gk_check_reviewer(reviewer)
   .gk_check_reason(reason)
   if (xor(is.null(structure_id), is.null(bbox))) {
@@ -492,7 +492,7 @@ gk_dispose <- function(review, image_id, cell_id = NULL, bbox = NULL,
   .gk_review_check(review)
   if (isTRUE(review$locked)) .gk_abort("Locked reviews cannot be changed.", class = "locked")
   .gk_review_image(review, image_id)
-  disposition <- rlang::arg_match(disposition, c("EXCLUDE", "DELETE", "RESTORE"))
+  disposition <- .gk_arg_match(disposition, c("EXCLUDE", "DELETE", "RESTORE"))
   .gk_check_reviewer(reviewer)
   .gk_check_reason(reason)
   if (xor(is.null(cell_id), is.null(bbox))) {
@@ -553,7 +553,7 @@ gk_set_state <- function(review, image_id, marker, parent,
   .gk_review_marker(review, marker, state = TRUE)
   .gk_check_string(parent)
   if (!parent %in% review$config$panel$parents[[marker]]) .gk_abort("Parent is not configured for this marker.", class = "ledger")
-  action <- rlang::arg_match(action)
+  action <- .gk_arg_match(action)
   .gk_check_reviewer(reviewer)
   .gk_check_reason(reason)
   source <- review$state_calls$state_thresholds
@@ -881,7 +881,7 @@ gk_replace_review <- function(review, snapshot_dir,
                               confirm = FALSE, backup_dir = NULL) {
   .gk_review_check(review)
   if (!isTRUE(confirm)) .gk_abort("Replacing review history needs {.arg confirm = TRUE}.", class = "confirm")
-  scope <- rlang::arg_match(scope)
+  scope <- .gk_arg_match(scope)
   .gk_check_dir_exists(snapshot_dir)
   if (isTRUE(review$locked)) .gk_abort("Locked reviews cannot be changed.", class = "locked")
   snapshot_dir <- .gk_review_path(snapshot_dir)

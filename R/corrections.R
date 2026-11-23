@@ -205,7 +205,7 @@ gk_correct <- function(prepared,
     }
     return(.gk_reapply_correction(prepared, method, markers = markers))
   }
-  method <- rlang::arg_match(method, .gk_correction_methods)
+  method <- .gk_arg_match(method, .gk_correction_methods)
   markers <- markers %||% default
   .gk_check_character(markers, min_length = 1L, unique = TRUE)
   unknown <- setdiff(markers, colnames(prepared$score))

@@ -43,7 +43,7 @@
 gk_lock <- function(review, reviewer, status = c("PENDING", "REVIEWED")) {
   .gk_review_check(review)
   .gk_check_reviewer(reviewer)
-  status <- rlang::arg_match(status)
+  status <- .gk_arg_match(status)
   # Validate the base objects independently of their append-only ledgers.
   gk_review(review$classification, review$state_calls, review$structures,
     review$thresholds, review$prepared)

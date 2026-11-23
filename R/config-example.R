@@ -127,7 +127,7 @@ gk_example_config <- function() {
 gk_example_path <- function(name = c(
                               "example-slide", "example-config.json"
                             )) {
-  name <- rlang::arg_match(name)
+  name <- .gk_arg_match(name)
   path <- system.file("extdata", name, package = "gatekeepR")
   if (!nzchar(path)) {
     .gk_abort(

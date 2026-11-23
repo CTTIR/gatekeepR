@@ -458,7 +458,7 @@ gk_write_cellspec <- function(x, dir, overwrite = FALSE,
   .gk_validate_cellspec(x)
   .gk_check_string(dir)
   .gk_check_flag(overwrite)
-  format <- match.arg(format)
+  format <- .gk_arg_match(format)
   if (format != "legacy") {
     .gk_require("cellspecR", "Canonical cellspec writing")
     cellspecR::cs_assert_valid(x)

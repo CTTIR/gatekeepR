@@ -28,6 +28,24 @@
   )
 }
 
+# rlang::arg_match() under the package's condition contract: the message is
+# rlang's, and the error also inherits from `gatekeepr_error_input`, so a
+# misspelt choice can be caught like every other invalid argument.
+.gk_arg_match <- function(arg, values = NULL, error_arg = rlang::caller_arg(arg),
+                          error_call = rlang::caller_env()) {
+  if (is.null(values)) {
+    fn <- rlang::caller_fn()
+    values <- eval(formals(fn)[[error_arg]], environment(fn))
+  }
+  tryCatch(
+    rlang::arg_match(arg, values, error_arg = error_arg, error_call = error_call),
+    error = function(cnd) {
+      class(cnd) <- unique(c("gatekeepr_error_input", "gatekeepr_error", class(cnd)))
+      rlang::cnd_signal(cnd)
+    }
+  )
+}
+
 # Abort when a Suggests package is missing. `pkgs` may list several packages;
 # all missing ones are reported in one message.
 .gk_require <- function(pkgs, what, call = rlang::caller_env()) {

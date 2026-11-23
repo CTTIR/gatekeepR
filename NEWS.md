@@ -15,6 +15,10 @@ Version 1.1.0 was prepared but not released; its changes are included here.
   into its row instead of leaving the row empty.
 * `gk_plot_overview()` shows the number of cells per class next to the map;
   the map alone used to fill half of the canvas.
+* A misspelt choice (for example `method` in `gk_correct()`, `status` in
+  `gk_lock()` or `disposition` in `gk_dispose()`) now raises an error that
+  inherits from `gatekeepr_error_input` and `gatekeepr_error`, as documented
+  for every gatekeepR error. The message is unchanged.
 * `gk_plot_map()`, `gk_plot_thresholds()` and `gk_plot_states()` fail with a
   `gatekeepr_error_input` error for an image that is not in the object instead
   of returning an empty plot.
