@@ -387,7 +387,7 @@ gk_plot_overview <- function(x, image_id) {
   bars <- ggplot2::ggplot(counts,
     ggplot2::aes(x = .data[["class"]], y = .data[["n"]], fill = .data[["class"]])) +
     ggplot2::geom_col(show.legend = FALSE) +
-    ggplot2::scale_fill_manual(values = .gk_plot_discrete_colours(as.character(classes))) +
+    ggplot2::scale_fill_manual(values = .gk_plot_discrete_colours(classes)) +
     ggplot2::coord_flip() +
     ggplot2::labs(x = NULL, y = "Cells", title = "Cells per class") +
     .gk_plot_theme()
