@@ -4,9 +4,80 @@ development:
   mode: auto
 destination: site
 reference:
-  - title: Gating and review
+  - title: Configuration
+    desc: Declare the marker panel, the phenotype hierarchy and the support rules as data.
     contents:
-      - starts_with("gk_")
+      - gk_config
+      - gk_panel
+      - gk_hierarchy
+      - hierarchy-elements
+      - gk_signal_policy
+      - gk_min_support
+      - gk_validate_config
+      - gk_config_hash
+      - gk_write_config
+      - gk_example_config
+  - title: Cell tables and example data
+    desc: Read, build and write cell tables; simulated and shipped example data.
+    contents:
+      - gk_cellspec
+      - gk_write_cellspec
+      - gk_simulate
+      - gk_example_path
+  - title: Preparation and correction
+    desc: Check per image whether a marker can be called, and correct the scores.
+    contents:
+      - gk_prepare
+      - gk_callability
+      - gk_correct
+      - gk_fit_residual_model
+      - gk_import_residual_model
+  - title: Thresholds
+    desc: Estimate thresholds with documented methods, or apply fixed numerical cuts.
+    contents:
+      - gk_thresholds
+      - gk_threshold_methods
+      - gk_embed
+      - gk_fixed_threshold_calls
+      - gk_fixed_signal_calls
+      - gk_fixed_state_diagnostics
+      - gk_apply_candidate_rules
+  - title: Classification
+    desc: Apply the hierarchy, call marker states within parent sets and group structures.
+    contents:
+      - gk_classify
+      - gk_state_calls
+      - gk_structures
+  - title: Review
+    desc: Record reviewer decisions in append-only ledgers and replay them.
+    contents:
+      - gk_review
+      - gk_set_cut
+      - gk_set_state
+      - gk_decide_structure
+      - gk_dispose
+      - gk_revert_last
+      - gk_import_cuts
+      - gk_replace_review
+      - gk_ledgers
+      - gk_replay
+      - gk_save_review
+      - gk_load_review
+  - title: Snapshot and export
+    desc: Lock a review into a content-addressed export and verify it.
+    contents:
+      - gk_lock
+      - gk_export
+      - gk_read_export
+      - gk_verify_export
+  - title: Plots
+    desc: ggplot2 views of thresholds, calls and cell positions.
+    contents:
+      - starts_with("gk_plot_")
+  - title: Review application
+    desc: The Shiny application that uses the same classifier as batch code.
+    contents:
+      - gk_app
 articles:
   - title: Guides
     navbar: ~
