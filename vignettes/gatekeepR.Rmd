@@ -88,7 +88,7 @@ decisions, so downstream code can reject incomplete or contradictory exports.
 
 Plots are thin views over the same objects used by batch code:
 
-```{r plots, fig.width=6, fig.height=4}
+```{r plots, eval = requireNamespace("ggplot2", quietly = TRUE), fig.width = 7, fig.height = 4.5, fig.alt = c("Map of cell centroids on the simulated image, coloured by reviewed cell type.", "Dot chart of the threshold estimate of each marker, coloured by status, with the status written out for markers that are not callable.", "Overview with the cell map on the left and a bar chart of the number of cells per cell type on the right.")}
 image_id <- prep$cells$image_id[[1L]]
 gk_plot_map(reviewed, image_id = image_id)
 gk_plot_thresholds(thresholds, image_id = image_id)
