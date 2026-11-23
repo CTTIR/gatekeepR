@@ -45,16 +45,15 @@ replayable after the interactive session has ended.
 ## The complete workflow
 
 The following code is the smallest end-to-end template. It uses a configuration
-and a panel declared as data, then carries the result through correction,
-thresholding, classification, state calls, structures, review, and export.
+and a panel declared as data, then carries the result through thresholding,
+classification, state calls, structures, review, and export.
 
 ```{r workflow}
 cfg <- gk_example_config()
 cells <- gk_simulate(n_cells = 300L, seed = 7L)
 prep <- gk_prepare(cells, config = cfg, quiet = TRUE)
-corrected <- gk_correct(prep, method = "robust_z")
-thresholds <- gk_thresholds(prep, cfg, correction = corrected, seed = 7L)
-classification <- gk_classify(prep, thresholds, config = cfg, correction = corrected)
+thresholds <- gk_thresholds(prep, cfg, seed = 7L)
+classification <- gk_classify(prep, thresholds, config = cfg)
 states <- gk_state_calls(prep, thresholds, classification, config = cfg)
 structures <- gk_structures(classification, prep)
 review <- gk_review(classification, states, structures, thresholds, prep)
@@ -70,6 +69,12 @@ stopifnot(all(gk_verify_export(export_dir,
 PENDING is deliberate: running an example does not complete scientific review.
 Warnings about disabled rules identify unsupported channels in the simulated
 panel and are retained as evidence in the export.
+
+A score correction is optional: `gk_correct()` returns corrected scores that
+are passed as `correction` to `gk_thresholds()` and `gk_classify()`. Robust
+z-scores are clipped to the range from -5 to 5, which matters for the
+`mixture` method; see the article on threshold methods before combining the
+two.
 
 `gk_replay()` is the review boundary: it applies the append-only ledgers to
 the initial calls and returns the effective reviewed state. `gk_save_review()`

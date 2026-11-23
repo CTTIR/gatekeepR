@@ -11,7 +11,9 @@ Version 1.1.0 was prepared but not released; its changes are included here.
   `NOT_CALLABLE_NO_SEPARATION` with a detail that names the cause. Use the
   `valley` or `tail` method for it, or estimate on uncorrected scores. This
   changes the result for affected markers; thresholds of other markers are
-  unchanged.
+  unchanged. The get-started article now estimates on uncorrected scores, on
+  which every stained marker of the simulated panel with enough cells is
+  callable.
 * The threshold article runs the code it shows; its previous example called
   `gk_thresholds()` and `gk_plot_thresholds()` with arguments that do not
   exist. Vignette figures carry alternative text and are skipped when ggplot2
