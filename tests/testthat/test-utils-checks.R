@@ -54,6 +54,13 @@ test_that("misspelt choices raise the package input error class", {
   expect_error(gk_embed(prep, basin_method = "nope"), class = "gatekeepr_error_input")
   expect_s3_class(gk_correct(prep, method = "none"), "gk_corrected")
   expect_identical(basename(gk_example_path()), "example-slide")
+  x <- gk_read_cellspec(gk_example_path("example-slide"))
+  out <- withr::local_tempdir()
+  expect_error(gk_write_cellspec(x, file.path(out, "nope"), format = "nope"),
+    class = "gatekeepr_error_input")
+  # An unambiguous prefix still selects a format, as with match.arg().
+  expect_no_error(gk_write_cellspec(x, file.path(out, "prefix"), format = "leg"))
+  expect_true(dir.exists(file.path(out, "prefix")))
   chooser <- function(choice = c("first", "second")) .gk_arg_match(choice)
   expect_identical(chooser(), "first")
   expect_identical(chooser("second"), "second")

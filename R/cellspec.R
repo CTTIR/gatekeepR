@@ -458,7 +458,12 @@ gk_write_cellspec <- function(x, dir, overwrite = FALSE,
   .gk_validate_cellspec(x)
   .gk_check_string(dir)
   .gk_check_flag(overwrite)
-  format <- .gk_arg_match(format)
+  # match.arg() accepted an unambiguous prefix such as "tsv"; keep that.
+  formats <- c("legacy", "parquet", "tsv.gz")
+  if (is.character(format) && length(format) == 1L && !is.na(pmatch(format, formats))) {
+    format <- formats[[pmatch(format, formats)]]
+  }
+  format <- .gk_arg_match(format, formats)
   if (format != "legacy") {
     .gk_require("cellspecR", "Canonical cellspec writing")
     cellspecR::cs_assert_valid(x)
