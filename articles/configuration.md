@@ -3,7 +3,7 @@
 ![gatekeepR logo](figures/logo.svg)![gatekeepR
 logo](figures/logo-dark.svg)
 
-Configuration is explicit and serializable. The example configuration is
+Configuration is explicit and serialisable. The example configuration is
 useful for smoke tests and for learning the object shape.
 
 ``` r

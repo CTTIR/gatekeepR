@@ -24,7 +24,7 @@ A `gk_review` object.
 
 ## Details
 
-Loading is serialized with saving by the sibling operation lock
+Loading is serialised with saving by the sibling operation lock
 described in [`gk_save_review()`](gk_save_review.md). Explicit takeover
 applies to session ownership; it cannot interrupt a save or load
 currently holding the operating-system lock.

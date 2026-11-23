@@ -7,7 +7,7 @@ lists. List entries specify allowed states for a named marker. All `all`
 conditions and at least one `any` condition must match; absent groups
 impose no condition. Later matching rules overwrite earlier labels. No
 expression is evaluated, and unavailable never implicitly means LOW.
-Labels are caller descriptions, not scientific approvals; authorization
+Labels are caller descriptions, not scientific approvals; authorisation
 flags are always false.
 
 ## Usage
@@ -33,7 +33,7 @@ gk_apply_candidate_rules(calls, rules, default_label)
 ## Value
 
 Data frame with cell_id, label, rule_id, review_authorized and
-production_eligible. Both authorization fields are always FALSE.
+production_eligible. Both authorisation fields are always FALSE.
 
 ## See also
 

@@ -186,7 +186,7 @@ with `shiny::runApp(gk_app(export = "reviews/example-01"))`.
 ## Version 1.1 migration and verification
 
 Preserve existing source data, model files, checkpoints and exports.
-Version 2 exports bind typed replay inputs, scores, localization,
+Version 2 exports bind typed replay inputs, scores, localisation,
 effective cells and states, reviewer decisions, correction parameters,
 actual source identity and review status. Verification checks exact
 numeric transport and shared-API replay. Keep `snapshot$review_id_full`
@@ -215,7 +215,7 @@ for audit evidence.
 Follows the [CTTIR contributing
 guide](https://github.com/CTTIR/.github/blob/main/CONTRIBUTING.md).
 
-## License
+## Licence
 
 MIT
 
@@ -327,7 +327,7 @@ cuts.
   availability
 - [`gk_fixed_state_diagnostics()`](gk_fixed_state_diagnostics.md)
   **\[experimental\]** : Diagnose fixed state thresholds with explicit
-  parent and localization scope
+  parent and localisation scope
 - [`gk_apply_candidate_rules()`](gk_apply_candidate_rules.md)
   **\[experimental\]** : Evaluate declarative rules on ternary candidate
   calls

@@ -88,7 +88,7 @@ here.
 
 - Add real review controls, checkpoint/resume, explicit human review
   status and verified snapshot download. Render plots correctly and
-  summarize dotplot means.
+  summarise dotplot means.
 
 - Introduce version 2 snapshots/checkpoints and unambiguous data hashes.
   Bind all replay inputs, outputs, review decisions and status; reject
@@ -112,7 +112,7 @@ here.
   context”. The tests now build each plot instead of only checking its
   class.
 
-- Standardize the named v5 package logo across README, documentation
+- Standardise the named v5 package logo across README, documentation
   pages and available application headers, with matching light and dark
   artwork.
 
@@ -122,16 +122,16 @@ here.
   whenever both packages were loaded.
 
 - Add fixed numerical threshold calls and state diagnostics with
-  explicit parent eligibility, localization, missingness and
-  non-authorizing audit outputs.
+  explicit parent eligibility, localisation, missingness and
+  non-authorising audit outputs.
 
 - Add authenticated external residual-parameter import without fitting,
   fixed raw-support-aware ternary calls, and declarative candidate rules
-  with explicit unavailable states. These APIs never authorize
+  with explicit unavailable states. These APIs never authorise
   scientific review or production.
 
 - Preserve review session ownership across checkpoint saves, reject
-  foreign-owner writes, and serialize save/load operations with a
+  foreign-owner writes, and serialise save/load operations with a
   separate filesystem lock.
 
 - Added
@@ -146,7 +146,7 @@ here.
   responsibilities; existing
   [`gk_correct()`](../reference/gk_correct.md) behaviour is unchanged.
 
-- Cell-table readers recognize canonical cellspecR directories in
+- Cell-table readers recognise canonical cellspecR directories in
   Parquet and typed TSV formats. Explicit canonical writes delegate to
   cellspecR and preserve metadata, adjacency and exact numeric values.
   They require the optional cellspecR dependency and valid declared
@@ -162,6 +162,9 @@ here.
   British English (`Language: en-GB`), a spelling word list is added,
   and the version is aligned across `DESCRIPTION`, `inst/CITATION`,
   `CITATION.cff`, `.zenodo.json` and the README.
+
+- The help pages, README, vignettes and these notes use British spelling
+  throughout (authorisation, localisation, serialise, standardised).
 
 ## gatekeepR 1.0.0
 

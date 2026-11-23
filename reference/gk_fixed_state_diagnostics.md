@@ -1,9 +1,9 @@
-# Diagnose fixed state thresholds with explicit parent and localization scope
+# Diagnose fixed state thresholds with explicit parent and localisation scope
 
 **\[experimental\]**
 
 Each column is an independent state test. Parent eligibility is supplied
-by the caller and is not scientific authorization. Optional localization
+by the caller and is not scientific authorisation. Optional localisation
 uses `(numerator + offset) / (denominator + offset) >= minimum`; both
 measurements and their offset-adjusted operands must be finite.
 Nonfinite ratios cannot be positive. `audit_missing` explicitly selects
@@ -11,7 +11,7 @@ whether nonfinite or unavailable measurements produce FALSE or NA in the
 legacy audit flag. The separate nullable positive flag is NA whenever
 the measurement, threshold or parent is unavailable or ineligible.
 Missingness status takes precedence over threshold availability, then
-parent eligibility. No model, threshold or authorization is inferred.
+parent eligibility. No model, threshold or authorisation is inferred.
 
 ## Usage
 
@@ -49,7 +49,7 @@ gk_fixed_state_diagnostics(
 
 - localization_minimum:
 
-  Named numeric vector matching columns. NA disables localization for
+  Named numeric vector matching columns. NA disables localisation for
   that column; finite values enable it.
 
 - localization_offset:
@@ -65,7 +65,7 @@ gk_fixed_state_diagnostics(
 Long data frame with cell_id, state, audit_positive,
 measurement_evaluable, parent_eligible, threshold_available,
 diagnostic_status, nullable_positive, review_authorized and
-production_eligible. Authorization is always FALSE.
+production_eligible. Authorisation is always FALSE.
 
 ## Examples
 

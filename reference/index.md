@@ -80,7 +80,7 @@ cuts.
   availability
 - [`gk_fixed_state_diagnostics()`](gk_fixed_state_diagnostics.md)
   **\[experimental\]** : Diagnose fixed state thresholds with explicit
-  parent and localization scope
+  parent and localisation scope
 - [`gk_apply_candidate_rules()`](gk_apply_candidate_rules.md)
   **\[experimental\]** : Evaluate declarative rules on ternary candidate
   calls

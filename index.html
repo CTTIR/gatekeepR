@@ -279,7 +279,7 @@ phenoscapR / cohort statistics / reports</code></pre>
 <div class="section level2">
 <h2 id="version-11-migration-and-verification">Version 1.1 migration and verification<a class="anchor" aria-label="anchor" href="#version-11-migration-and-verification"></a>
 </h2>
-<p>Preserve existing source data, model files, checkpoints and exports. Version 2 exports bind typed replay inputs, scores, localization, effective cells and states, reviewer decisions, correction parameters, actual source identity and review status. Verification checks exact numeric transport and shared-API replay. Keep <code>snapshot$review_id_full</code> separately; pass it as <code>expected_review_id</code> to reject a substituted whole export. Hash verification is not a digital signature.</p>
+<p>Preserve existing source data, model files, checkpoints and exports. Version 2 exports bind typed replay inputs, scores, localisation, effective cells and states, reviewer decisions, correction parameters, actual source identity and review status. Verification checks exact numeric transport and shared-API replay. Keep <code>snapshot$review_id_full</code> separately; pass it as <code>expected_review_id</code> to reject a substituted whole export. Hash verification is not a digital signature.</p>
 <p>Legacy exports remain inspectable with <code>gk_read_export(path, verify = FALSE)</code>; that explicitly bypasses verification. Regenerate analytical objects from the original source/configuration, review the changed results, and save a new checkpoint/export to a new path. Old correction/source bindings cannot be reused with the stronger numerical and provenance contract. Frozen residual models need explicit parameter import and requalification as described in <code><a href="reference/gk_import_residual_model.html">?gk_import_residual_model</a></code>; retain their original files and provenance. Do not refit a frozen model merely to migrate its storage.</p>
 <p>The bundled panel and simulated data are examples. Study-specific method qualification, human review, hosted CI and submission acceptance are separate from local package checks. See <a href="MAINTENANCE.html">MAINTENANCE.md</a> for audit evidence.</p>
 </div>
@@ -289,7 +289,7 @@ phenoscapR / cohort statistics / reports</code></pre>
 <p>Follows the <a href="https://github.com/CTTIR/.github/blob/main/CONTRIBUTING.md" class="external-link">CTTIR contributing guide</a>.</p>
 </div>
 <div class="section level2">
-<h2 id="license">License<a class="anchor" aria-label="anchor" href="#license"></a>
+<h2 id="licence">Licence<a class="anchor" aria-label="anchor" href="#licence"></a>
 </h2>
 <p>MIT</p>
 </div>
