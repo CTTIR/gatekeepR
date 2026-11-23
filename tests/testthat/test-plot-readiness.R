@@ -121,7 +121,8 @@ test_that("qualitative plot colours are named, distinct and Okabe-Ito up to nine
     expect_length(many, n)
     expect_identical(anyDuplicated(unname(many)), 0L)
   }
-  expect_named(.gk_plot_discrete_colours(factor(c("x", "y"), levels = c("y", "x", "z"))), c("y", "x"))
+  sparse <- factor(c("x", "y"), levels = c("y", "x", "z"))
+  expect_named(.gk_plot_discrete_colours(sparse), c("y", "x"))
   expect_identical(.gk_plot_label("cell_type"), "Cell type")
 })
 
@@ -139,8 +140,8 @@ test_that("plots carry readable axis and legend titles", {
   expect_match(dens$labels$subtitle, "threshold [0-9.]+$")
   numeric_map <- gk_plot_map(o$prep, "sim-01", colour_by = "x")
   expect_s3_class(ggplot2::ggplot_build(numeric_map), "ggplot_built")
-  logical_map <- gk_plot_map(gk_replay(gk_review(o$cl, o$st, gk_structures(o$cl, o$prep), o$th, o$prep)),
-    "sim-01", colour_by = "analysed")
+  review <- gk_review(o$cl, o$st, gk_structures(o$cl, o$prep), o$th, o$prep)
+  logical_map <- gk_plot_map(gk_replay(review), "sim-01", colour_by = "analysed")
   expect_s3_class(ggplot2::ggplot_build(logical_map), "ggplot_built")
 })
 
@@ -181,7 +182,8 @@ test_that("plots reject an image that is not in the object", {
   expect_error(gk_plot_map(o$cl, "no-such-image"), class = "gatekeepr_error_input")
   expect_error(gk_plot_thresholds(o$th, "no-such-image"), class = "gatekeepr_error_input")
   expect_error(gk_plot_states(o$st, "no-such-image"), class = "gatekeepr_error_input")
-  expect_error(gk_plot_map(o$cl, "sim-01", colour_by = NA_character_), class = "gatekeepr_error_input")
+  expect_error(gk_plot_map(o$cl, "sim-01", colour_by = NA_character_),
+    class = "gatekeepr_error_input")
 })
 
 test_that("overview pairs the map with class counts in matching colours", {

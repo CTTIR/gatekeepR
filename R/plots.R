@@ -22,7 +22,8 @@
     sort(unique(as.character(values[!is.na(values)])))
   n <- length(classes)
   colours <- if (n <= 9L) {
-    unname(grDevices::palette.colors(9L, "Okabe-Ito"))[c(6L, 2L, 4L, 8L, 3L, 7L, 1L, 9L, 5L)][seq_len(n)]
+    okabe_ito <- unname(grDevices::palette.colors(9L, "Okabe-Ito"))
+    okabe_ito[c(6L, 2L, 4L, 8L, 3L, 7L, 1L, 9L, 5L)][seq_len(n)]
   } else if (n == 10L) {
     unname(grDevices::palette.colors(10L, "Tableau 10"))
   } else if (n <= 36L) {
@@ -298,7 +299,8 @@ gk_plot_thresholds <- function(thresholds, image_id) {
   missing$anchor <- rep(if (nrow(missing) < nrow(dat)) -Inf else 0, nrow(missing))
   ggplot2::ggplot(dat, ggplot2::aes(x = .data[["marker"]], y = .data[["estimate"]], colour = .data[["status"]])) +
     ggplot2::geom_point(size = 2.5, na.rm = TRUE) +
-    ggplot2::geom_text(data = missing, ggplot2::aes(y = .data[["anchor"]], label = .data[["status"]]),
+    ggplot2::geom_text(data = missing,
+      ggplot2::aes(y = .data[["anchor"]], label = .data[["status"]]),
       hjust = -0.05, size = 3, show.legend = FALSE) +
     ggplot2::scale_colour_manual(values = .gk_plot_discrete_colours(dat$status)) +
     ggplot2::coord_flip() +
@@ -335,20 +337,23 @@ gk_plot_states <- function(state_calls, image_id) {
   dat <- .gk_plot_image_rows(state_calls$calls, image_id)
   dat <- dat[dat$in_parent %in% TRUE, , drop = FALSE]
   called <- is.finite(dat$estimate) & dat$evaluable %in% TRUE & !is.na(dat$positive)
-  dat$call <- factor(ifelse(!called, "Not called", ifelse(dat$positive %in% TRUE, "Positive", "Negative")),
-    levels = c("Negative", "Positive", "Not called"))
+  dat$call <- ifelse(dat$positive %in% TRUE, "Positive", "Negative")
+  dat$call[!called] <- "Not called"
+  dat$call <- factor(dat$call, levels = c("Negative", "Positive", "Not called"))
   dat$panel <- if (nrow(dat)) paste(dat$marker, "in", dat$parent) else character()
   cuts <- unique(dat[is.finite(dat$estimate), c("panel", "estimate"), drop = FALSE])
   p <- ggplot2::ggplot(dat, ggplot2::aes(x = .data[["score"]], fill = .data[["call"]])) +
     ggplot2::geom_histogram(bins = 40L, na.rm = TRUE) +
     ggplot2::labs(x = "State marker score", y = "Cells in parent set", fill = "State call",
-      title = image_id, caption = paste("Dashed line: state threshold. Only cells of the parent set are shown;",
+      title = image_id, caption = paste(
+        "Dashed line: state threshold. Only cells of the parent set are shown;",
         "a positive call also needs the configured localisation.", sep = "\n")) +
     .gk_plot_theme()
   if (!nrow(dat)) {
     return(p + ggplot2::annotate("text", x = 0, y = 0, label = "No cells in a parent set"))
   }
-  p + ggplot2::geom_vline(data = cuts, ggplot2::aes(xintercept = .data[["estimate"]]), linetype = 2) +
+  p + ggplot2::geom_vline(data = cuts, ggplot2::aes(xintercept = .data[["estimate"]]),
+    linetype = 2) +
     ggplot2::scale_fill_manual(values = c(Negative = "#0072B2", Positive = "#D55E00",
       "Not called" = "#999999")) +
     ggplot2::facet_wrap(~panel, scales = "free_y")
@@ -379,7 +384,8 @@ gk_plot_overview <- function(x, image_id) {
   counts <- as.data.frame(table(class = as.character(classes), useNA = "no"),
     responseName = "n", stringsAsFactors = FALSE)
   counts$class <- factor(counts$class, levels = counts$class[order(counts$n)])
-  bars <- ggplot2::ggplot(counts, ggplot2::aes(x = .data[["class"]], y = .data[["n"]], fill = .data[["class"]])) +
+  bars <- ggplot2::ggplot(counts,
+    ggplot2::aes(x = .data[["class"]], y = .data[["n"]], fill = .data[["class"]])) +
     ggplot2::geom_col(show.legend = FALSE) +
     ggplot2::scale_fill_manual(values = .gk_plot_discrete_colours(as.character(classes))) +
     ggplot2::coord_flip() +
