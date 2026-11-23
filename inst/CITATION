@@ -1,10 +1,18 @@
 citHeader("To cite gatekeepR in publications use:")
 
+## `meta` is supplied by R when it reads this file (the package DESCRIPTION);
+## fall back to the installed description so that the file also works on its
+## own. packageVersion() would fail while the package is not yet installed.
+if (!exists("meta") || is.null(meta)) meta <- utils::packageDescription("gatekeepR")
+vers <- meta[["Version"]]
+if (is.null(vers) || is.na(vers)) vers <- "unknown"
+
 bibentry(
   bibtype = "Manual",
   title = "gatekeepR: Reviewable Marker Gating and Phenotyping for Multiplexed Imaging",
-  author = person("R.", "Heller", email = "raban.heller@uni-ulm.de", role = c("aut", "cre")),
+  author = person("R.", "Heller", email = "raban.heller@uni-ulm.de", role = c("aut", "cre"),
+    comment = c(ORCID = "0000-0001-8006-9742")),
   year = "2026",
-  note = "R package version 1.2.0",
+  note = sprintf("R package version %s", vers),
   url = "https://github.com/CTTIR/gatekeepR"
 )

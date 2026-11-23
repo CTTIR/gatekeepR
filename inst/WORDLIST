@@ -17,6 +17,7 @@ ggplot
 gk
 GWDG
 inspectable
+Ito
 Ki
 KISSKI
 Lifecycle
@@ -26,8 +27,10 @@ nonfinite
 Nonfinite
 nonpositive
 offs
+Okabe
 ORCID
 PanCK
+Polychrome
 PyTorch
 QuPath
 replayable
@@ -40,5 +43,7 @@ th
 Treg
 TSV
 UMAP
+uwot
+viridis
 vLLM
 writable

@@ -12,6 +12,12 @@ Version 1.1.0 was prepared but not released; its changes are included here.
   `valley` or `tail` method for it, or estimate on uncorrected scores. This
   changes the result for affected markers; thresholds of other markers are
   unchanged.
+* The threshold article runs the code it shows; its previous example called
+  `gk_thresholds()` and `gk_plot_thresholds()` with arguments that do not
+  exist. Vignette figures carry alternative text and are skipped when ggplot2
+  is not installed. The reference index of the site is grouped by workflow
+  step.
+* `citation("gatekeepR")` takes the version from the installed package.
 * The plot helpers share one look: `ggplot2::theme_minimal()`, written-out
   axis and legend titles, legend keys large enough to read, and colours that
   remain distinguishable with colour vision deficiency (Okabe-Ito for up to
