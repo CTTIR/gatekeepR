@@ -54,7 +54,8 @@
         "one component fits better (BIC), when the components overlap by more",
         "than `max_overlap` (misclassified share of the smaller component), or",
         "when a component collapses onto scores tied at the bound of the score",
-        "range (clipped scores, at least nine in ten cells of a pool)."
+        "range (clipped scores, at least nine in ten cells of a pool) and the",
+        "cut lands next to that bound."
       )
     ),
     population_crossing = list(

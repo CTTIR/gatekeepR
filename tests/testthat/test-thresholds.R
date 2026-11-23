@@ -40,6 +40,23 @@ test_that("mixture refuses a component collapsed onto clipped scores", {
   mild <- .gk_estimate_mixture(pmin(y, 5), args)
   expect_gt(sum(pmin(y, 5) == 5), 5L)
   expect_identical(mild$status, "CALLABLE")
+  # Tied scores at a floor or at saturation keep a cut between the modes.
+  floored <- withr::with_seed(13, asinh(c(stats::rpois(700, 0.05), stats::rpois(300, 30))))
+  expect_gt(mean(floored[floored < 2] == 0), 0.9)
+  kept <- .gk_estimate_mixture(floored, args)
+  expect_identical(kept$status, "CALLABLE")
+  expect_identical(sum((floored > kept$estimate) != rep(c(FALSE, TRUE), c(700L, 300L))), 0L)
+  saturated <- withr::with_seed(14,
+    pmin(c(stats::rnorm(800, 20, 5), stats::rnorm(200, 300, 30)), 255))
+  expect_gt(mean(saturated[saturated > 100] == 255), 0.9)
+  expect_identical(.gk_estimate_mixture(saturated, args)$status, "CALLABLE")
+  # A cut that hugs a floor is refused like one that hugs a clip.
+  hugging <- withr::with_seed(15,
+    c(rep(0, 600), abs(stats::rnorm(100, 0, 0.2)), stats::rnorm(300, 3, 0.5)))
+  expect_identical(.gk_estimate_mixture(hugging, args)$status, "NOT_CALLABLE_NO_SEPARATION")
+  expect_true(.gk_collapsed_at_bound(c(rep(5, 9), 4.99), 5, cut = 4.98, other_mean = 0))
+  expect_false(.gk_collapsed_at_bound(c(rep(5, 9), 4), 5, cut = 2.5, other_mean = 0))
+  expect_false(.gk_collapsed_at_bound(c(4, 4.5, 5), 5, cut = 4.98, other_mean = 0))
   expect_false(.gk_mostly_tied(numeric(), 1))
   expect_true(.gk_mostly_tied(c(rep(5, 9), 4), 5))
   expect_false(.gk_mostly_tied(c(rep(5, 8), 4, 4), 5))

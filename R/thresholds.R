@@ -147,6 +147,17 @@
   length(pool) > 0L && mean(pool == bound) >= 0.9
 }
 
+# TRUE when a mixture component has collapsed onto such a point mass and has
+# pulled the cut next to it: the cut lies within the last twentieth of the way
+# from the mean of the other component to `bound`. A pool that is tied at a
+# floor or at saturation while the cut stays in the gap between the two modes
+# is a sound fit and is kept. The twentieth is a package choice, not a
+# literature value: collapsed fits on the example slide lie within the last
+# hundredth, sound fits on floored or saturated scores beyond a third.
+.gk_collapsed_at_bound <- function(pool, bound, cut, other_mean) {
+  .gk_mostly_tied(pool, bound) && abs(bound - cut) <= 0.05 * abs(bound - other_mean)
+}
+
 .gk_estimate_mixture <- function(x, args) {
   v <- .gk_finite_values(x, as.integer(args$min_n))
   if (is.null(v)) return(.gk_no_separation("NOT_CALLABLE_UNDERPOWERED",
@@ -215,10 +226,12 @@
   # bound (robust z-scores are clipped to [-5, 5]) pile up on it; EM then
   # shrinks one component onto the tied values and moves the cut next to the
   # bound, so that separated cells short of the bound fall on the wrong side.
-  if (.gk_mostly_tied(positive, max(v)) || .gk_mostly_tied(negative, min(v))) {
+  if (.gk_collapsed_at_bound(positive, max(v), cut, mu[[1L]]) ||
+    .gk_collapsed_at_bound(negative, min(v), cut, mu[[2L]])) {
     return(.gk_no_separation(details = paste(
       "A mixture component collapsed onto tied scores at the bound of the score range",
-      "(clipped scores); use the valley or tail method, or uncorrected scores."
+      "(clipped scores) and moved the cut next to it; use the valley or tail method,",
+      "or scores that are not clipped."
     )))
   }
   list(

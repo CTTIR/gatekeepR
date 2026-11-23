@@ -4,7 +4,10 @@ Version 1.1.0 was prepared but not released; its changes are included here.
 
 * The `mixture` threshold method no longer reports a cut when a fitted
   component collapses onto scores tied at the bound of the score range (at
-  least nine in ten cells of a pool). Robust z-scores are clipped to [-5, 5];
+  least nine in ten cells of a pool) and the cut lands next to that bound (in
+  the last twentieth of the way from the other component). Scores with a floor
+  or a saturation value whose cut stays between the two modes are not
+  affected. Robust z-scores are clipped to [-5, 5];
   a strongly stained marker then received a `CALLABLE` cut next to the clip
   (4.98 for CD8 on the example slide), and separated positive cells below it
   were called negative (135 of 672). Such a marker now has the status

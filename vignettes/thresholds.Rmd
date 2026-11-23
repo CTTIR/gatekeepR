@@ -78,8 +78,10 @@ cannot describe such a point mass: the fit would shrink onto the tied values
 and place the cut next to the bound, so that clearly positive cells below the
 bound are called negative. The `mixture` method therefore returns
 `NOT_CALLABLE_NO_SEPARATION` when at least nine in ten cells of a pool are
-tied at the bound of the score range. Use the `valley` or `tail` method for such a marker,
-or estimate on uncorrected scores.
+tied at the bound of the score range and the cut lands next to that bound.
+Tied scores alone, for example at a floor of zero, do not block a fit whose
+cut stays between the two modes. Use the `valley` or `tail` method for such a
+marker, or estimate on uncorrected scores.
 
 Manual corrections can replace an estimate through the review ledger. The
 original estimate remains in the ledger, allowing the final result to explain
