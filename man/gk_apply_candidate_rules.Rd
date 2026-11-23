@@ -15,7 +15,7 @@ gk_apply_candidate_rules(calls, rules, default_label)
 }
 \value{
 Data frame with cell_id, label, rule_id, review_authorized and
-production_eligible. Both authorization fields are always FALSE.
+production_eligible. Both authorisation fields are always FALSE.
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
@@ -25,7 +25,7 @@ List entries specify allowed states for a named marker. All \code{all} condition
 and at least one \code{any} condition must match; absent groups impose no condition.
 Later matching rules overwrite earlier labels. No expression is evaluated,
 and unavailable never implicitly means LOW. Labels are caller descriptions,
-not scientific approvals; authorization flags are always false.
+not scientific approvals; authorisation flags are always false.
 }
 \examples{
 calls <- matrix(c("HIGH", "UNAVAILABLE"), 2, 1,

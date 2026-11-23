@@ -57,7 +57,7 @@ Version 1.1.0 was prepared but not released; its changes are included here.
 * Replay identity/state cuts, enablement and undo through the shared classifier.
   Validate checkpoint contents and detect stale concurrent sessions.
 * Add real review controls, checkpoint/resume, explicit human review status and
-  verified snapshot download. Render plots correctly and summarize dotplot means.
+  verified snapshot download. Render plots correctly and summarise dotplot means.
 * Introduce version 2 snapshots/checkpoints and unambiguous data hashes. Bind all
   replay inputs, outputs, review decisions and status; reject mutated snapshots
   and verify staged exports before publication. Preserve exact decimal scores.
@@ -72,7 +72,7 @@ Version 1.1.0 was prepared but not released; its changes are included here.
   with "Can't subset `.data` outside of a data mask context". The tests now
   build each plot instead of only checking its class.
 
-* Standardize the named v5 package logo across README, documentation pages
+* Standardise the named v5 package logo across README, documentation pages
   and available application headers, with matching light and dark artwork.
 
 * gatekeepR no longer registers a `print()` method for `cellspec` objects.
@@ -81,13 +81,13 @@ Version 1.1.0 was prepared but not released; its changes are included here.
 
 
 - Add fixed numerical threshold calls and state diagnostics with explicit parent
-  eligibility, localization, missingness and non-authorizing audit outputs.
+  eligibility, localisation, missingness and non-authorising audit outputs.
 
 - Add authenticated external residual-parameter import without fitting, fixed
   raw-support-aware ternary calls, and declarative candidate rules with explicit
-  unavailable states. These APIs never authorize scientific review or production.
+  unavailable states. These APIs never authorise scientific review or production.
 
-- Preserve review session ownership across checkpoint saves, reject foreign-owner writes, and serialize save/load operations with a separate filesystem lock.
+- Preserve review session ownership across checkpoint saves, reject foreign-owner writes, and serialise save/load operations with a separate filesystem lock.
 
 
 * Added `gk_fit_residual_model()` and `gk_apply_residual_model()` for freezing
@@ -98,7 +98,7 @@ Version 1.1.0 was prepared but not released; its changes are included here.
   Raw-channel support, training-image scope and biological decisions remain
   explicit caller responsibilities; existing `gk_correct()` behaviour is unchanged.
 
-* Cell-table readers recognize canonical cellspecR directories in Parquet and
+* Cell-table readers recognise canonical cellspecR directories in Parquet and
   typed TSV formats. Explicit canonical writes delegate to cellspecR and
   preserve metadata, adjacency and exact numeric values. They require the
   optional cellspecR dependency and valid declared image calibration.
@@ -110,6 +110,8 @@ Version 1.1.0 was prepared but not released; its changes are included here.
   English (`Language: en-GB`), a spelling word list is added, and the version
   is aligned across `DESCRIPTION`, `inst/CITATION`, `CITATION.cff`,
   `.zenodo.json` and the README.
+* The help pages, README, vignettes and these notes use British spelling
+  throughout (authorisation, localisation, serialise, standardised).
 
 # gatekeepR 1.0.0
 

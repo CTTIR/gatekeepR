@@ -202,13 +202,13 @@ gk_fixed_signal_calls <- function(scores, selected, selected_features, raw_featu
 #' and at least one `any` condition must match; absent groups impose no condition.
 #' Later matching rules overwrite earlier labels. No expression is evaluated,
 #' and unavailable never implicitly means LOW. Labels are caller descriptions,
-#' not scientific approvals; authorization flags are always false.
+#' not scientific approvals; authorisation flags are always false.
 #'
 #' @param calls Keyed character matrix containing HIGH, LOW or UNAVAILABLE.
 #' @param rules Ordered list of declarative rules as described above.
 #' @param default_label Nonempty label for rows matching no rule.
 #' @return Data frame with cell_id, label, rule_id, review_authorized and
-#'   production_eligible. Both authorization fields are always FALSE.
+#'   production_eligible. Both authorisation fields are always FALSE.
 #' @family classification
 #' @export
 #' @examples

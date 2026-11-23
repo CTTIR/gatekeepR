@@ -40,7 +40,7 @@ Apply returns a list with \code{identity} and \code{gate} matrices and \code{mod
 Fits two numerical spaces from already transformed marker scores: an
 identity common-score residual and a panel residual against the first
 identity principal component. Robust centring uses medians and MAD with
-constant 1.4826, with nonpositive MAD replaced by 1; standardized inputs
+constant 1.4826, with nonpositive MAD replaced by 1; standardised inputs
 are clipped to \verb{[-5, 5]}. Identity residuals are row-centred, then centred
 and scaled per marker. Panel residuals subtract the row mean of identity
 residuals before final per-marker centring and scaling. The first principal

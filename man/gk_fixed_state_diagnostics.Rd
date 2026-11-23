@@ -2,7 +2,7 @@
 % Please edit documentation in R/fixed-state-diagnostics.R
 \name{gk_fixed_state_diagnostics}
 \alias{gk_fixed_state_diagnostics}
-\title{Diagnose fixed state thresholds with explicit parent and localization scope}
+\title{Diagnose fixed state thresholds with explicit parent and localisation scope}
 \usage{
 gk_fixed_state_diagnostics(
   values,
@@ -26,7 +26,7 @@ gk_fixed_state_diagnostics(
 matrices matching values, in caller-specified common units.}
 
 \item{localization_minimum}{Named numeric vector matching columns. NA disables
-localization for that column; finite values enable it.}
+localisation for that column; finite values enable it.}
 
 \item{localization_offset}{Finite nonnegative scalar added to both operands.}
 
@@ -35,20 +35,20 @@ localization for that column; finite values enable it.}
 \value{
 Long data frame with cell_id, state, audit_positive, measurement_evaluable,
 parent_eligible, threshold_available, diagnostic_status, nullable_positive,
-review_authorized and production_eligible. Authorization is always FALSE.
+review_authorized and production_eligible. Authorisation is always FALSE.
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
 Each column is an independent state test. Parent eligibility is supplied by
-the caller and is not scientific authorization. Optional localization uses
+the caller and is not scientific authorisation. Optional localisation uses
 \code{(numerator + offset) / (denominator + offset) >= minimum}; both measurements
 and their offset-adjusted operands must be finite. Nonfinite ratios cannot be positive. \code{audit_missing} explicitly
 selects whether nonfinite or unavailable measurements produce FALSE or NA in the
 legacy audit flag. The separate nullable positive flag is NA whenever the
 measurement, threshold or parent is unavailable or ineligible. Missingness
 status takes precedence over threshold availability, then parent eligibility.
-No model, threshold or authorization is inferred.
+No model, threshold or authorisation is inferred.
 }
 \examples{
 x <- matrix(c(1, NA), 2, 1, dimnames = list(c("a", "b"), "state"))

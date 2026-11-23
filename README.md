@@ -184,7 +184,7 @@ snapshot download. An export opens as a read-only inspector with
 ## Version 1.1 migration and verification
 
 Preserve existing source data, model files, checkpoints and exports. Version 2
-exports bind typed replay inputs, scores, localization, effective cells and
+exports bind typed replay inputs, scores, localisation, effective cells and
 states, reviewer decisions, correction parameters, actual source identity and
 review status. Verification checks exact numeric transport and shared-API replay.
 Keep `snapshot$review_id_full` separately; pass it as `expected_review_id` to
@@ -206,7 +206,7 @@ from local package checks. See [MAINTENANCE.md](MAINTENANCE.md) for audit eviden
 
 Follows the [CTTIR contributing guide](https://github.com/CTTIR/.github/blob/main/CONTRIBUTING.md).
 
-## License
+## Licence
 
 MIT
 

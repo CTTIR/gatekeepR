@@ -216,7 +216,7 @@ gk_save_review <- function(review, dir, overwrite = FALSE) {
 #' `r lifecycle::badge("experimental")`
 #'
 #' @details
-#' Loading is serialized with saving by the sibling operation lock described in
+#' Loading is serialised with saving by the sibling operation lock described in
 #' [gk_save_review()]. Explicit takeover applies to session ownership; it cannot
 #' interrupt a save or load currently holding the operating-system lock.
 #'

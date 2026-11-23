@@ -43,7 +43,7 @@ staged and renamed atomically. \code{gk_read_cellspec()} reads it back and, with
 
 The default \code{format = "legacy"} retains the original gatekeepR layout for
 compatibility. It is not the canonical cellspecR disk schema and is planned
-for retirement after migration is qualified. It does not serialize adjacency
+for retirement after migration is qualified. It does not serialise adjacency
 or typed sidecar metadata. Select \code{"parquet"} or
 \code{"tsv.gz"} explicitly for canonical storage owned by cellspecR. These formats
 require cellspecR and a valid canonical object, including declared positive
