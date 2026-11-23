@@ -40,3 +40,6 @@ Thumbs.db
 *.bak
 *.orig
 /site/
+
+# Local maintenance notes stay out of the repository
+/MAINTENANCE.md
