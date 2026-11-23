@@ -207,8 +207,7 @@ merely to migrate its storage.
 
 The bundled panel and simulated data are examples. Study-specific method
 qualification, human review, hosted CI and submission acceptance are
-separate from local package checks. See [MAINTENANCE.md](MAINTENANCE.md)
-for audit evidence.
+separate from local package checks.
 
 ## Contributing
 
