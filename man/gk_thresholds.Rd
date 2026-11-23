@@ -41,7 +41,7 @@ labels are available.
 \examples{
 prep <- gk_prepare(gk_example_path("example-slide"), gk_example_config(), quiet = TRUE)
 thresholds <- gk_thresholds(prep, gk_example_config(), seed = 1L)
-thresholds[, c("marker", "status", "estimate")]
+as.data.frame(thresholds)[, c("marker", "status", "estimate")]
 
 }
 \seealso{

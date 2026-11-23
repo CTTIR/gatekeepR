@@ -2,6 +2,16 @@
 
 Version 1.1.0 was prepared but not released; its changes are included here.
 
+* The `mixture` threshold method no longer reports a cut when a fitted
+  component collapses onto scores tied at the bound of the score range (at
+  least nine in ten cells of a pool). Robust z-scores are clipped to [-5, 5];
+  a strongly stained marker then received a `CALLABLE` cut next to the clip
+  (4.98 for CD8 on the example slide), and separated positive cells below it
+  were called negative (135 of 672). Such a marker now has the status
+  `NOT_CALLABLE_NO_SEPARATION` with a detail that names the cause. Use the
+  `valley` or `tail` method for it, or estimate on uncorrected scores. This
+  changes the result for affected markers; thresholds of other markers are
+  unchanged.
 * The plot helpers share one look: `ggplot2::theme_minimal()`, written-out
   axis and legend titles, legend keys large enough to read, and colours that
   remain distinguishable with colour vision deficiency (Okabe-Ito for up to

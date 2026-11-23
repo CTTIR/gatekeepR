@@ -139,6 +139,14 @@
   sum(maxab + log(exp(a - maxab) + exp(b - maxab)))
 }
 
+# TRUE when at least nine in ten values of a pool are one value tied at
+# `bound`: the pool is then a point mass, not a spread a Gaussian can describe.
+# The share is a package choice, not a literature value. On the example slide
+# collapsed fits have 99-100 % tied values and sound fits at most 63 %.
+.gk_mostly_tied <- function(pool, bound) {
+  length(pool) > 0L && mean(pool == bound) >= 0.9
+}
+
 .gk_estimate_mixture <- function(x, args) {
   v <- .gk_finite_values(x, as.integer(args$min_n))
   if (is.null(v)) return(.gk_no_separation("NOT_CALLABLE_UNDERPOWERED",
@@ -203,6 +211,16 @@
   }
   negative <- v[v <= cut]
   positive <- v[v > cut]
+  # A Gaussian component cannot describe a point mass. Scores clipped at a
+  # bound (robust z-scores are clipped to [-5, 5]) pile up on it; EM then
+  # shrinks one component onto the tied values and moves the cut next to the
+  # bound, so that separated cells short of the bound fall on the wrong side.
+  if (.gk_mostly_tied(positive, max(v)) || .gk_mostly_tied(negative, min(v))) {
+    return(.gk_no_separation(details = paste(
+      "A mixture component collapsed onto tied scores at the bound of the score range",
+      "(clipped scores); use the valley or tail method, or uncorrected scores."
+    )))
+  }
   list(
     status = "CALLABLE", estimate = cut, crossing = cut,
     negative_q99 = unname(stats::quantile(negative, 0.99)),
@@ -322,7 +340,7 @@
 #' @examples
 #' prep <- gk_prepare(gk_example_path("example-slide"), gk_example_config(), quiet = TRUE)
 #' thresholds <- gk_thresholds(prep, gk_example_config(), seed = 1L)
-#' thresholds[, c("marker", "status", "estimate")]
+#' as.data.frame(thresholds)[, c("marker", "status", "estimate")]
 #'
 #' @family thresholds
 #' @export

@@ -51,8 +51,10 @@
       description = paste(
         "Two-component Gaussian mixture fitted by EM; the cut is where the",
         "posterior probability of the upper component is 0.5. Not callable when",
-        "one component fits better (BIC) or when the components overlap by more",
-        "than `max_overlap` (misclassified share of the smaller component)."
+        "one component fits better (BIC), when the components overlap by more",
+        "than `max_overlap` (misclassified share of the smaller component), or",
+        "when a component collapses onto scores tied at the bound of the score",
+        "range (clipped scores, at least nine in ten cells of a pool)."
       )
     ),
     population_crossing = list(
