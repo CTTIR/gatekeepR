@@ -22,6 +22,15 @@ marker and cell type. Point size is the number of contributing cells.
 Scores use the same correction as the classification. Objects with
 mismatched source data, row order or score space are rejected.
 }
+\details{
+All plot helpers use \code{\link[ggplot2:theme_minimal]{ggplot2::theme_minimal()}} and colours that remain
+distinguishable with colour vision deficiency: Okabe-Ito for up to nine
+classes and viridis for numbers. With ten or more classes no qualitative
+palette is colour-blind safe; the plots then use palettes with distinct
+neighbours (Tableau 10, Polychrome 36), which are best combined with
+facets or direct labels. All helpers return ordinary ggplot objects, so a
+theme or scale added by the caller replaces these defaults.
+}
 \examples{
 \dontshow{if (requireNamespace("ggplot2", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 cfg <- gk_example_config()

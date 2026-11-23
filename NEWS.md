@@ -2,6 +2,23 @@
 
 Version 1.1.0 was prepared but not released; its changes are included here.
 
+* The plot helpers share one look: `ggplot2::theme_minimal()`, written-out
+  axis and legend titles, legend keys large enough to read, and colours that
+  remain distinguishable with colour vision deficiency (Okabe-Ito for up to
+  nine classes, viridis for numbers). A theme or scale added by the caller
+  still replaces these defaults.
+* `gk_plot_states()` draws only the cells of each parent set, marks the state
+  threshold and shows cells without a call as "Not called". Previously every
+  cell of the image appeared in every panel and uncalled cells were coloured
+  as negative.
+* `gk_plot_thresholds()` writes the status of a marker without an estimate
+  into its row instead of leaving the row empty.
+* `gk_plot_overview()` shows the number of cells per class next to the map;
+  the map alone used to fill half of the canvas.
+* `gk_plot_map()`, `gk_plot_thresholds()` and `gk_plot_states()` fail with a
+  `gatekeepr_error_input` error for an image that is not in the object instead
+  of returning an empty plot.
+
 * Exclude background cells when calculating density-basin centres, keeping
   centres finite and allowing small basins to merge without an indexing error.
   Background cells remain unassigned.

@@ -15,7 +15,19 @@ gk_plot_thresholds(thresholds, image_id)
 A ggplot object.
 }
 \description{
-Plot thresholds for one image
+One point per marker at its threshold estimate, coloured by status. A marker
+without an estimate (not callable, or not separated) has no point; its
+status is written in its row instead, so that it is not mistaken for a
+marker that was left out.
+}
+\details{
+All plot helpers use \code{\link[ggplot2:theme_minimal]{ggplot2::theme_minimal()}} and colours that remain
+distinguishable with colour vision deficiency: Okabe-Ito for up to nine
+classes and viridis for numbers. With ten or more classes no qualitative
+palette is colour-blind safe; the plots then use palettes with distinct
+neighbours (Tableau 10, Polychrome 36), which are best combined with
+facets or direct labels. All helpers return ordinary ggplot objects, so a
+theme or scale added by the caller replaces these defaults.
 }
 \examples{
 \dontshow{if (requireNamespace("ggplot2", quietly = TRUE)) withAutoprint(\{ # examplesIf}

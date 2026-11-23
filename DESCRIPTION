@@ -28,6 +28,7 @@ Imports:
     digest,
     fs,
     filelock,
+    grDevices,
     jsonlite,
     lifecycle,
     MASS,

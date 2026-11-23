@@ -19,6 +19,15 @@ A ggplot object.
 \description{
 Plot an embedding coloured by population or classification
 }
+\details{
+All plot helpers use \code{\link[ggplot2:theme_minimal]{ggplot2::theme_minimal()}} and colours that remain
+distinguishable with colour vision deficiency: Okabe-Ito for up to nine
+classes and viridis for numbers. With ten or more classes no qualitative
+palette is colour-blind safe; the plots then use palettes with distinct
+neighbours (Tableau 10, Polychrome 36), which are best combined with
+facets or direct labels. All helpers return ordinary ggplot objects, so a
+theme or scale added by the caller replaces these defaults.
+}
 \examples{
 \dontshow{if (requireNamespace("ggplot2", quietly = TRUE) && requireNamespace("uwot", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 prep <- gk_prepare(gk_simulate(n_cells = 300L, seed = 7L), gk_example_config(), quiet = TRUE)

@@ -101,3 +101,97 @@ test_that("unmeasured marker groups have no visible dot", {
   expect_true(all(drawn$size[absent] == 0))
   expect_true(all(drawn$size[!absent] > 0))
 })
+
+gk_plot_test_objects <- function() {
+  cfg <- gk_example_config()
+  prep <- gk_prepare(gk_simulate(n_cells = 300L, seed = 7L), cfg, quiet = TRUE)
+  th <- gk_thresholds(prep, cfg, seed = 7L)
+  cl <- suppressWarnings(gk_classify(prep, th, cfg))
+  list(prep = prep, th = th, cl = cl, st = gk_state_calls(prep, th, cl, cfg))
+}
+
+test_that("qualitative plot colours are named, distinct and Okabe-Ito up to nine classes", {
+  few <- .gk_plot_discrete_colours(c("b", "a", NA, "c", "a"))
+  expect_named(few, c("a", "b", "c"))
+  expect_true(all(few %in% grDevices::palette.colors(9L, "Okabe-Ito")))
+  nine <- .gk_plot_discrete_colours(letters[1:9])
+  expect_setequal(unname(nine), unname(grDevices::palette.colors(9L, "Okabe-Ito")))
+  for (n in c(10L, 11L, 36L, 40L)) {
+    many <- .gk_plot_discrete_colours(sprintf("class-%02d", seq_len(n)))
+    expect_length(many, n)
+    expect_identical(anyDuplicated(unname(many)), 0L)
+  }
+  expect_named(.gk_plot_discrete_colours(factor(c("x", "y"), levels = c("y", "x", "z"))), c("y", "x"))
+  expect_identical(.gk_plot_label("cell_type"), "Cell type")
+})
+
+test_that("plots carry readable axis and legend titles", {
+  skip_if_not_installed("ggplot2")
+  o <- gk_plot_test_objects()
+  map <- gk_plot_map(o$cl, "sim-01")
+  expect_identical(map$labels$colour, "Cell type")
+  expect_identical(map$labels$x, "Centroid x")
+  th <- gk_plot_thresholds(o$th, "sim-01")
+  expect_identical(th$labels$colour, "Status")
+  expect_match(th$labels$y, "Threshold estimate")
+  dens <- gk_plot_density(o$th, "CD3e", "sim-01")
+  expect_identical(dens$labels$x, "CD3e score")
+  expect_match(dens$labels$subtitle, "threshold [0-9.]+$")
+  numeric_map <- gk_plot_map(o$prep, "sim-01", colour_by = "x")
+  expect_s3_class(ggplot2::ggplot_build(numeric_map), "ggplot_built")
+  logical_map <- gk_plot_map(gk_replay(gk_review(o$cl, o$st, gk_structures(o$cl, o$prep), o$th, o$prep)),
+    "sim-01", colour_by = "analysed")
+  expect_s3_class(ggplot2::ggplot_build(logical_map), "ggplot_built")
+})
+
+test_that("threshold plot names the status of markers without an estimate", {
+  skip_if_not_installed("ggplot2")
+  o <- gk_plot_test_objects()
+  expected <- o$th$marker[!is.finite(o$th$estimate)]
+  expect_gt(length(expected), 0L)
+  built <- ggplot2::ggplot_build(gk_plot_thresholds(o$th, "sim-01"))
+  labels <- built$data[[2L]]
+  expect_identical(nrow(labels), length(expected))
+  expect_true(all(grepl("^NOT_CALLABLE", labels$label)))
+  cfg <- gk_test_config("A", method = "manual", transform = "none",
+    threshold_args = list(value = 50))
+  prep <- gk_prepare(gk_test_cellspec(list(A = rep(NA_real_, 100))), cfg, quiet = TRUE)
+  none <- gk_plot_thresholds(gk_thresholds(prep, cfg), prep$cells$image_id[[1L]])
+  expect_s3_class(ggplot2::ggplot_build(none), "ggplot_built")
+})
+
+test_that("state plot shows parent cells only and separates uncalled cells", {
+  skip_if_not_installed("ggplot2")
+  o <- gk_plot_test_objects()
+  dat <- gk_plot_states(o$st, "sim-01")$data
+  calls <- o$st$calls
+  expect_identical(nrow(dat), sum(calls$in_parent))
+  expect_true(all(dat$in_parent))
+  expect_identical(sum(dat$call == "Positive"), sum(calls$positive))
+  expect_true(all(dat$call[!is.finite(dat$estimate)] == "Not called"))
+  expect_false(any(dat$call[is.finite(dat$estimate) & dat$evaluable] == "Not called"))
+  outside <- o$st
+  outside$calls$in_parent <- FALSE
+  expect_s3_class(ggplot2::ggplot_build(gk_plot_states(outside, "sim-01")), "ggplot_built")
+})
+
+test_that("plots reject an image that is not in the object", {
+  skip_if_not_installed("ggplot2")
+  o <- gk_plot_test_objects()
+  expect_error(gk_plot_map(o$cl, "no-such-image"), class = "gatekeepr_error_input")
+  expect_error(gk_plot_thresholds(o$th, "no-such-image"), class = "gatekeepr_error_input")
+  expect_error(gk_plot_states(o$st, "no-such-image"), class = "gatekeepr_error_input")
+  expect_error(gk_plot_map(o$cl, "sim-01", colour_by = NA_character_), class = "gatekeepr_error_input")
+})
+
+test_that("overview pairs the map with class counts in matching colours", {
+  skip_if_not_installed("ggplot2")
+  skip_if_not_installed("patchwork")
+  o <- gk_plot_test_objects()
+  overview <- gk_plot_overview(o$cl, "sim-01")
+  expect_s3_class(overview, "patchwork")
+  expect_length(overview$patches$plots, 1L)
+  counts <- overview$data
+  expect_identical(sum(counts$n), 300L)
+  expect_setequal(as.character(counts$class), unique(o$cl$cells$cell_type))
+})

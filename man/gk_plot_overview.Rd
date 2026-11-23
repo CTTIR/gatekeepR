@@ -15,7 +15,17 @@ gk_plot_overview(x, image_id)
 A patchwork object when patchwork is installed, otherwise the map.
 }
 \description{
-Make a compact overview
+The cell map of one image next to the number of cells per class of the
+colour variable, in the same colours.
+}
+\details{
+All plot helpers use \code{\link[ggplot2:theme_minimal]{ggplot2::theme_minimal()}} and colours that remain
+distinguishable with colour vision deficiency: Okabe-Ito for up to nine
+classes and viridis for numbers. With ten or more classes no qualitative
+palette is colour-blind safe; the plots then use palettes with distinct
+neighbours (Tableau 10, Polychrome 36), which are best combined with
+facets or direct labels. All helpers return ordinary ggplot objects, so a
+theme or scale added by the caller replaces these defaults.
 }
 \examples{
 \dontshow{if (requireNamespace("ggplot2", quietly = TRUE)) withAutoprint(\{ # examplesIf}

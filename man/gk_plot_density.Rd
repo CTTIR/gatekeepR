@@ -16,10 +16,20 @@ gk_plot_density(thresholds, marker, image_id, parent = NA_character_)
 \item{parent}{Parent set for a state threshold; NA for identity markers.}
 }
 \value{
-A ggplot object.
+A ggplot object. The dashed vertical line marks the threshold
+estimate, which is also stated in the subtitle.
 }
 \description{
 Plot a threshold density and its evidence pools
+}
+\details{
+All plot helpers use \code{\link[ggplot2:theme_minimal]{ggplot2::theme_minimal()}} and colours that remain
+distinguishable with colour vision deficiency: Okabe-Ito for up to nine
+classes and viridis for numbers. With ten or more classes no qualitative
+palette is colour-blind safe; the plots then use palettes with distinct
+neighbours (Tableau 10, Polychrome 36), which are best combined with
+facets or direct labels. All helpers return ordinary ggplot objects, so a
+theme or scale added by the caller replaces these defaults.
 }
 \examples{
 \dontshow{if (requireNamespace("ggplot2", quietly = TRUE)) withAutoprint(\{ # examplesIf}
