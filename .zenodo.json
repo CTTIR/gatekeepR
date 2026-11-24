@@ -7,10 +7,13 @@
       "orcid": "0000-0001-8006-9742"
     }
   ],
-  "license": "MIT",
+  "license": "mit",
   "keywords": [
     "multiplex imaging",
     "cell phenotyping",
     "R"
-  ]
+  ],
+  "upload_type": "software",
+  "description": "Reviewable marker gating and phenotyping for multiplexed imaging with explicit callability, append-only review ledgers and verifiable exports.",
+  "access_right": "open"
 }
