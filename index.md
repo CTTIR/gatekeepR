@@ -1,5 +1,8 @@
 # gatekeepR ![gatekeepR logo](reference/figures/logo-with-name.png)
 
+Zenodo DOI reserved for the release: `10.5281/zenodo.24426372` (not yet
+published).
+
 `gatekeepR` turns per-cell marker measurements from multiplexed tissue
 images into cell types that a person has reviewed.
 

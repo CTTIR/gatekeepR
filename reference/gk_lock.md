@@ -51,7 +51,7 @@ snapshot <- gk_lock(review, reviewer = "example-reviewer", status = "PENDING")
 snapshot
 #> <gk_snapshot> "gk-504f9e9e75df5c09": "PENDING"
 #> • Production eligible: FALSE
-#> • Locked: "2026-11-23T12:46:16Z"
+#> • Locked: "2026-11-24T14:20:28Z"
 snapshot$review_id
 #> [1] "gk-504f9e9e75df5c09"
 ```
