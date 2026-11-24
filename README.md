@@ -3,8 +3,9 @@
 <!-- badges: start -->
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24426372.svg)](https://doi.org/10.5281/zenodo.24426372)
 <!-- badges: end -->
+
+Zenodo DOI reserved for the release: `10.5281/zenodo.24426372` (not yet published).
 
 `gatekeepR` turns per-cell marker measurements from multiplexed tissue images
 into cell types that a person has reviewed.
